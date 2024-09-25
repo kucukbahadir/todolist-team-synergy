@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+bower_components
 
 # testing
 /coverage
@@ -21,3 +22,15 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+### react ###
+*.log
+logs
+**/*.backup.*
+**/*.back.*
+
+*.sublime*
+
+psd
+thumb
+sketch
