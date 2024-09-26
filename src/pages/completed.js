@@ -1,12 +1,12 @@
 import React from "react";
 
 // Due to the router being nested in "App-main", it also takes its CSS, found in "App.css"
-const Login = () => {
+const Completed = () => {
     return (
         <div>
-            <h1>Login page</h1>
+            <h1>Completed page</h1>
         </div>
     );
 };
  
-export default Login;
+export default Completed;
