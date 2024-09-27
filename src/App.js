@@ -12,6 +12,8 @@ import Login from "./pages/login";
 import Todo from "./pages/todo";
 import Detail from "./pages/detail";
 import Completed from "./pages/completed";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   return (
