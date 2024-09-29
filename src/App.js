@@ -16,12 +16,7 @@ import Completed from "./pages/completed";
 function App() {
   return (
     <div className="App">
-      <header className='App-header'>
-        <a href='/login'>Login example</a> <br></br>
-        <a href='/todo'>ToDo list example</a> <br></br>
-        <a href='/detail'>Task detail example</a> <br></br>
-        <a href='/completed'>Completed tasks example</a>        
-      </header>
+      <navbar/>
       <main className="App-main">
       <Router>
         <Routes>
