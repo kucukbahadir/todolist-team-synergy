@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom'; // Zorg dat dit is geïmporteerd
+import { BrowserRouter } from 'react-router-dom';
+import './index.css';
+import './main.css'
 
 // This is where the HTML gets rendered and added to "index.html"
 const root = ReactDOM.createRoot(document.getElementById('root'));
