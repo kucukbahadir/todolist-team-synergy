@@ -12,13 +12,13 @@ import Login from "./pages/login";
 import Todo from "./pages/todo";
 import Detail from "./pages/detail";
 import Completed from "./pages/completed";
+import Navbar from "./components/navbar";
 
 function App() {
   return (
     <div className="App">
-      <navbar/>
+      <Navbar />
       <main className="App-main">
-      <Router>
         <Routes>
           <Route exact path="/" element= {<Home />}/>
           <Route path="/login" element={<Login />}/>
@@ -26,8 +26,6 @@ function App() {
           <Route path="/detail" element={<Detail />}/>
           <Route path="/completed" element={<Completed />}/>
         </Routes>
-        </Router>
-        
       </main>
     </div>
   );
