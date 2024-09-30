@@ -13,7 +13,7 @@ import Detail from "./pages/detail";
 import Completed from "./pages/completed";
 import Navbar from "./components/Navbar.js";
 import NoPage from "./pages/NoPage";
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
     return (
