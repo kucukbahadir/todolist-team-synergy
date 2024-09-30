@@ -6,19 +6,16 @@ const Navbar = () => {
         <nav className="bg-gray-200 p-4">
             <ul className="flex space-x-4">
                 <li>
-                    <Link to="/" className="text-gray hover:text-gray-300">Home</Link>
+                    <Link to="/" className="bg-gray-700 text-white p-3 rounded-lg">Home</Link>
                 </li>
                 <li>
-                    <Link to="/login" className="text-gray border-b hover:border-b">Login</Link>
+                    <Link to="/login" className="text-gray border-b-2 p-2 hover:border-sky-600">Login</Link>
                 </li>
                 <li>
-                    <Link to="/todo" className="text-gray hover:text-gray-300">To Do</Link>
+                    <Link to="/todo" className="text-gray border-b-2 p-2 hover:border-sky-600">To Do</Link>
                 </li>
                 <li>
-                    <Link to="/detail" className="text-gray hover:text-gray-300">Detail</Link>
-                </li>
-                <li>
-                    <Link to="/completed" className="text-gray hover:text-gray-300">Completed</Link>
+                    <Link to="/completed" className="text-gray border-b-2 p-2 hover:border-sky-600">Completed</Link>
                 </li>
             </ul>
         </nav>
