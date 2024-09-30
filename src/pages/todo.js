@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const Todo = () => {
-  // these are defaulft to do's so that the grid bootstrap dont look weird
+  // Default to-dos so that the grid bootstrap doesn't look weird
   const [todos, setTodos] = useState([
     { id: 1, title: "To do 1", description: "I need to add some things to this page" },
     { id: 2, title: "To do 2", description: "Text" },
@@ -15,7 +15,7 @@ const Todo = () => {
 
   const [newTodoTitle, setNewTodoTitle] = useState("");
   const [newTodoDescription, setNewTodoDescription] = useState("");
-  const [showForm, setShowForm] = useState(false); // this is so that you can show the form
+  const [showForm, setShowForm] = useState(false); // To toggle the form visibility
 
   // Function to add a new todo
   const buttonAddToDo = (e) => {
@@ -30,6 +30,12 @@ const Todo = () => {
       setNewTodoTitle(""); // Reset input field
       setNewTodoDescription(""); // Reset input field
     }
+  };
+
+  // Function to delete a to do by its id
+  const handleDelete = (id) => {
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
   };
 
   return (
@@ -60,7 +66,7 @@ const Todo = () => {
         </div>
         <br />
 
-        {/* this is the form for to do input*/}
+        {/* Form for to-do input */}
         {showForm && (
             <div className="container-xl">
               <div className="row justify-content-center align-items-center text-center">
@@ -99,7 +105,7 @@ const Todo = () => {
 
         <br />
 
-        {/*  Displaying the list of todos */}
+        {/* Displaying the list of todos */}
         <div className="container-fluid">
           <div className="row justify-content-center align-items-center g-2">
             {todos.map((todo) => (
@@ -108,6 +114,13 @@ const Todo = () => {
                     <div className="card-body">
                       <h4 className="card-title">{todo.title}</h4>
                       <p className="card-text">{todo.description}</p>
+                      {/* Delete button */}
+                      <button
+                          className="btn btn-outline-danger"
+                          onClick={() => handleDelete(todo.id)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 </div>
