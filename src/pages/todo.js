@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Todo = () => {
   // these are defaulft to do's so that the grid bootstrap dont look weird

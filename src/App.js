@@ -1,8 +1,7 @@
 import './App.css';
 
-
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
@@ -12,29 +11,22 @@ import Login from "./pages/login";
 import Todo from "./pages/todo";
 import Detail from "./pages/detail";
 import Completed from "./pages/completed";
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import Navbar from "./components/Navbar.js";
+import NoPage from "./pages/NoPage";
 
 function App() {
   return (
     <div className="App">
-      <header className='App-header'>
-        <a href='/login'>Login example</a> <br></br>
-        <a href='/todo'>ToDo list example</a> <br></br>
-        <a href='/detail'>Task detail example</a> <br></br>
-        <a href='/completed'>Completed tasks example</a>        
-      </header>
+      <Navbar />
       <main className="App-main">
-      <Router>
-        <Routes>
-          <Route exact path="/" element= {<Home />}/>
-          <Route path="/login" element={<Login />}/>
-          <Route path="/todo" element={<Todo />}/>
-          <Route path="/detail" element={<Detail />}/>
-          <Route path="/completed" element={<Completed />}/>
-        </Routes>
-        </Router>
-        
+          <Routes>
+            <Route exact path="/" element= {<Home />}/>
+            <Route path="/login" element={<Login />}/>
+            <Route path="/todo" element={<Todo />}/>
+            <Route path="/detail" element={<Detail />}/>
+            <Route path="/completed" element={<Completed />}/>
+            <Route path="*" element={<NoPage />} />
+          </Routes>
       </main>
     </div>
   );
