@@ -1,39 +1,21 @@
 import React, {useState, useEffect} from "react";
 
 const Todo = () => {
-    // Initialize to do's from localStorage or sessionStorage if available, else use default to do's
-    const [todos, setTodos] = useState(() => {
-        // First try to retrieve stored to do's from localStorage
-        const storedLocalTodos = localStorage.getItem("todos");
-        if (storedLocalTodos) {
-            return JSON.parse(storedLocalTodos);
-        }
-
-        // Retrieve stored to do's from sessionStorage, or use the default list if not found
-        // Default to do's so that the grid bootstrap doesn't look weird
-        const storedSessionTodos = sessionStorage.getItem("todos");
-        return storedSessionTodos ? JSON.parse(storedSessionTodos) : [
-            {id: 1, title: "To do 1", description: "I need to add some things to this page"},
-            {id: 2, title: "To do 2", description: "Text"},
-            {id: 3, title: "To do 3", description: "Text"},
-            {id: 4, title: "To do 4", description: "Text"},
-            {id: 5, title: "To do 5", description: "Text"},
-            {id: 6, title: "To do 6", description: "Text"},
-            {id: 7, title: "To do 7", description: "Text"},
-            {id: 8, title: "To do 8", description: "Text"},
-        ];
-    });
+    // Initialize to do's with the default to do's so bootstrap gird doesnt look weird
+    const [todos, setTodos] = useState([
+        {id: 1, title: "To do 1", description: "I need to add some things to this page"},
+        {id: 2, title: "To do 2", description: "Text"},
+        {id: 3, title: "To do 3", description: "Text"},
+        {id: 4, title: "To do 4", description: "Text"},
+        {id: 5, title: "To do 5", description: "Text"},
+        {id: 6, title: "To do 6", description: "Text"},
+        {id: 7, title: "To do 7", description: "Text"},
+        {id: 8, title: "To do 8", description: "Text"},
+    ]);
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
     const [newTodoDescription, setNewTodoDescription] = useState("");
     const [showForm, setShowForm] = useState(false); // To toggle the form visibility
-
-    // Function to update to do's in sessionStorage and localStorage whenever the to do's array changes
-    useEffect(() => {
-        // Save the current todos list to sessionStorage and localStorage whenever todos state changes
-        sessionStorage.setItem("todos", JSON.stringify(todos));  // Save in sessionStorage
-        localStorage.setItem("todos", JSON.stringify(todos));    // Save in localStorage
-    }, [todos]);
 
     // Function to add a new to do
     const buttonAddToDo = (e) => {
