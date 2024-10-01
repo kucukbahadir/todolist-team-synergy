@@ -1,43 +1,47 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
 const Todo = () => {
-    // Initialize to do's with the default to do's so bootstrap grid doesn't look weird
+    // Initialize to do's with the default to do's so bootstrap grid doesnt look weird
     const [todos, setTodos] = useState([
         {
             id: 1,
             title: "To do 1",
             description: "I need to add some things to this page",
-            dueDate: "2023-10-10"
+            dueDate: "2024-10-10",
+            priority: "High"
         },
-        { id: 2, title: "To do 2", description: "Text", dueDate: "2024-11-05" },
-        { id: 3, title: "To do 3", description: "Text", dueDate: "2024-12-01" },
-        { id: 4, title: "To do 4", description: "Text", dueDate: "2024-10-15" },
-        { id: 5, title: "To do 5", description: "Text", dueDate: "2024-10-25" },
-        { id: 6, title: "To do 6", description: "Text", dueDate: "2024-11-10" },
-        { id: 7, title: "To do 7", description: "Text", dueDate: "2024-11-20" },
-        { id: 8, title: "To do 8", description: "Text", dueDate: "2024-12-01" },
+        {id: 2, title: "To do 2", description: "Text", dueDate: "2024-11-05", priority: "Low"},
+        {id: 3, title: "To do 3", description: "Text", dueDate: "2024-12-01", priority: "Medium"},
+        {id: 4, title: "To do 4", description: "Text", dueDate: "2024-10-15", priority: "High"},
+        {id: 5, title: "To do 5", description: "Text", dueDate: "2024-10-25", priority: "Low"},
+        {id: 6, title: "To do 6", description: "Text", dueDate: "2024-11-10", priority: "Medium"},
+        {id: 7, title: "To do 7", description: "Text", dueDate: "2024-11-20", priority: "Low"},
+        {id: 8, title: "To do 8", description: "Text", dueDate: "2024-12-01", priority: "High"},
     ]);
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
     const [newTodoDescription, setNewTodoDescription] = useState("");
     const [newTodoDueDate, setNewTodoDueDate] = useState("");
+    const [newTodoPriority, setNewTodoPriority] = useState("");
     const [showForm, setShowForm] = useState(false); // To toggle the form visibility
 
     // Function to add a new to do
     const buttonAddToDo = (e) => {
         e.preventDefault();
-        if (newTodoTitle && newTodoDescription && newTodoDueDate) {
+        if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
             const newTodo = {
                 id: todos.length + 1, // add an id for the to do
                 title: newTodoTitle,
                 description: newTodoDescription,
-                dueDate: newTodoDueDate, // Add due date
+                dueDate: newTodoDueDate,  // Add due date
+                priority: newTodoPriority, // Add priority level
             };
             // Update the to do's list by adding the new to do and reset the input fields
             setTodos([...todos, newTodo]);
             setNewTodoTitle(""); // Reset input field
             setNewTodoDescription(""); // Reset input field
             setNewTodoDueDate(""); // Reset due date field
+            setNewTodoPriority(""); // Reset priority field
         }
     };
 
@@ -113,6 +117,19 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
+                                <div className="mb-3">
+                                    <select
+                                        className="form-control"
+                                        value={newTodoPriority}
+                                        onChange={(e) => setNewTodoPriority(e.target.value)}
+                                        required
+                                    >
+                                        <option value="">Select Priority</option>
+                                        <option value="High">High</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                </div>
                                 <button type="submit" className="btn btn-outline-success">
                                     Add Todo
                                 </button>
@@ -137,10 +154,16 @@ const Todo = () => {
                                     <p className="card-text">{todo.description}</p>
                                     {/* Task detail for the to do */}
                                     <p className="card-text">
-                                        <small className="text-muted">Task ID: {todo.id}</small> {/* Displaying the task ID */}
+                                        <small className="text-muted">Task
+                                            ID: {todo.id}</small> {/* Displaying the task ID */}
                                     </p>
                                     <p className="card-text">
-                                        <small className="text-muted">Due Date: {todo.dueDate}</small> {/* Display due date */}
+                                        <small className="text-muted">Due
+                                            Date: {todo.dueDate}</small> {/* Display due date */}
+                                    </p>
+                                    <p className="card-text">
+                                        <small
+                                            className="text-muted">Priority: {todo.priority}</small> {/* Display priority */}
                                     </p>
                                     {/* Delete button */}
                                     <button
