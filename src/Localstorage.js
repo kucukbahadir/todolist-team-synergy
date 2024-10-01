@@ -10,5 +10,12 @@ localStorage.setItem(
 
 let Getcard = JSON.parse(localStorage.getItem("CardData"))
 
+const CardList = document.getElementById("card-list");
+
+for (let i = 0; i < card.length; i++) {
+  Getcard.innerHTML =
+   Getcard.innerHTML +
+    `<div class="card-container"> Hello ${card[i]}</div>`;
+}
 
 console.log('Getcard',Getcard);
