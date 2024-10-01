@@ -1,16 +1,16 @@
-import React, {useState, useEffect} from "react";
+import React, { useState } from "react";
 
 const Todo = () => {
-    // Initialize to do's with the default to do's so bootstrap gird doesnt look weird
+    // Initialize to do's with the default to do's so bootstrap grid doesn't look weird
     const [todos, setTodos] = useState([
         {id: 1, title: "To do 1", description: "I need to add some things to this page"},
-        {id: 2, title: "To do 2", description: "Text"},
-        {id: 3, title: "To do 3", description: "Text"},
-        {id: 4, title: "To do 4", description: "Text"},
-        {id: 5, title: "To do 5", description: "Text"},
-        {id: 6, title: "To do 6", description: "Text"},
-        {id: 7, title: "To do 7", description: "Text"},
-        {id: 8, title: "To do 8", description: "Text"},
+        { id: 2, title: "To do 2", description: "Text" },
+        { id: 3, title: "To do 3", description: "Text" },
+        { id: 4, title: "To do 4", description: "Text" },
+        { id: 5, title: "To do 5", description: "Text" },
+        { id: 6, title: "To do 6", description: "Text" },
+        { id: 7, title: "To do 7", description: "Text" },
+        { id: 8, title: "To do 8", description: "Text" },
     ]);
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
@@ -22,7 +22,7 @@ const Todo = () => {
         e.preventDefault();
         if (newTodoTitle && newTodoDescription) {
             const newTodo = {
-                id: todos.length + 1, // add a id for the to do
+                id: todos.length + 1, // add an id for the to do
                 title: newTodoTitle,
                 description: newTodoDescription,
             };
@@ -63,7 +63,7 @@ const Todo = () => {
                     className="btn btn-outline-success"
                     onClick={() => setShowForm(!showForm)} // Toggle the form visibility state
                 >
-                    {showForm ? "Hide Form" : "add to do"} {/* Change button text based on form visibility */}
+                    {showForm ? "Hide Form" : "Add to do"} {/* Change button text based on form visibility */}
                 </button>
             </div>
             <br/>
@@ -104,18 +104,21 @@ const Todo = () => {
                     </div>
                 </div>
             )}
-
             <br/>
-
             {/* Displaying the list of to do's */}
             <div className="container-fluid">
                 <div className="row justify-content-center align-items-center g-2">
                     {todos.map((todo) => (
                         <div key={todo.id} className="col-3">
-                            <div className="card rounded-pill">
+                            <div className="card border-5">
+                                <br/>
                                 <div className="card-body">
                                     <h4 className="card-title">{todo.title}</h4>
                                     <p className="card-text">{todo.description}</p>
+                                    {/* Task detail for the to do */}
+                                    <p className="card-text">
+                                        <small className="text-muted">Task ID: {todo.id}</small> {/* Displaying the task ID */}
+                                    </p>
                                     {/* Delete button */}
                                     <button
                                         className="btn btn-outline-danger"
@@ -124,6 +127,7 @@ const Todo = () => {
                                         Delete
                                     </button>
                                 </div>
+                                <br/>
                             </div>
                         </div>
                     ))}
