@@ -1,34 +1,41 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const tasksJimmy = [
-    {
-        taskName: "Task 1",
-        taskDescription: "Description for Task 1"
+    {   id: 1,
+        title: "To do 1", 
+        description: "Text",
+        dueDate: new Date(),
+        priority: "Low" 
     },
-    {
-        taskName: "Task 2",
-        taskDescription: "Description for Task 2"
-    },
-    {
-        taskName: "Task 3",
-        taskDescription: "Description for Task 3"
-    }
 ];
 
 //const tasksJSON = JSON.stringify(tasksJimmy);
+//var rendercount = 0;
 
 function Login() {
     const [name, setName] = useState("");
+    //const [taskCreated, setDate] = useState("");
     const nav = useNavigate();
+
+    //console.log(tasksJimmy[0]);
+
+    /*
+    useEffect(() => {
+        // Ensure tasksJimmy is defined and has the expected structure
+        if (tasksJimmy && tasksJimmy.length > 0) {
+            //setDate(tasksJimmy[0].dueDate);  // Only set this on initial mount or when tasksJimmy changes
+            setDate(tasksJimmy[0].dueDate.toDateString());
+        }
+    }, [tasksJimmy]);  // This effect runs when tasksJimmy changes or on component mount
+    */    
 
     function handleLogin(event) {
         event.preventDefault();  // Prevent reloading the page
         
         if (name === "Jimmy") {
             // sets the user's name in the session storage
-            // TODO: replace the second name with actual data
             console.log(name);
             sessionStorage.setItem("nameUser", name);
             console.log(tasksJimmy);
@@ -42,6 +49,7 @@ function Login() {
     }
 
     return (
+        <div>
         <form method="get" onSubmit={handleLogin}>
             <input 
                 type="text" 
@@ -50,7 +58,9 @@ function Login() {
                 placeholder="Name?"
                 onChange={(e) => setName(e.target.value)} // Update useState of "name" when input changes
             />
-        </form>
+        </form>        
+        {/*<p>Temp: {taskCreated}</p>*/}
+        </div>
     );
 }
  
