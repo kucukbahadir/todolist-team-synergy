@@ -7,16 +7,18 @@ const Todo = () => {
             id: 1,
             title: "To do 1",
             description: "I need to add some things to this page",
-            dueDate: "2024-10-10",
+            //dueDate: "2024-10-10",
+            dueDate: new Date("2024-10-10"),
             priority: "High",
         },
-        { id: 2, title: "To do 2", description: "Text", dueDate: "2024-11-05", priority: "Low" },
-        { id: 3, title: "To do 3", description: "Text", dueDate: "2024-12-01", priority: "Medium" },
-        { id: 4, title: "To do 4", description: "Text", dueDate: "2024-10-15", priority: "High" },
+        { id: 2, title: "To do 2", description: "Text", dueDate: new Date(), priority: "Low" },
+        { id: 3, title: "To do 3", description: "Text", dueDate: new Date(), priority: "Medium" },
+        { id: 4, title: "To do 4", description: "Text", dueDate: new Date(), priority: "High" }//,
+        /* I didn't feel like copying "new Date" like 8 times
         { id: 5, title: "To do 5", description: "Text", dueDate: "2024-10-25", priority: "Low" },
         { id: 6, title: "To do 6", description: "Text", dueDate: "2024-11-10", priority: "Medium" },
         { id: 7, title: "To do 7", description: "Text", dueDate: "2024-11-20", priority: "Low" },
-        { id: 8, title: "To do 8", description: "Text", dueDate: "2024-12-01", priority: "High" },
+        { id: 8, title: "To do 8", description: "Text", dueDate: "2024-12-01", priority: "High" },*/
     ]);
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
@@ -33,7 +35,8 @@ const Todo = () => {
                 id: todos.length + 1, // add an id for the to do
                 title: newTodoTitle,
                 description: newTodoDescription,
-                dueDate: newTodoDueDate,  // Add due date
+                //dueDate: newTodoDueDate,  // Add due date
+                dueDate: new Date(newTodoDueDate),
                 priority: newTodoPriority, // Add priority level
             };
             // Update the to do's list by adding the new to do and reset the input fields
@@ -161,13 +164,24 @@ const Todo = () => {
                                 <br />
                                 <div className="card-body custom-card">
                                     <h4 className="card-title">{todo.title}</h4>
+                                    {/* Maybe use string.slice() to only show a set amount of characters in case of giant descriptions
+                                    https://www.w3schools.com/jsref/jsref_slice_string.asp */}
                                     <p className="card-text">{todo.description}</p>
                                     {/* Task detail for the to do */}
                                     <p className="card-text">
                                         <small className="text-muted">Task ID: {todo.id}</small> {/* Displaying the task ID */}
                                     </p>
                                     <p className="card-text">
-                                        <small className="text-muted">Due Date: {todo.dueDate}</small> {/* Display due date */}
+                                        {/* TODO: Overwrite Bootstrap styling if past due date */}
+                                        <small className="text-muted" style={{color: "red"}}>
+                                            {/* Due Date: {todo.dueDate.toDateString()} */}
+                                            {/*
+                                                Under here is a ternary operator. A ternary operator consist out of 2 parts: The condition in front of the ?, and options behind the ?.
+                                                If the condition is true, the first option will be return.
+                                                If the condition is false, the second option gets returned.
+                                             */}
+                                            Due Date: {todo.dueDate < new Date() ? ("Overdue") : (todo.dueDate.toDateString())}
+                                        </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">
                                         <small className="text-muted">Priority: {todo.priority}</small> {/* Display priority */}
