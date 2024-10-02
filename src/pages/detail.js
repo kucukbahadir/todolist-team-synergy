@@ -4,7 +4,7 @@ import React from "react";
 const Detail = () => {
     return (
         <div>
-            <h1>Detail form</h1>
+            <h1>Detail </h1>
         </div>
     );
 };

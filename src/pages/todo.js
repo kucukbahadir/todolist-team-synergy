@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import {useNavigate} from "react-router-dom";
 
 const Todo = () => {
+    const navigate = useNavigate();
+
     // Initialize to do's with the default to do's so bootstrap grid doesn't look weird
     const [todos, setTodos] = useState([
         {
@@ -50,6 +53,10 @@ const Todo = () => {
         // Filter out the to do with the matching ID and update the to do's list
         const updatedTodos = todos.filter((todo) => todo.id !== id);
         setTodos(updatedTodos);
+    };
+
+    const viewDetails = (id) => {
+        navigate(`/detail/${id}`);
     };
 
     return (
@@ -180,8 +187,8 @@ const Todo = () => {
                                         Delete
                                     </button>
                                     <br/>
-                                    <button className="btn btn-outline-secondary">
-                                        details <a href="www.google.nl"></a>
+                                    <button onClick={() => viewDetails(todo.id)} className="btn btn-outline-secondary">
+                                        Edit
                                     </button>
                                 </div>
                                 <br />

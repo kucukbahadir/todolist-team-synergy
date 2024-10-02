@@ -24,9 +24,9 @@ function App() {
             <Route exact path="/" element= {<Home />}/>
             <Route path="/login" element={<Login />}/>
             <Route path="/todo" element={<Todo />}/>
-            <Route path="/detail" element={<Detail />}/>
             <Route path="/completed" element={<Completed />}/>
             <Route path="*" element={<NoPage />} />
+            <Route path="/detail/:id" element={<Detail />} />
           </Routes>
       </main>
     </div>
