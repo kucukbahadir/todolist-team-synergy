@@ -24,6 +24,9 @@ const Todo = () => {
     const [newTodoDueDate, setNewTodoDueDate] = useState("");
     const [newTodoPriority, setNewTodoPriority] = useState("");
     const [showForm, setShowForm] = useState(false); // To toggle the form visibility
+    const [sortCriteria, setSortCriteria] = useState("");
+    const [sortOrder, setSortOrder] = useState("asc"); //Ascending sort order
+    const [priorityFilter, setPriorityFilter] = useState("");
 
     // Function to add a new to do
     const buttonAddToDo = (e) => {
