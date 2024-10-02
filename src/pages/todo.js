@@ -55,6 +55,32 @@ const Todo = () => {
         setTodos(updatedTodos);
     };
 
+    //Function to sort Todos
+    const sortedAndFilteredTodos = () =>   {
+        let filteredTodos = todos;
+
+        if (priorityFilter) {
+            filteredTodos = todos.filter((todo) => todo.priority === priorityFilter);
+        }
+
+        if (sortCriteria === "id") {
+            filteredTodos.sort((a, b) => (sortOrder === "asc" ? a.id - b.id : b.id - a.id));
+        } else if (sortCriteria == "dueDate") {
+            filteredTodos.sort((a, b) => {
+                const dateA = new Date(a.dueDate);
+                const dateB = new Date(b.dueDate);
+                return sortOrder == "asc" ? dateA - dateB : dateB - dateA;
+            });
+        } else if(sortCriteria === "priority") {
+            const priorityOrder = {High: 3, Medium: 2, Low: 1};
+            filteredTodos.sort((a, b) => {
+                return sortOrder === "asc" ? priorityOrder[a.priority] - priorityOrder[b.priority] : priorityOrder[b.priority] - priorityOrder[a.priority]
+            });
+        }
+
+        return filteredTodos
+    };
+
     return (
         <div>
             <style>
