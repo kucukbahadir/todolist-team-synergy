@@ -1,36 +1,34 @@
 import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const Detail = () => {
 
     const navigate = useNavigate();
+    const {id} = useParams();
 
     const [todo, setTodo] = useState({
-        id: 0,
         title: "",
         description: "",
         dueDate: "",
         priority: ""
     });
-
-    // Temporary solution to access the to-do item on this page
+    
     useEffect(() => {
-        const storedTodo = localStorage.getItem("todo");
+        const storedTodo = localStorage.getItem(id);
         if (storedTodo) {
             // Parse the stored to-do item and set it as the current to-do item
             setTodo(JSON.parse(storedTodo));
         }
-    }, []);
+    }, [id]);
 
     const onSave = () => {
-        localStorage.setItem("todo", JSON.stringify(todo));
-
+        localStorage.setItem(id, JSON.stringify(todo));
         navigate("/todo");
     };
 
     const onReset = () => {
-        setTodo(JSON.parse(localStorage.getItem("todo")))
+        setTodo(JSON.parse(localStorage.getItem(id)))
     };
 
     const onCancel = () => {

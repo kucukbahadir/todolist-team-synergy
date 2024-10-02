@@ -61,7 +61,7 @@ const Todo = () => {
 
     const viewDetails = (todo) => {
         // Temporary solution to access this to-do item in the detail page
-        localStorage.setItem("todo", JSON.stringify(todo));
+        localStorage.setItem(todo.id, JSON.stringify(todo));
 
         navigate(`/detail/${todo.id}`);
     };
