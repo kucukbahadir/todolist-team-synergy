@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {useNavigate} from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Todo = () => {
     const navigate = useNavigate();
@@ -55,8 +56,11 @@ const Todo = () => {
         setTodos(updatedTodos);
     };
 
-    const viewDetails = (id) => {
-        navigate(`/detail/${id}`);
+    const viewDetails = (todo) => {
+        // Temporary solution to access this to-do item in the detail page
+        localStorage.setItem("todo", JSON.stringify(todo));
+
+        navigate(`/detail/${todo.id}`);
     };
 
     return (
@@ -187,7 +191,7 @@ const Todo = () => {
                                         Delete
                                     </button>
                                     <br/>
-                                    <button onClick={() => viewDetails(todo.id)} className="btn btn-outline-secondary">
+                                    <button onClick={() => viewDetails(todo)} className="btn btn-outline-secondary">
                                         Edit
                                     </button>
                                 </div>
