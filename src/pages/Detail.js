@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {useNavigate} from "react-router-dom";
 
 const Detail = () => {
+
+    const navigate = useNavigate();
 
     const [todo, setTodo] = useState({
         id: 0,
@@ -11,19 +14,33 @@ const Detail = () => {
         priority: ""
     });
 
+    // Temporary solution to access the to-do item on this page
     useEffect(() => {
         const storedTodo = localStorage.getItem("todo");
         if (storedTodo) {
-            // Parse de string terug naar een object en update de state
+            // Parse the stored to-do item and set it as the current to-do item
             setTodo(JSON.parse(storedTodo));
         }
     }, []);
+
+    const onSave = () => {
+        localStorage.setItem("todo", JSON.stringify(todo));
+
+        navigate("/todo");
+    };
+
+    const onReset = () => {
+        setTodo(JSON.parse(localStorage.getItem("todo")))
+    };
+
+    const onCancel = () => {
+        navigate("/todo");
+    };
 
     return (
         <div className="flex">
             <div className="card border-5">
                 <div className="flex flex-col card-body custom-card">
-                    {/* Toon de titel in het invoerveld */}
                     <label className={"font-bold text-2xl"}>Edit Task</label>
 
                     <div className={"flex flex-col p-3"}>
@@ -32,12 +49,12 @@ const Detail = () => {
                             id={"title"}
                             type="text"
                             className="card-title border-2 border-gray-200"
-                            placeholder="Title" // Voeg placeholder toe
-                            value={todo.title} // Koppel de waarde aan de state
+                            placeholder="Title"
+                            value={todo.title}
                             onChange={(e) => setTodo({
                                 ...todo,
                                 title: e.target.value
-                            })} // Maak het invoerveld bewerkbaar
+                            })}
                         />
                     </div>
 
@@ -77,14 +94,20 @@ const Detail = () => {
                     </div>
 
                     <div className={"flex flex-row justify-around pt-3"}>
-                        <button className="btn btn-outline-secondary">
+                        <button className="btn btn-outline-secondary" onClick={
+                            () => onCancel()
+                        }>
                             Cancel
                         </button>
-                        <button className="btn btn-outline-danger">
+                        <button className="btn btn-outline-danger" onClick={
+                            () => onReset()
+                        }>
                             Reset Changes
                         </button>
-                        <button className="btn btn-outline-success">
-                            Complete
+                        <button className="btn btn-outline-success" onClick={
+                            () => onSave()
+                        }>
+                            Save
                         </button>
                     </div>
                 </div>

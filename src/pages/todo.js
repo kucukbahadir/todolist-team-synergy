@@ -152,7 +152,7 @@ const Todo = () => {
                                     </select>
                                 </div>
                                 <button type="submit" className="btn btn-outline-success">
-                                    Add Todo
+                                    Add To do
                                 </button>
                             </form>
                         </div>
