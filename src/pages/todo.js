@@ -183,14 +183,12 @@ const Todo = () => {
                                         <small className="text-muted">Task ID: {todo.id}</small> {/* Displaying the task ID */}
                                     </p>
                                     <p className="card-text">
-                                        {/* TODO: Overwrite Bootstrap styling if past due date */}
-                                        <small className="text-muted" style={{color: "red"}}>
-                                            {/* Due Date: {todo.dueDate.toDateString()} */}
-                                            {/*
-                                                Under here is a ternary operator. A ternary operator consist out of 2 parts: The condition in front of the ?, and options behind the ?.
-                                                If the condition is true, the first option will be return.
-                                                If the condition is false, the second option gets returned.
-                                             */}
+                                        {/*
+                                            Under here is a ternary operator. A ternary operator consist out of 2 parts: The condition in front of the ?, and options behind the ?.
+                                            If the condition is true, the first option will be return.
+                                            If the condition is false, the second option gets returned.
+                                        */}
+                                        <small className={todo.dueDate < new Date() ? ("text-danger") : ("text-muted")} style={{color: "red"}}>
                                             Due Date: {todo.dueDate < new Date() ? ("Overdue") : (todo.dueDate.toDateString())}
                                         </small> {/* Display due date */}
                                     </p>
