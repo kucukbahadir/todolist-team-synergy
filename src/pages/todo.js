@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import {useNavigate} from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Todo = () => {
+    const navigate = useNavigate();
+
     // Initialize to do's with the default to do's so bootstrap grid doesn't look weird
     const [todos, setTodos] = useState([
         {
@@ -53,6 +57,13 @@ const Todo = () => {
         // Filter out the to do with the matching ID and update the to do's list
         const updatedTodos = todos.filter((todo) => todo.id !== id);
         setTodos(updatedTodos);
+    };
+
+    const viewDetails = (todo) => {
+        // Temporary solution to access this to-do item in the detail page
+        localStorage.setItem(todo.id, JSON.stringify(todo));
+
+        navigate(`/detail/${todo.id}`);
     };
 
     return (
@@ -144,7 +155,7 @@ const Todo = () => {
                                     </select>
                                 </div>
                                 <button type="submit" className="btn btn-outline-success">
-                                    Add Todo
+                                    Add To do
                                 </button>
                             </form>
                         </div>
@@ -194,8 +205,8 @@ const Todo = () => {
                                         Delete
                                     </button>
                                     <br/>
-                                    <button className="btn btn-outline-secondary">
-                                        details <a href="www.google.nl"></a>
+                                    <button onClick={() => viewDetails(todo)} className="btn btn-outline-secondary">
+                                        Edit
                                     </button>
                                 </div>
                                 <br />
