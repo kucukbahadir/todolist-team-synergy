@@ -11,18 +11,12 @@ const Todo = () => {
             id: 1,
             title: "To do 1",
             description: "I need to add some things to this page",
-            //dueDate: "2024-10-10",
             dueDate: new Date("2024-10-10"),
             priority: "High",
         },
         { id: 2, title: "To do 2", description: "Text", dueDate: new Date(), priority: "Low" },
         { id: 3, title: "To do 3", description: "Text", dueDate: new Date(), priority: "Medium" },
-        { id: 4, title: "To do 4", description: "Text", dueDate: new Date(), priority: "High" }//,
-        /* I didn't feel like copying "new Date" like 8 times
-        { id: 5, title: "To do 5", description: "Text", dueDate: "2024-10-25", priority: "Low" },
-        { id: 6, title: "To do 6", description: "Text", dueDate: "2024-11-10", priority: "Medium" },
-        { id: 7, title: "To do 7", description: "Text", dueDate: "2024-11-20", priority: "Low" },
-        { id: 8, title: "To do 8", description: "Text", dueDate: "2024-12-01", priority: "High" },*/
+        { id: 4, title: "To do 4", description: "Text", dueDate: new Date(), priority: "High" }
     ]);
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
