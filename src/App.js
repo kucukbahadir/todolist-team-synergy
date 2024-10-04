@@ -9,11 +9,10 @@ import {
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Todo from "./pages/todo";
-import Detail from "./pages/detail";
+import Detail from "./pages/Detail";
 import Completed from "./pages/completed";
 import Navbar from "./components/Navbar.js";
 import NoPage from "./pages/NoPage";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
@@ -24,9 +23,9 @@ function App() {
             <Route exact path="/" element= {<Home />}/>
             <Route path="/login" element={<Login />}/>
             <Route path="/todo" element={<Todo />}/>
-            <Route path="/detail" element={<Detail />}/>
             <Route path="/completed" element={<Completed />}/>
             <Route path="*" element={<NoPage />} />
+            <Route path="/detail/:id" element={<Detail />} />
           </Routes>
       </main>
     </div>
