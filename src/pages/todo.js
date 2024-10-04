@@ -28,7 +28,7 @@ const Todo = () => {
     const [sortOrder, setSortOrder] = useState("asc"); //Ascending sort order
     const [priorityFilter, setPriorityFilter] = useState("");
 
-    // Function to add a new to do
+    // Function to add a new to do  
     const buttonAddToDo = (e) => {
         e.preventDefault();
         if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
@@ -108,6 +108,53 @@ const Todo = () => {
             </div>
             <br></br>
 
+            <div className="container text-center">
+                {/* Priority Filter */}
+                <div className="mb-3">
+                    <label>Filter by Priority: </label>
+                    <select
+                        className="form-control"
+                        value={priorityFilter}
+                        onChange={(e) => setPriorityFilter(e.target.value)}
+                    >
+                        <option value="">All</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+
+            {/* Sort Criteria */}
+            <div className="mb-3">
+                    <label>Sort by: </label>
+                    <select
+                        className="form-control"
+                        value={sortCriteria}
+                        onChange={(e) => setSortCriteria(e.target.value)}
+                    >
+                        <option value="">None</option>
+                        <option value="id">ID</option>
+                        <option value="dueDate">Due Date</option>
+                        <option value="priority">Priority</option>
+                    </select>
+                </div>
+
+                {/* Sort Order */}
+                <div className="mb-3">
+                    <label>Order: </label>
+                    <select
+                        className="form-control"
+                        value={sortOrder}
+                        onChange={(e) => setSortOrder(e.target.value)}
+                    >
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                </div>
+            </div>
+
+
+
             {/* Button to toggle form */}
             <div className="container text-center">
                 <button
@@ -184,7 +231,7 @@ const Todo = () => {
             {/* Displaying the list of to do's */}
             <div className="container-fluid">
                 <div className="row justify-content-center align-items-center g-2">
-                    {todos.map((todo) => (
+                    {sortedAndFilteredTodos().map((todo) => (
                         <div key={todo.id} className="col-3">
                             <div className="card border-5">
                                 <br />
