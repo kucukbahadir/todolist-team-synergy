@@ -7,28 +7,57 @@ const Detail = () => {
     const navigate = useNavigate();
     const {id} = useParams();
 
-    const [todo, setTodo] = useState({
+    const [oldTodo, setOldTodo] = useState({});
+    const [newTodo, setNewTodo] = useState({
         title: "",
         description: "",
         dueDate: "",
         priority: ""
     });
-    
+    const [oldTodos, setOldTodos] = useState([]);
+
+    // Load todos from localStorage
     useEffect(() => {
-        const storedTodo = localStorage.getItem(id);
-        if (storedTodo) {
-            // Parse the stored to-do item and set it as the current to-do item
-            setTodo(JSON.parse(storedTodo));
+        // This will run when the component is first mounted (or the page is reloaded)
+        let jsonString = localStorage.getItem("tasksUser");
+        let jsonArray = []
+
+        if (jsonString){
+            jsonArray = JSON.parse(jsonString);
+            setOldTodos(jsonArray);
+
+            // Looks through jsonArray to find todo with specified id
+            console.log("id: " + id);
+            jsonArray.forEach(e => {
+                console.log("e.id: " + e.id)
+                if (e.id == id){
+                    console.log("HIT")
+                    setOldTodo(e);
+                    setNewTodo(e);
+                }
+            });
         }
     }, [id]);
 
     const onSave = () => {
-        localStorage.setItem(id, JSON.stringify(todo));
+        let newTodos = oldTodos
+        let counter = 0
+
+        oldTodos.forEach(e => {
+            if (e.id == id){
+                newTodos[counter] = newTodo;
+            }
+            counter++;
+        })
+
+        // Doesn't set the oldTodos to newTodos because user gets navigated of the page anyway
+        localStorage.setItem("tasksUser", JSON.stringify(newTodos))
+
         navigate("/todo");
     };
 
     const onReset = () => {
-        setTodo(JSON.parse(localStorage.getItem(id)))
+        setNewTodo(oldTodo);
     };
 
     const onCancel = () => {
@@ -48,9 +77,9 @@ const Detail = () => {
                             type="text"
                             className="card-title border-2 border-gray-200"
                             placeholder="Title"
-                            value={todo.title}
-                            onChange={(e) => setTodo({
-                                ...todo,
+                            value={newTodo.title}
+                            onChange={(e) => setNewTodo({
+                                ...newTodo,
                                 title: e.target.value
                             })}
                         />
@@ -63,8 +92,8 @@ const Detail = () => {
                             type="text"
                             className="card-text border-2 border-gray-200"
                             placeholder="Description"
-                            value={todo.description}
-                            onChange={(e) => setTodo({...todo, description: e.target.value})}
+                            value={newTodo.description}
+                            onChange={(e) => setNewTodo({...newTodo, description: e.target.value})}
                         />
                     </div>
 
@@ -73,17 +102,17 @@ const Detail = () => {
                         <input
                             type="date"
                             className="border-2 border-gray-200"
-                            value={todo.dueDate}
-                            onChange={(e) => setTodo({...todo, dueDate: e.target.value})}
+                            value={newTodo.dueDate}
+                            onChange={(e) => setNewTodo({...newTodo, dueDate: e.target.value})}
                         />
                     </div>
 
                     <div className={"flex flex-col p-3"}>
                         <label className={"text-sm align-self-start"} htmlFor={"priority"}>Priority</label>
                         <select
-                            value={todo.priority}
+                            value={newTodo.priority}
                             className="border-2 border-gray-200"
-                            onChange={(e) => setTodo({...todo, priority: e.target.value})}
+                            onChange={(e) => setNewTodo({...newTodo, priority: e.target.value})}
                         >
                             <option value="High">High</option>
                             <option value="Medium">Medium</option>

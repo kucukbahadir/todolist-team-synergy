@@ -4,17 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Todo = () => {
     const navigate = useNavigate();
-
-    //let jsonString = localStorage.getItem("tasksUser");
-    //console.log("jsonString: " + jsonString);
-    
-    let jsonArray = JSON.parse(localStorage.getItem("tasksUser"));
-    //console.log("jsonArray");
-    //console.log(jsonArray);
-
-    // Initialize to do's so bootstrap grid doesn't look weird
     const [todos, setTodos] = useState([]);
 
+    // Load todos from localStorage
     useEffect(() => {
         // This will run when the component is first mounted (or the page is reloaded)
         let jsonString = localStorage.getItem("tasksUser");
@@ -41,9 +33,8 @@ const Todo = () => {
                 id: todos.length + 1, // add an id for the to do
                 title: newTodoTitle,
                 description: newTodoDescription,
-                //dueDate: newTodoDueDate,  // Add due date
                 dueDate: new Date(newTodoDueDate),
-                priority: newTodoPriority, // Add priority level
+                priority: newTodoPriority
             };
             // Update the to do's list by adding the new to do and reset the input fields
             let updatedTodos = [...todos, newTodo];
@@ -71,7 +62,7 @@ const Todo = () => {
 
     const viewDetails = (todo) => {
         // Temporary solution to access this to-do item in the detail page
-        localStorage.setItem(todo.id, JSON.stringify(todo));
+        //localStorage.setItem(todo.id, JSON.stringify(todo));
 
         navigate(`/detail/${todo.id}`);
     };
