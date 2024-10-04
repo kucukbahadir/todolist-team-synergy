@@ -1,23 +1,31 @@
-import React, { useState } from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Todo = () => {
     const navigate = useNavigate();
 
-    // Initialize to do's with the default to do's so bootstrap grid doesn't look weird
-    const [todos, setTodos] = useState([
-        {
-            id: 1,
-            title: "To do 1",
-            description: "I need to add some things to this page",
-            dueDate: new Date("2024-10-10"),
-            priority: "High",
-        },
-        { id: 2, title: "To do 2", description: "Text", dueDate: new Date(), priority: "Low" },
-        { id: 3, title: "To do 3", description: "Text", dueDate: new Date(), priority: "Medium" },
-        { id: 4, title: "To do 4", description: "Text", dueDate: new Date(), priority: "High" }
-    ]);
+    //let jsonString = localStorage.getItem("tasksUser");
+    //console.log("jsonString: " + jsonString);
+    
+    let jsonArray = JSON.parse(localStorage.getItem("tasksUser"));
+    //console.log("jsonArray");
+    //console.log(jsonArray);
+
+    // Initialize to do's so bootstrap grid doesn't look weird
+    const [todos, setTodos] = useState([]);
+
+    useEffect(() => {
+        // This will run when the component is first mounted (or the page is reloaded)
+        let jsonString = localStorage.getItem("tasksUser");
+        console.log("jsonString: " + jsonString);
+
+        // Parse the stored JSON or default to an empty array if there is nothing in localStorage
+        let jsonArray = jsonString ? JSON.parse(jsonString) : [];
+
+        // Update the todos state with the parsed array
+        setTodos(jsonArray);
+    }, []);  // Empty dependency array ensures this runs only once on component mount
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
     const [newTodoDescription, setNewTodoDescription] = useState("");
@@ -38,11 +46,17 @@ const Todo = () => {
                 priority: newTodoPriority, // Add priority level
             };
             // Update the to do's list by adding the new to do and reset the input fields
-            setTodos([...todos, newTodo]);
-            setNewTodoTitle(""); // Reset input field
-            setNewTodoDescription(""); // Reset input field
-            setNewTodoDueDate(""); // Reset due date field
-            setNewTodoPriority(""); // Reset priority field
+            let updatedTodos = [...todos, newTodo];
+            setTodos(updatedTodos);
+
+            // Set the new todos into the localStorage
+            localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); 
+
+            // Reset input fields
+            setNewTodoTitle(""); 
+            setNewTodoDescription("");
+            setNewTodoDueDate("");
+            setNewTodoPriority("");
         }
     };
 
@@ -51,6 +65,8 @@ const Todo = () => {
         // Filter out the to do with the matching ID and update the to do's list
         const updatedTodos = todos.filter((todo) => todo.id !== id);
         setTodos(updatedTodos);
+
+        localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); // Set the new todos into the localStorage
     };
 
     const viewDetails = (todo) => {
@@ -183,7 +199,7 @@ const Todo = () => {
                                             If the condition is false, the second option gets returned.
                                         */}
                                         <small className={todo.dueDate < new Date() ? ("text-danger") : ("text-muted")} style={{color: "red"}}>
-                                            Due Date: {todo.dueDate < new Date() ? ("Overdue") : (todo.dueDate.toDateString())}
+                                            Due Date: {todo.dueDate < new Date() ? ("Overdue") : new Date(todo.dueDate).toDateString()}
                                         </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">

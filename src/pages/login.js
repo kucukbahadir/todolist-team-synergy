@@ -22,8 +22,9 @@ function Login() {
             // sets the user's name in the session storage
             console.log(name);
             sessionStorage.setItem("nameUser", name);
+
             console.log(tasksJimmy);
-            sessionStorage.setItem("tasksUser", tasksJimmy);
+            localStorage.setItem("tasksUser", JSON.stringify(tasksJimmy));
             // TODO: when Christian merges add-tasks, change todo to work with dynamic url
             //nav("/todo/${name}");
             nav("/todo");
@@ -35,6 +36,7 @@ function Login() {
     return (
         <form method="get" onSubmit={handleLogin}>
             <input 
+                className="form-control"
                 type="text" 
                 name="name" 
                 value={name} 
