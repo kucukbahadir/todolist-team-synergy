@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Todo = () => {
     const navigate = useNavigate();
-    const [todos, setTodos] = useState([]);
+    let [todos, setTodos] = useState([]);
 
     // Load todos from localStorage
     useEffect(() => {
