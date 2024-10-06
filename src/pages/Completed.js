@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 const Completed = () => {
 
     const [todos, setTodos] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         let jsonString = localStorage.getItem("tasksUser");
@@ -49,6 +51,12 @@ const Completed = () => {
                     Completed Tasks
                 </h1>
             </div>
+            {todos.length === 0 &&
+                <div className={"flex flex-col gap-3 justify-center items-center"}>
+                    <h1 className={"text-2xl font-bold text-white"}>No tasks completed yet</h1>
+                    <button className={"btn btn-outline-info"} onClick={() => navigate("/todo")}>Add Task</button>
+                </div>
+            }
             <div className={"flex flex-row flex-wrap gap-3 justify-center"}>
                 {todos.map((todo) => (
                     <div key={todo.id}>
