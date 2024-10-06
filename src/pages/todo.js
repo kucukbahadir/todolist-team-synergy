@@ -10,13 +10,12 @@ const Todo = () => {
     useEffect(() => {
         // This will run when the component is first mounted (or the page is reloaded)
         let jsonString = localStorage.getItem("tasksUser");
-        console.log("jsonString: " + jsonString);
 
-        // Parse the stored JSON or default to an empty array if there is nothing in localStorage
-        let jsonArray = jsonString ? JSON.parse(jsonString) : [];
+        if (jsonString) {
+            let jsonArray = JSON.parse(jsonString).filter((todo) => !todo.completed); // Filter out completed to do's
+            setTodos(jsonArray);
+        }
 
-        // Update the todos state with the parsed array
-        setTodos(jsonArray);
     }, []);  // Empty dependency array ensures this runs only once on component mount
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
@@ -34,7 +33,8 @@ const Todo = () => {
                 title: newTodoTitle,
                 description: newTodoDescription,
                 dueDate: new Date(newTodoDueDate),
-                priority: newTodoPriority
+                priority: newTodoPriority,
+                completed: false
             };
             // Update the to do's list by adding the new to do and reset the input fields
             let updatedTodos = [...todos, newTodo];
@@ -48,6 +48,7 @@ const Todo = () => {
             setNewTodoDescription("");
             setNewTodoDueDate("");
             setNewTodoPriority("");
+
         }
     };
 
@@ -66,6 +67,22 @@ const Todo = () => {
 
         navigate(`/detail/${todo.id}`);
     };
+
+    const completeTask = (todo) => {
+        // Find the to do with the matching ID
+        const updatedTodos = todos.map((t) => {
+            if (t.id === todo.id) {
+                // Toggle the completed state of the to do
+                t.completed = !t.completed
+            }
+            return t;
+        });
+
+        localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); // Set the new todos into the localStorage
+
+        // Update the to do's list
+        setTodos(updatedTodos);
+    }
 
     return (
         <div>
@@ -181,7 +198,8 @@ const Todo = () => {
                                     <p className="card-text">{todo.description}</p>
                                     {/* Task detail for the to do */}
                                     <p className="card-text">
-                                        <small className="text-muted">Task ID: {todo.id}</small> {/* Displaying the task ID */}
+                                        <small className="text-muted">Task
+                                            ID: {todo.id}</small> {/* Displaying the task ID */}
                                     </p>
                                     <p className="card-text">
                                         {/*
@@ -189,12 +207,15 @@ const Todo = () => {
                                             If the condition is true, the first option will be return.
                                             If the condition is false, the second option gets returned.
                                         */}
-                                        <small className={todo.dueDate < new Date() ? ("text-danger") : ("text-muted")} style={{color: "red"}}>
-                                            Due Date: {todo.dueDate < new Date() ? ("Overdue") : new Date(todo.dueDate).toDateString()}
+                                        <small className={todo.dueDate < new Date() ? ("text-danger") : ("text-muted")}
+                                               style={{color: "red"}}>
+                                            Due
+                                            Date: {todo.dueDate < new Date() ? ("Overdue") : new Date(todo.dueDate).toDateString()}
                                         </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">
-                                        <small className="text-muted">Priority: {todo.priority}</small> {/* Display priority */}
+                                        <small
+                                            className="text-muted">Priority: {todo.priority}</small> {/* Display priority */}
                                     </p>
                                     {/* Delete button */}
                                     <button
@@ -203,12 +224,14 @@ const Todo = () => {
                                     >
                                         Delete
                                     </button>
-                                    <br/>
                                     <button onClick={() => viewDetails(todo)} className="btn btn-outline-secondary">
                                         Edit
                                     </button>
+                                    <button onClick={() => completeTask(todo)} className="btn btn-outline-success">
+                                        Complete
+                                    </button>
                                 </div>
-                                <br />
+                                <br/>
                             </div>
                         </div>
                     ))}
