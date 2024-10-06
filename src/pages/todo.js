@@ -16,7 +16,7 @@ const Todo = () => {
             setTodos(jsonArray);
         }
 
-    }, []);  // Empty dependency array ensures this runs only once on component mount
+    }, [todos]);
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
     const [newTodoDescription, setNewTodoDescription] = useState("");
@@ -69,19 +69,28 @@ const Todo = () => {
     };
 
     const completeTask = (todo) => {
-        // Find the to do with the matching ID
-        const updatedTodos = todos.map((t) => {
+
+        // Get all tasks from localStorage
+        let jsonString = localStorage.getItem("tasksUser");
+        let allTodos = [];
+
+        if (jsonString) {
+            allTodos = JSON.parse(jsonString);
+        }
+
+        // Set the completed status of the task to the opposite of what it was
+        const updatedTodos = allTodos.map((t) => {
             if (t.id === todo.id) {
-                // Toggle the completed state of the to do
-                t.completed = !t.completed
+                t.completed = !t.completed; // Toggle de voltooide status
             }
             return t;
         });
 
-        localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); // Set the new todos into the localStorage
+        // Update the localStorage with the updated tasks
+        localStorage.setItem("tasksUser", JSON.stringify(updatedTodos));
 
-        // Update the to do's list
-        setTodos(updatedTodos);
+        // Filter out the completed tasks
+        setTodos(updatedTodos.filter((t) => !t.completed));
     }
 
     return (
