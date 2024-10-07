@@ -28,7 +28,7 @@ const Todo = () => {
     const [sortOrder, setSortOrder] = useState("asc"); //Ascending sort order
     const [priorityFilter, setPriorityFilter] = useState("");
 
-    // Function to add a new to do  
+    // Function to add a new to do
     const buttonAddToDo = (e) => {
         e.preventDefault();
         if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
@@ -82,7 +82,7 @@ const Todo = () => {
     };
 
     return (
-        <div>
+        <div className="container-fluid">
             <style>
                 {`
           .custom-card {
@@ -110,7 +110,7 @@ const Todo = () => {
 
             <div className="container text-center">
                 {/* Priority Filter */}
-                <div className="mb-3">
+                <div className="col-mb-3">
                     <label>Filter by Priority: </label>
                     <select
                         className="form-control"
@@ -125,7 +125,7 @@ const Todo = () => {
                 </div>
 
             {/* Sort Criteria */}
-            <div className="mb-3">
+            <div className="col-mb-3">
                     <label>Sort by: </label>
                     <select
                         className="form-control"
@@ -140,7 +140,7 @@ const Todo = () => {
                 </div>
 
                 {/* Sort Order */}
-                <div className="mb-3">
+                <div className="col-mb-3">
                     <label>Order: </label>
                     <select
                         className="form-control"
@@ -173,7 +173,7 @@ const Todo = () => {
                         <div className="col-4"></div>
                         <div className="col-4">
                             <form onSubmit={buttonAddToDo}>
-                                <div className="mb-3">
+                                <div className="col-mb-3">
                                     <input
                                         type="text"
                                         className="form-control"
@@ -183,7 +183,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="mb-3">
+                                <div className="col-mb-3">
                                     <input
                                         type="text"
                                         className="form-control"
@@ -193,7 +193,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="mb-3">
+                                <div className="col-mb-3">
                                     <input
                                         type="date"
                                         className="form-control"
@@ -203,7 +203,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="mb-3">
+                                <div className="col-mb-3">
                                     <select
                                         className="form-control"
                                         value={newTodoPriority}
