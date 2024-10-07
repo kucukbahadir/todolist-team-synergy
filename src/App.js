@@ -9,8 +9,8 @@ import {
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Todo from "./pages/todo";
-import Detail from "./pages/detail";
-import Completed from "./pages/completed";
+import Detail from "./pages/Detail";
+import Completed from "./pages/Completed";
 import Navbar from "./components/Navbar.js";
 import NoPage from "./pages/NoPage";
 
