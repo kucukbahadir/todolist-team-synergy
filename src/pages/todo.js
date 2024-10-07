@@ -1,23 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Todo = () => {
-    // Initialize to do's with the default to do's so bootstrap grid doesn't look weird
-    const [todos, setTodos] = useState([
-        {
-            id: 1,
-            title: "To do 1",
-            description: "I need to add some things to this page",
-            dueDate: "2024-10-10",
-            priority: "High",
-        },
-        { id: 2, title: "To do 2", description: "Text", dueDate: "2024-11-05", priority: "Low" },
-        { id: 3, title: "To do 3", description: "Text", dueDate: "2024-12-01", priority: "Medium" },
-        { id: 4, title: "To do 4", description: "Text", dueDate: "2024-10-15", priority: "High" },
-        { id: 5, title: "To do 5", description: "Text", dueDate: "2024-10-25", priority: "Low" },
-        { id: 6, title: "To do 6", description: "Text", dueDate: "2024-11-10", priority: "Medium" },
-        { id: 7, title: "To do 7", description: "Text", dueDate: "2024-11-20", priority: "Low" },
-        { id: 8, title: "To do 8", description: "Text", dueDate: "2024-12-01", priority: "High" },
-    ]);
+    const navigate = useNavigate();
+    let [todos, setTodos] = useState([]);
+
+    // Load todos from localStorage
+    useEffect(() => {
+        // This will run when the component is first mounted (or the page is reloaded)
+        let jsonString = localStorage.getItem("tasksUser");
+
+        if (jsonString) {
+            let jsonArray = JSON.parse(jsonString).filter((todo) => !todo.completed); // Filter out completed to do's
+            setTodos(jsonArray);
+        }
+
+    }, [todos]);
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
     const [newTodoDescription, setNewTodoDescription] = useState("");
@@ -36,15 +35,23 @@ const Todo = () => {
                 id: todos.length + 1, // add an id for the to do
                 title: newTodoTitle,
                 description: newTodoDescription,
-                dueDate: newTodoDueDate,  // Add due date
-                priority: newTodoPriority, // Add priority level
+                dueDate: new Date(newTodoDueDate),
+                priority: newTodoPriority,
+                completed: false
             };
             // Update the to do's list by adding the new to do and reset the input fields
-            setTodos([...todos, newTodo]);
-            setNewTodoTitle(""); // Reset input field
-            setNewTodoDescription(""); // Reset input field
-            setNewTodoDueDate(""); // Reset due date field
-            setNewTodoPriority(""); // Reset priority field
+            let updatedTodos = [...todos, newTodo];
+            setTodos(updatedTodos);
+
+            // Set the new todos into the localStorage
+            localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); 
+
+            // Reset input fields
+            setNewTodoTitle(""); 
+            setNewTodoDescription("");
+            setNewTodoDueDate("");
+            setNewTodoPriority("");
+
         }
     };
 
@@ -53,6 +60,8 @@ const Todo = () => {
         // Filter out the to do with the matching ID and update the to do's list
         const updatedTodos = todos.filter((todo) => todo.id !== id);
         setTodos(updatedTodos);
+
+        localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); // Set the new todos into the localStorage
     };
 
     //Function to sort Todos
@@ -80,6 +89,38 @@ const Todo = () => {
 
         return filteredTodos
     };
+
+    const viewDetails = (todo) => {
+        // Temporary solution to access this to-do item in the detail page
+        //localStorage.setItem(todo.id, JSON.stringify(todo));
+
+        navigate(`/detail/${todo.id}`);
+    };
+
+    const completeTask = (todo) => {
+
+        // Get all tasks from localStorage
+        let jsonString = localStorage.getItem("tasksUser");
+        let allTodos = [];
+
+        if (jsonString) {
+            allTodos = JSON.parse(jsonString);
+        }
+
+        // Set the completed status of the task to the opposite of what it was
+        const updatedTodos = allTodos.map((t) => {
+            if (t.id === todo.id) {
+                t.completed = !t.completed; // Toggle de voltooide status
+            }
+            return t;
+        });
+
+        // Update the localStorage with the updated tasks
+        localStorage.setItem("tasksUser", JSON.stringify(updatedTodos));
+
+        // Filter out the completed tasks
+        setTodos(updatedTodos.filter((t) => !t.completed));
+    }
 
     return (
         <div className="container-fluid">
@@ -217,7 +258,7 @@ const Todo = () => {
                                     </select>
                                 </div>
                                 <button type="submit" className="btn btn-outline-success">
-                                    Add Todo
+                                    Add To do
                                 </button>
                             </form>
                         </div>
@@ -237,16 +278,29 @@ const Todo = () => {
                                 <br />
                                 <div className="card-body custom-card">
                                     <h4 className="card-title">{todo.title}</h4>
+                                    {/* Maybe use string.slice() to only show a set amount of characters in case of giant descriptions
+                                    https://www.w3schools.com/jsref/jsref_slice_string.asp */}
                                     <p className="card-text">{todo.description}</p>
                                     {/* Task detail for the to do */}
                                     <p className="card-text">
-                                        <small className="text-muted">Task ID: {todo.id}</small> {/* Displaying the task ID */}
+                                        <small className="text-muted">Task
+                                            ID: {todo.id}</small> {/* Displaying the task ID */}
                                     </p>
                                     <p className="card-text">
-                                        <small className="text-muted">Due Date: {todo.dueDate}</small> {/* Display due date */}
+                                        {/*
+                                            Under here is a ternary operator. A ternary operator consist out of 2 parts: The condition in front of the ?, and options behind the ?.
+                                            If the condition is true, the first option will be return.
+                                            If the condition is false, the second option gets returned.
+                                        */}
+                                        <small className={todo.dueDate < new Date() ? ("text-danger") : ("text-muted")}
+                                               style={{color: "red"}}>
+                                            Due
+                                            Date: {todo.dueDate < new Date() ? ("Overdue") : new Date(todo.dueDate).toDateString()}
+                                        </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">
-                                        <small className="text-muted">Priority: {todo.priority}</small> {/* Display priority */}
+                                        <small
+                                            className="text-muted">Priority: {todo.priority}</small> {/* Display priority */}
                                     </p>
                                     {/* Delete button */}
                                     <button
@@ -255,12 +309,14 @@ const Todo = () => {
                                     >
                                         Delete
                                     </button>
-                                    <br/>
-                                    <button className="btn btn-outline-secondary">
-                                        details <a href="www.google.nl"></a>
+                                    <button onClick={() => viewDetails(todo)} className="btn btn-outline-secondary">
+                                        Edit
+                                    </button>
+                                    <button onClick={() => completeTask(todo)} className="btn btn-outline-success">
+                                        Complete
                                     </button>
                                 </div>
-                                <br />
+                                <br/>
                             </div>
                         </div>
                     ))}
