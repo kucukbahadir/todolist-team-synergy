@@ -23,6 +23,9 @@ const Todo = () => {
     const [newTodoDueDate, setNewTodoDueDate] = useState("");
     const [newTodoPriority, setNewTodoPriority] = useState("");
     const [showForm, setShowForm] = useState(false); // To toggle the form visibility
+    const [sortCriteria, setSortCriteria] = useState("");
+    const [sortOrder, setSortOrder] = useState("asc"); //Ascending sort order
+    const [priorityFilter, setPriorityFilter] = useState("");
 
     // Function to add a new to do
     const buttonAddToDo = (e) => {
@@ -61,6 +64,32 @@ const Todo = () => {
         localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); // Set the new todos into the localStorage
     };
 
+    //Function to sort Todos
+    const sortedAndFilteredTodos = () =>   {
+        let filteredTodos = todos;
+
+        if (priorityFilter) {
+            filteredTodos = todos.filter((todo) => todo.priority === priorityFilter);
+        }
+
+        if (sortCriteria === "id") {
+            filteredTodos.sort((a, b) => (sortOrder === "asc" ? a.id - b.id : b.id - a.id));
+        } else if (sortCriteria == "dueDate") {
+            filteredTodos.sort((a, b) => {
+                const dateA = new Date(a.dueDate);
+                const dateB = new Date(b.dueDate);
+                return sortOrder == "asc" ? dateA - dateB : dateB - dateA;
+            });
+        } else if(sortCriteria === "priority") {
+            const priorityOrder = {High: 3, Medium: 2, Low: 1};
+            filteredTodos.sort((a, b) => {
+                return sortOrder === "asc" ? priorityOrder[a.priority] - priorityOrder[b.priority] : priorityOrder[b.priority] - priorityOrder[a.priority]
+            });
+        }
+
+        return filteredTodos
+    };
+
     const viewDetails = (todo) => {
         // Temporary solution to access this to-do item in the detail page
         //localStorage.setItem(todo.id, JSON.stringify(todo));
@@ -94,7 +123,7 @@ const Todo = () => {
     }
 
     return (
-        <div>
+        <div className="container-fluid">
             <style>
                 {`
           .custom-card {
@@ -120,6 +149,53 @@ const Todo = () => {
             </div>
             <br></br>
 
+            <div className="container text-center">
+                {/* Priority Filter */}
+                <div className="col-mb-3">
+                    <label>Filter by Priority: </label>
+                    <select
+                        className="form-control"
+                        value={priorityFilter}
+                        onChange={(e) => setPriorityFilter(e.target.value)}
+                    >
+                        <option value="">All</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+
+            {/* Sort Criteria */}
+            <div className="col-mb-3">
+                    <label>Sort by: </label>
+                    <select
+                        className="form-control"
+                        value={sortCriteria}
+                        onChange={(e) => setSortCriteria(e.target.value)}
+                    >
+                        <option value="">None</option>
+                        <option value="id">ID</option>
+                        <option value="dueDate">Due Date</option>
+                        <option value="priority">Priority</option>
+                    </select>
+                </div>
+
+                {/* Sort Order */}
+                <div className="col-mb-3">
+                    <label>Order: </label>
+                    <select
+                        className="form-control"
+                        value={sortOrder}
+                        onChange={(e) => setSortOrder(e.target.value)}
+                    >
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                </div>
+            </div>
+
+
+
             {/* Button to toggle form */}
             <div className="container text-center">
                 <button
@@ -138,7 +214,7 @@ const Todo = () => {
                         <div className="col-4"></div>
                         <div className="col-4">
                             <form onSubmit={buttonAddToDo}>
-                                <div className="mb-3">
+                                <div className="col-mb-3">
                                     <input
                                         type="text"
                                         className="form-control"
@@ -148,7 +224,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="mb-3">
+                                <div className="col-mb-3">
                                     <input
                                         type="text"
                                         className="form-control"
@@ -158,7 +234,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="mb-3">
+                                <div className="col-mb-3">
                                     <input
                                         type="date"
                                         className="form-control"
@@ -168,7 +244,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="mb-3">
+                                <div className="col-mb-3">
                                     <select
                                         className="form-control"
                                         value={newTodoPriority}
@@ -196,7 +272,7 @@ const Todo = () => {
             {/* Displaying the list of to do's */}
             <div className="container-fluid">
                 <div className="row justify-content-center align-items-center g-2">
-                    {todos.map((todo) => (
+                    {sortedAndFilteredTodos().map((todo) => (
                         <div key={todo.id} className="col-3">
                             <div className="card border-5">
                                 <br />
