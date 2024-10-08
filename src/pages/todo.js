@@ -304,15 +304,15 @@ const Todo = () => {
                                     </p>
                                     {/* Delete button */}
                                     <button
-                                        className="btn btn-outline-danger"
+                                        className="btn btn-outline-danger p-2 m-1"
                                         onClick={() => handleDelete(todo.id)} // Delete the to do by its ID
                                     >
                                         Delete
                                     </button>
-                                    <button onClick={() => viewDetails(todo)} className="btn btn-outline-secondary">
+                                    <button onClick={() => viewDetails(todo)} className="btn btn-outline-secondary p-2 m-1">
                                         Edit
                                     </button>
-                                    <button onClick={() => completeTask(todo)} className="btn btn-outline-success">
+                                    <button onClick={() => completeTask(todo)} className="btn btn-outline-success p-2 m-1">
                                         Complete
                                     </button>
                                 </div>
