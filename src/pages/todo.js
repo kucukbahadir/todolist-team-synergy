@@ -292,10 +292,8 @@ const Todo = () => {
                                             If the condition is true, the first option will be return.
                                             If the condition is false, the second option gets returned.
                                         */}
-                                        <small className={todo.dueDate < new Date() ? ("text-danger") : ("text-muted")}
-                                               style={{color: "red"}}>
-                                            Due
-                                            Date: {todo.dueDate < new Date() ? ("Overdue") : new Date(todo.dueDate).toDateString()}
+                                        <small className={todo.dueDate < new Date() ? ("text-danger") : ("text-muted")}>
+                                            Due Date: {todo.dueDate < new Date() ? ("Overdue") : new Date(todo.dueDate).toDateString()}
                                         </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">
