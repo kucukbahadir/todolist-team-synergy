@@ -16,7 +16,7 @@ const Todo = () => {
             setTodos(jsonArray);
         }
 
-    }, [todos]);
+    }, []);
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
     const [newTodoDescription, setNewTodoDescription] = useState("");
@@ -291,14 +291,12 @@ const Todo = () => {
                                     </p>
                                     <p className="card-text">
                                         {/*
-                                            Under here is a ternary operator. A ternary operator consist out of 2 parts: The condition in front of the ?, and options behind the ?.
+                                            Under here is a ternary operator. A ternary operator consist out of 2 parts: The condition in front of the ?, and options behind the ?, seperated by the :.
                                             If the condition is true, the first option will be return.
                                             If the condition is false, the second option gets returned.
                                         */}
-                                        <small className={todo.dueDate < new Date() ? ("text-danger") : ("text-muted")}
-                                               style={{color: "red"}}>
-                                            Due
-                                            Date: {todo.dueDate < new Date() ? ("Overdue") : new Date(todo.dueDate).toDateString()}
+                                        <small className={new Date(todo.dueDate) < new Date() ? ("text-danger") : ("text-muted")}>
+                                            Due Date: {new Date(todo.dueDate) <= new Date() ? ("Overdue") : new Date(todo.dueDate).toDateString()}
                                         </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">
