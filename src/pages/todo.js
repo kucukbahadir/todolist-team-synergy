@@ -149,9 +149,9 @@ const Todo = () => {
             </div>
             <br></br>
 
-            <div className="container text-center">
+            <div className="row">
                 {/* Priority Filter */}
-                <div className="col-mb-3">
+                <div className="col-4 fluid">
                     <label>Filter by Priority: </label>
                     <select
                         className="form-control"
@@ -166,7 +166,7 @@ const Todo = () => {
                 </div>
 
             {/* Sort Criteria */}
-            <div className="col-mb-3">
+            <div className="col-4 fluid">
                     <label>Sort by: </label>
                     <select
                         className="form-control"
@@ -181,7 +181,7 @@ const Todo = () => {
                 </div>
 
                 {/* Sort Order */}
-                <div className="col-mb-3">
+                <div className="col-4 fluid">
                     <label>Order: </label>
                     <select
                         className="form-control"
