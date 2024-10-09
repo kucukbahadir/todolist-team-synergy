@@ -4,6 +4,12 @@ import logo from '../logo.svg';
 
 // Due to the router being nested in "App-main", it also takes its CSS, found in "App.css"
 const Home = () => {
+    // Hijacking the home page to clear the localStorage
+    if (localStorage.getItem("nameUser")){
+        console.log("Clearing: " + localStorage.getItem("nameUser"))
+        localStorage.clear();
+    }
+
     return (
         <div>
             <img src={logo} className="App-logo" alt="logo" />
