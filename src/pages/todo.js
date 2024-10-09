@@ -224,6 +224,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
+                                <br></br>
                                 <div className="col-mb-3">
                                     <input
                                         type="text"
@@ -234,6 +235,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
+                                <br></br>
                                 <div className="col-mb-3">
                                     <input
                                         type="date"
@@ -244,6 +246,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
+                                <br></br>
                                 <div className="col-mb-3">
                                     <select
                                         className="form-control"
@@ -304,15 +307,15 @@ const Todo = () => {
                                     </p>
                                     {/* Delete button */}
                                     <button
-                                        className="btn btn-outline-danger p-2 m-1"
+                                        className="btn btn-outline-danger"
                                         onClick={() => handleDelete(todo.id)} // Delete the to do by its ID
                                     >
                                         Delete
                                     </button>
-                                    <button onClick={() => viewDetails(todo)} className="btn btn-outline-secondary p-2 m-1">
+                                    <button onClick={() => viewDetails(todo)} className="btn btn-outline-secondary">
                                         Edit
                                     </button>
-                                    <button onClick={() => completeTask(todo)} className="btn btn-outline-success p-2 m-1">
+                                    <button onClick={() => completeTask(todo)} className="btn btn-outline-success">
                                         Complete
                                     </button>
                                 </div>
