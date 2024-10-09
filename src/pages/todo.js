@@ -171,8 +171,8 @@ const Todo = () => {
             <div className="container-fluid">
                 <div className="row justify-content-center align-items-center g-2">
                     {todos.map((todo) => (
-                        <div key={todo.id} className="col-3">
-                            <div className="card border-5">
+                        <div key={todo.id} className="col">
+                            <div className="card border">
                                 <br />
                                 <div className="card-body custom-card">
                                     <h4 className="card-title">{todo.title}</h4>
