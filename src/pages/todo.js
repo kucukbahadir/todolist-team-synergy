@@ -159,9 +159,9 @@ const Todo = () => {
                         onChange={(e) => setPriorityFilter(e.target.value)}
                     >
                         <option value="">All</option>
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Low">Low</option>
+                        <option className="text-danger" value="High">High</option>
+                        <option className="text-primary" value="Medium">Medium</option>
+                        <option className="text-success" value="Low">Low</option>
                     </select>
                 </div>
 
@@ -252,9 +252,9 @@ const Todo = () => {
                                         required
                                     >
                                         <option value="">Select Priority</option>
-                                        <option value="High">High</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Low">Low</option>
+                                        <option className="text-danger" value="High">High</option>
+                                        <option className="text-primary" value="Medium">Medium</option>
+                                        <option className="text-success" value="Low">Low</option>
                                     </select>
                                 </div>
                                 <button type="submit" className="btn btn-outline-success">
