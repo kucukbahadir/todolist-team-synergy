@@ -4,10 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Todo = () => {
     const navigate = useNavigate();
-    let [todos, setTodos] = useState([]);
+    const [name, setName] = useState("");
+    const [todos, setTodos] = useState([]);
 
     // Load todos from localStorage
     useEffect(() => {
+        setName(localStorage.getItem("nameUser"))
         // This will run when the component is first mounted (or the page is reloaded)
         let jsonString = localStorage.getItem("tasksUser");
 
@@ -140,7 +142,7 @@ const Todo = () => {
                     <div className="col"></div>
                     <div className="col">
                         <div className="underline p-2">
-                            <h2 className="tx-pro">To do List</h2>
+                            <h2 className="tx-pro">{name} To do List</h2>
                         </div>
                     </div>
                     <div className="col"></div>
