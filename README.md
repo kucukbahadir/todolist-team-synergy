@@ -1,6 +1,6 @@
 # Todolist Project
 
-### Project Overview: **ToDoList with JSON Data Storage**
+# Project Overview
 
 This project is designed to help interns learn modern web development tools, processes, and teamwork by building a **ToDoList** application. The application will be built using **React** and will follow **GitFlow** processes to teach collaborative development. Users will be able to manage their personal task lists by adding, deleting, and marking tasks as complete. All data will be stored in JSON format, and the application will provide multiple screens to enhance the user experience.
 
@@ -10,84 +10,12 @@ Throughout the project, interns will gain experience in software development pro
 
 - **Milestone 1: Frontend**
     - This milestone focuses on building the user interface using React. Interns will create the various screens and functionalities outlined in the project.
-
 - **Milestone 2: Backend**
     - In this milestone, interns will build the backend using a suitable technology stack (e.g., Node.js, Express) to handle data storage, user authentication, and task management.
-
 - **Milestone 3: Connecting Frontend with Backend**
     - During this milestone, the frontend will be connected to the backend through API calls, allowing for dynamic interaction between the user interface and the server.
-
 - **Milestone 4: Testing**
     - The final milestone will involve testing the application to ensure the functionality, performance, and security of both the frontend and backend. This will include unit tests, integration tests, and end-to-end tests.
-
----
-
-In this repository, we are starting with **Milestone 1**—Frontend development.
-
-# Milestone 1
-
-## Screens:
-
-### **Login Screen:**
-
-- Users will log in by entering a username and access their personalized task lists.
-- Login data will be stored in local storage, and after a successful login, the user will be directed to the **ToDoList** screen.
-
-### **ToDoList Screen:**
-
-- On this screen, users will be able to view their tasks, add new tasks, delete existing ones, and mark tasks as completed.
-- A task-adding form and a list of current tasks will be presented in a user-friendly interface.
-
-### **Task Detail Screen:**
-
-- Users can view and edit the details of a selected task here.
-- Task name, description, due date, and priority level can be modified.
-
-### **Completed Tasks Screen:**
-
-- This screen will display only completed tasks, allowing users to review tasks they have finished.
-- The user can see a neatly organized list of completed tasks.
-
----
-
-### Intern Tasks and Feature Branches:
-
-The project is structured according to **GitFlow** principles. Each intern will work on specific functionalities in separate feature branches. Below are the intern tasks and their respective branches:
-
-### **Intern 1: Task Addition and Deletion Functions**
-
-- **Feature Branch:** `feature/add-task`
-    - Create a task-adding form. The user will be able to enter new tasks into the list.
-- **Feature Branch:** `feature/delete-task`
-    - Add a “Delete” button for each task, allowing users to remove tasks from the list.
-
-### **Intern 2: Task Update and Completion Status**
-
-- **Feature Branch:** `feature/edit-task`
-    - Add an “Edit” button for tasks, allowing users to update task information.
-- **Feature Branch:** `feature/complete-task`
-    - Add a checkbox to control the completion status of tasks. Users will be able to mark tasks as completed.
-
-### **Intern 3: Task Sorting and Filtering**
-
-- **Feature Branch:** `feature/sort-tasks`
-    - Implement sorting of tasks based on their creation date. Additionally, tasks can be sorted by other criteria as requested by the user.
-- **Feature Branch:** `feature/filter-tasks`
-    - Provide filtering options for completed and incomplete tasks.
-
-### **Intern 4: Task Storage in Local Storage and Priority Level**
-
-- **Feature Branch:** `feature/local-storage`
-    - Store tasks in local storage so that they are not lost when the session ends.
-- **Feature Branch:** `feature/priority-tasks`
-    - Add a “priority” level for tasks, allowing users to assign a priority when adding tasks.
-
-### **Intern 5: User-Specific Task List and Due Date Management**
-
-- **Feature Branch:** `feature/user-tasks`
-    - Maintain separate task lists for different users, so each user can only see the tasks they have added.
-- **Feature Branch:** `feature/due-date-tasks`
-    - Add a due date feature to tasks. Tasks past their due date will be highlighted in red for easy visibility.
 
 ---
 
@@ -240,7 +168,9 @@ For this project, **each intern is required to submit at least 2 pull requests*
 
 ---
 
-### Process Monitoring and Grading:
+---
+
+# Process Monitoring and Grading:
 
 Following these processes closely will directly impact your performance during the internship. The mentor will evaluate your performance **weekly**, giving a score out of 10. At the end of the internship, these scores will determine whether you successfully complete the internship.
 
@@ -252,73 +182,82 @@ Following these processes closely will directly impact your performance during t
 
 Meeting these criteria is crucial to successfully completing the internship. Interns who do not follow the processes will be warned by the mentor and given feedback on how to improve.
 
-# Getting Started with Create React App
+---
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Milestone 1
 
-## Available Scripts
+<aside>
+☝
 
-In the project directory, you can run:
+Github Repo
 
-### `npm start`
+In this repository, we are starting with **Milestone 1**—Frontend development.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+https://github.com/kucukbahadir/todolist-team-synergy
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+</aside>
 
-### `npm test`
+## Screens:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### **Login Screen:**
 
-### `npm run build`
+- Users will log in by entering a username and access their personalized task lists.
+- Login data will be stored in local storage, and after a successful login, the user will be directed to the **ToDoList** screen.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### **ToDoList Screen:**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- On this screen, users will be able to view their tasks, add new tasks, delete existing ones, and mark tasks as completed.
+- A task-adding form and a list of current tasks will be presented in a user-friendly interface.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### **Task Detail Screen:**
 
-### `npm run eject`
+- Users can view and edit the details of a selected task here.
+- Task name, description, due date, and priority level can be modified.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### **Completed Tasks Screen:**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- This screen will display only completed tasks, allowing users to review tasks they have finished.
+- The user can see a neatly organized list of completed tasks.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Intern Tasks and Feature Branches:
 
-## Learn More
+The project is structured according to **GitFlow** principles. Each intern will work on specific functionalities in separate feature branches. Below are the intern tasks and their respective branches:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### **Christian: Task Addition and Deletion Functions**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **Feature Branch:** `feature/Synergy-ID`
+    - Create a task-adding form. The user will be able to enter new tasks into the list.
+- **Feature Branch:** `feature/Synergy-ID`
+    - Add a “Delete” button for each task, allowing users to remove tasks from the list.
 
-### Code Splitting
+### **Yassin: Task Update and Completion Status**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Feature Branch:** `feature/Synergy-ID`
+    - Add an “Edit” button for tasks, allowing users to update task information.
+- **Feature Branch:** `feature/Synergy-ID`
+    - Add a checkbox to control the completion status of tasks. Users will be able to mark tasks as completed.
 
-### Analyzing the Bundle Size
+### **Steven: Task Sorting and Filtering**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- **Feature Branch:** `feature/Synergy-ID`
+    - Implement sorting of tasks based on their creation date. Additionally, tasks can be sorted by other criteria as requested by the user.
+- **Feature Branch:** `feature/Synergy-21`
+    - Provide filtering options for completed and incomplete tasks.
 
-### Making a Progressive Web App
+### **Sam: Task Priority Level**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Note: maybe instead of working with local storage, try seeing if you can load from sessionStorage.
 
-### Advanced Configuration
+- **Feature Branch:** `feature/Synergy-ID`
+    - Add a “priority” level for tasks, allowing users to assign a priority when adding tasks.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### **Marten: User-Specific Task List and Due Date Management**
 
-### Deployment
+Use hardcoded data for now. Backend functionality will be implemented in subsequent milestones.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **Feature Branch:** `feature/Synergy-ID`
+    - Maintain separate task lists for different users, so each user can only see the tasks they have added.
+- **Feature Branch:** `feature/Synergy-ID`
+    - Add a due date feature to tasks. Tasks past their due date will be highlighted in red for easy visibility.
