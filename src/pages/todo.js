@@ -297,8 +297,16 @@ const Todo = () => {
                                         </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">
-                                        <small
-                                            className="text-muted">Priority: {todo.priority}</small> {/* Display priority */}
+                                        <small className={
+                                            (() => {
+                                                switch(todo.priority) {
+                                                    case "High":    return "text-danger";
+                                                    case "Medium":  return "text-priority";
+                                                    case "Low":     return "text-success";
+                                                    default:        return "text-warning";
+                                                }
+                                            })() // <- Immediately call the function
+                                            }>Priority: {todo.priority}</small> {/* Display priority */}
                                     </p>
                                     {/* Delete button */}
                                     <button
