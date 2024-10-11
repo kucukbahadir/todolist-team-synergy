@@ -18,6 +18,7 @@ function Login() {
 
     function handleLogin(event) {
         event.preventDefault();  // Prevent reloading the page
+
         let users = JSON.parse(localStorage.getItem("users")) || {};
         
         if (isSignUp) {
@@ -28,6 +29,7 @@ function Login() {
 
             if (users[name]) {
                 alert("User already exists! Please login.")
+                return;
             }
 
             users[name] = {
@@ -35,10 +37,17 @@ function Login() {
             };
             localStorage.setItem("users", JSON.stringify(users));
             alert("User created! You can now login.");
+            setIsSignUp(false); //Should switch you back to login mode, but it seems to instantly log you in.
         } else {
-            if (!users[name])
+            if (!name) {
+                alert("Please enter a valid name");
+                return;
+            }
+
+            if (!users[name]) {
                 alert("User not found. Please sign up.")
             return;
+            }
         }
 
         sessionStorage.setItem("nameUser", name);
