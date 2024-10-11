@@ -214,7 +214,8 @@ const Todo = () => {
                         <div className="col-4"></div>
                         <div className="col-4">
                             <form onSubmit={buttonAddToDo}>
-                                <div className="col-mb-3">
+                                <div className="col-mb-3 p-2 m-1">
+                                    <p>Title:</p>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -224,8 +225,9 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <br></br>
-                                <div className="col-mb-3">
+
+                                <div className="col-mb-3 p-2 m-1">
+                                    <p>Description:</p>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -235,8 +237,9 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <br></br>
-                                <div className="col-mb-3">
+
+                                <div className="col-mb-3 p-2 m-1">
+                                    <p>Date:</p>
                                     <input
                                         type="date"
                                         className="form-control"
@@ -246,8 +249,9 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <br></br>
-                                <div className="col-mb-3">
+
+                                <div className="col-mb-3 p-2 m-1">
+                                    <p>Priority:</p>
                                     <select
                                         className="form-control"
                                         value={newTodoPriority}
@@ -260,6 +264,7 @@ const Todo = () => {
                                         <option value="Low">Low</option>
                                     </select>
                                 </div>
+                                <br></br>
                                 <button type="submit" className="btn btn-outline-success">
                                     Add To do
                                 </button>
