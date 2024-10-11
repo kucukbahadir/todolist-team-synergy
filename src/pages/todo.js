@@ -224,6 +224,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
+                                <br></br>
                                 <div className="col-mb-3">
                                     <input
                                         type="text"
@@ -234,6 +235,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
+                                <br></br>
                                 <div className="col-mb-3">
                                     <input
                                         type="date"
@@ -244,6 +246,7 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
+                                <br></br>
                                 <div className="col-mb-3">
                                     <select
                                         className="form-control"
