@@ -11,12 +11,23 @@ const tasksJimmy = [
     },
 ];
 
+const defaultTasks = [
+    {   id: 1,
+        title: "Sample Title", 
+        description: "Sample Text",
+        dueDate: new Date(),
+        priority: "Low" 
+    },
+]
+
 function Login() {
     const [name, setName] = useState("");
+    const [isSignUp, setIsSignUp] = useState(false);
     const nav = useNavigate();
 
     function handleLogin(event) {
         event.preventDefault();  // Prevent reloading the page
+        let users = JSON.parse(localStorage.getItem("users")) || {};
         
         if (name === "Jimmy") {
             // sets the user's name in the session storage
@@ -31,6 +42,32 @@ function Login() {
         } else { 
             alert("Invalid"); 
         }
+
+        if (isSignUp) {
+            if (!name) {
+                alert("Please enter a valid name");
+                return;
+            }
+
+            if (users[name]) {
+                alert("User already exists! Please login.")
+            }
+
+            users[name] = {
+                tasks: defaultTasks,
+            };
+            localStorage.setItem("users", JSON.stringify(users));
+            alert("User created! You can now login.");
+        } else {
+            if (!users[name])
+                alert("User not found. Please sign up.")
+            return;
+        }
+
+        sessionStorage.setItem("nameUser", name);
+        localStorage.setItem("tasksUser", JSON.stringify(users[name].tasks));
+
+        nav("/todo");
     }
 
     return (
