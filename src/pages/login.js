@@ -84,7 +84,34 @@ function Login() {
 
                 <button type="sumbit" className="btn btn-primary">
                     {/* Button that will switch Sign Up and Login */}
+                    {isSignUp ? "Sign Up" : "Login"}
                 </button>
+
+                <div>
+                    {isSignUp ? (
+                        <p>
+                            Already have an account?
+                            <span
+                                className="text-primary"
+                                style={{ cursor: "pointer"}}
+                                onClick={() => setIsSignUp(false)}
+                            >
+                                {" "}Log in here
+                            </span>
+                        </p>
+                    ) : (
+                        <p>
+                            Don't have an account?
+                            <span
+                                className="text-primary"
+                                style={{ cursor: "pointer"}}
+                                onClick={() => setIsSignUp(true)}
+                            >
+                                {" "}Sign in here
+                            </span>
+                        </p>
+                    )}
+                </div>
             </form>
         </div>
     );
