@@ -34,16 +34,22 @@ function Login() {
     }
 
     return (
-        <form method="get" onSubmit={handleLogin}>
-            <input 
-                className="form-control"
-                type="text" 
-                name="name" 
-                value={name} 
-                placeholder="Name?"
-                onChange={(e) => setName(e.target.value)} // Update useState of "name" when input changes
-            />
-        </form>
+        <div>
+            <form method="get" onSubmit={handleLogin}>
+                <input 
+                    className="form-control"
+                    type="text" 
+                    name="name" 
+                    value={name} 
+                    placeholder="Name?"
+                    onChange={(e) => setName(e.target.value)} // Update useState of "name" when input changes
+                />
+
+                <button type="sumbit" className="btn btn-primary">
+                    {/* Button that will switch Sign Up and Login */}
+                </button>
+            </form>
+        </div>
     );
 }
  
