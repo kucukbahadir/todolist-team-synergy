@@ -149,9 +149,9 @@ const Todo = () => {
             </div>
             <br></br>
 
-            <div className="container text-center">
+            <div className="row">
                 {/* Priority Filter */}
-                <div className="col-mb-3">
+                <div className="col-4 fluid">
                     <label>Filter by Priority: </label>
                     <select
                         className="form-control"
@@ -159,14 +159,14 @@ const Todo = () => {
                         onChange={(e) => setPriorityFilter(e.target.value)}
                     >
                         <option value="">All</option>
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Low">Low</option>
+                        <option className="text-danger" value="High">High</option>
+                        <option className="text-primary" value="Medium">Medium</option>
+                        <option className="text-success" value="Low">Low</option>
                     </select>
                 </div>
 
             {/* Sort Criteria */}
-            <div className="col-mb-3">
+            <div className="col-4 fluid">
                     <label>Sort by: </label>
                     <select
                         className="form-control"
@@ -181,7 +181,7 @@ const Todo = () => {
                 </div>
 
                 {/* Sort Order */}
-                <div className="col-mb-3">
+                <div className="col-4 fluid">
                     <label>Order: </label>
                     <select
                         className="form-control"
@@ -214,7 +214,8 @@ const Todo = () => {
                         <div className="col-4"></div>
                         <div className="col-4">
                             <form onSubmit={buttonAddToDo}>
-                                <div className="col-mb-3">
+                                <div className="col-mb-3 p-2 m-1">
+                                    <p>Title:</p>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -224,7 +225,9 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="col-mb-3">
+
+                                <div className="col-mb-3 p-2 m-1">
+                                    <p>Description:</p>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -234,7 +237,9 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="col-mb-3">
+
+                                <div className="col-mb-3 p-2 m-1">
+                                    <p>Date:</p>
                                     <input
                                         type="date"
                                         className="form-control"
@@ -244,7 +249,9 @@ const Todo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="col-mb-3">
+
+                                <div className="col-mb-3 p-2 m-1">
+                                    <p>Priority:</p>
                                     <select
                                         className="form-control"
                                         value={newTodoPriority}
@@ -252,11 +259,12 @@ const Todo = () => {
                                         required
                                     >
                                         <option value="">Select Priority</option>
-                                        <option value="High">High</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Low">Low</option>
+                                        <option className="text-danger" value="High">High</option>
+                                        <option className="text-primary" value="Medium">Medium</option>
+                                        <option className="text-success" value="Low">Low</option>
                                     </select>
                                 </div>
+                                <br></br>
                                 <button type="submit" className="btn btn-outline-success">
                                     Add To do
                                 </button>
@@ -297,8 +305,16 @@ const Todo = () => {
                                         </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">
-                                        <small
-                                            className="text-muted">Priority: {todo.priority}</small> {/* Display priority */}
+                                        <small className={
+                                            (() => {
+                                                switch(todo.priority) {
+                                                    case "High":    return "text-danger";
+                                                    case "Medium":  return "text-priority";
+                                                    case "Low":     return "text-success";
+                                                    default:        return "text-warning";
+                                                }
+                                            })() // <- Immediately call the function
+                                            }>Priority: {todo.priority}</small> {/* Display priority */}
                                     </p>
                                     {/* Delete button */}
                                     <button
