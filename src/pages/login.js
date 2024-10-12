@@ -20,10 +20,10 @@ function Login() {
         
         if (name === "Jimmy") {
             // sets the user's name in the session storage
-            console.log(name);
-            sessionStorage.setItem("nameUser", name);
+            //console.log(name);
+            localStorage.setItem("nameUser", name);
 
-            console.log(tasksJimmy);
+            //console.log(tasksJimmy);
             localStorage.setItem("tasksUser", JSON.stringify(tasksJimmy));
             // TODO: when Christian merges add-tasks, change todo to work with dynamic url
             //nav("/todo/${name}");
