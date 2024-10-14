@@ -12,7 +12,9 @@ import Todo from "./pages/todo";
 import Detail from "./pages/detail";
 import Completed from "./pages/completed";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from './components/ProtectedRoute.js';
 import NoPage from "./pages/noPage.js";
+
 
 function App() {
   return (
@@ -22,8 +24,16 @@ function App() {
           <Routes>
             <Route exact path="/" element= {<Home />}/>
             <Route path="/login" element={<Login />}/>
-            <Route path="/todo" element={<Todo />}/>
-            <Route path="/completed" element={<Completed />}/>
+            <Route path="/todo" element={
+                    <ProtectedRoute>
+                        <Todo />
+                    </ProtectedRoute>
+                } />
+            <Route path="/completed" element={
+                    <ProtectedRoute>
+                        <Completed />
+                    </ProtectedRoute>
+                } />
             <Route path="*" element={<NoPage />} />
             <Route path="/detail/:id" element={<Detail />} />
           </Routes>
