@@ -311,7 +311,7 @@ const Todo = () => {
                                             (() => {
                                                 switch(todo.priority) {
                                                     case "High":    return "text-danger";
-                                                    case "Medium":  return "text-priority";
+                                                    case "Medium":  return "text-primary";
                                                     case "Low":     return "text-success";
                                                     default:        return "text-warning";
                                                 }
