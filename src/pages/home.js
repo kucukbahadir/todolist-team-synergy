@@ -8,6 +8,7 @@ const Home = () => {
     if (localStorage.getItem("nameUser")){
         console.log("Clearing: " + localStorage.getItem("nameUser"))
         localStorage.clear();
+        sessionStorage.clear();
     }
 
     return (

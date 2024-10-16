@@ -12,53 +12,61 @@ const defaultTasks = [
 ]
 
 function Login() {
+    const [users, setUsers] = useState([]);
     const [name, setName] = useState("");
     const [isSignUp, setIsSignUp] = useState(false);
     const nav = useNavigate();
 
+    // TODO: Remove from localStorage
+    //let users = JSON.parse(localStorage.getItem("users")) || {};
+    //let users = [];
+
     function handleLogin(event) {
         event.preventDefault();  // Prevent reloading the page
 
-        let users = JSON.parse(localStorage.getItem("users")) || {};
-        
-        if (isSignUp) {
             if (!name) {
                 alert("Please enter a valid name");
                 return;
             }
 
-            if (users[name]) {
-                alert("User already exists! Please login.")
-                return;
-            }
-
-            users[name] = {
-                tasks: defaultTasks,
-            };
-            localStorage.setItem("users", JSON.stringify(users));
-            alert("User created! You can now login.");
-            setIsSignUp(false); //Should switch you back to login mode, but it seems to instantly log you in.
-        } else {
-            if (!name) {
-                alert("Please enter a valid name");
-                return;
-            }
-
-            if (!users[name]) {
-                alert("User not found. Please sign up.")
+            if (!users.includes(name)) {
+                alert("User not found. Please sign up.");
             return;
             }
-        }
 
-        sessionStorage.setItem("nameUser", name);
+        localStorage.setItem("nameUser", name);
         localStorage.setItem("tasksUser", JSON.stringify(users[name].tasks));
 
         nav("/todo");
     }
 
+    function handleSignUp(event){
+        event.preventDefault();
+
+        if (!name) {
+            alert("Please enter a valid name");
+            return;
+        }
+
+        if (users.includes(name)) {
+            alert("User already exists! Please login.");
+            return;
+        }
+
+        users[name] = {
+            tasks: defaultTasks,
+        };
+        // TODO: Test this
+        setUsers(prevUsers => [...prevUsers, name]);
+
+        //localStorage.setItem("users", JSON.stringify(users));
+        alert("User created! You can now login.");
+        setIsSignUp(false);
+    }
+
     return (
         <div>
-            <form method="get" onSubmit={handleLogin}>
+            <form method="get" onSubmit={isSignUp ? handleSignUp : handleLogin}>
                 <input 
                     className="form-control"
                     type="text" 
