@@ -2,7 +2,6 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 function ProtectedRoute({ children }) {
-    //const token = localStorage.getItem('users');  // Get token from localStorage
     const token = localStorage.getItem("nameUser");
 
     if (!token) {

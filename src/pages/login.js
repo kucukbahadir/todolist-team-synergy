@@ -12,30 +12,31 @@ const defaultTasks = [
 ]
 
 function Login() {
+    // Temporarly save all signed up users here, the array does get cleared upon reload of page
     const [users, setUsers] = useState([]);
+
     const [name, setName] = useState("");
     const [isSignUp, setIsSignUp] = useState(false);
     const nav = useNavigate();
 
-    // TODO: Remove from localStorage
-    //let users = JSON.parse(localStorage.getItem("users")) || {};
-    //let users = [];
-
     function handleLogin(event) {
         event.preventDefault();  // Prevent reloading the page
 
-            if (!name) {
-                alert("Please enter a valid name");
-                return;
-            }
-
-            if (!users.includes(name)) {
-                alert("User not found. Please sign up.");
+        // Empty string check
+        if (!name) {
+            alert("Please enter a valid name");
             return;
-            }
+        }
+            
+        // Get index of the user
+        const userIndex = users.findIndex((element) => {return element.name == name})
+        if (userIndex < 0) {
+            alert("User not found. Please sign up.");
+        return;
+        }
 
         localStorage.setItem("nameUser", name);
-        localStorage.setItem("tasksUser", JSON.stringify(users[name].tasks));
+        localStorage.setItem("tasksUser", JSON.stringify(users[userIndex].tasks));
 
         nav("/todo");
     }
@@ -57,7 +58,10 @@ function Login() {
             tasks: defaultTasks,
         };
         // TODO: Test this
-        setUsers(prevUsers => [...prevUsers, name]);
+        setUsers(prevUsers => [
+            ...prevUsers,
+            { name: name, tasks: defaultTasks }
+        ]);
 
         //localStorage.setItem("users", JSON.stringify(users));
         alert("User created! You can now login.");
