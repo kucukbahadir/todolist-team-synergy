@@ -5,12 +5,21 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const Todo = () => {
     const navigate = useNavigate();
     const [name, setName] = useState("");
+    const [lists, setLists] = useState([]);
     const [todos, setTodos] = useState([]);
 
     // Load todos from localStorage
-    useEffect(() => {
+    useEffect(() => {   // This will run when the component is first mounted (or the page is reloaded)
         setName(localStorage.getItem("nameUser"))
-        // This will run when the component is first mounted (or the page is reloaded)
+        
+        let jsonLists = localStorage.getItem("tasklistsUser");
+        if (jsonLists) {
+            let arrayLists = JSON.parse(jsonLists);
+            console.log(arrayLists);
+            setLists(arrayLists);
+        }
+
+
         let jsonString = localStorage.getItem("tasksUser");
 
         if (jsonString) {
@@ -167,8 +176,8 @@ const Todo = () => {
                     </select>
                 </div>
 
-            {/* Sort Criteria */}
-            <div className="col-4 fluid">
+                {/* Sort Criteria */}
+                <div className="col-4 fluid">
                     <label>Sort by: </label>
                     <select
                         className="form-control"
@@ -278,8 +287,14 @@ const Todo = () => {
             )}
 
             <br />
-
+            
+            <div>
+                {lists.map((task) => (
+                    <p>{task.nameTaskList}</p>
+                ) )}
+            </div>
             {/* Displaying the list of to do's */}
+            {/* Currently displays todo's saved in localStorage, not from a taskList */}
             <div className="container-fluid">
                 <div className="row justify-content-center align-items-center g-2">
                     {sortedAndFilteredTodos().map((todo) => (

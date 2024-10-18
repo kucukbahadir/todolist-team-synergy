@@ -2,18 +2,72 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const defaultTasks = [
+const defaultTasks1 = [
     {   id: 1,
-        title: "Sample Title", 
-        description: "Sample Text",
+        title: "Sample Title 1", 
+        description: "Sample Text 1",
+        dueDate: new Date(),
+        priority: "High" 
+    },
+    {   id: 2,
+        title: "Sample Title 2", 
+        description: "Sample Text 2",
+        dueDate: new Date(),
+        priority: "Medium" 
+    },
+    {   id: 3,
+        title: "Sample Title 3", 
+        description: "Sample Text 3 ",
         dueDate: new Date(),
         priority: "Low" 
     },
 ]
 
+const defaultTasks2 = [
+    {   id: 1,
+        title: "Sample Title 10", 
+        description: "Sample Text 10",
+        dueDate: new Date(),
+        priority: "High" 
+    },
+    {   id: 2,
+        title: "Sample Title 20", 
+        description: "Sample Text 20",
+        dueDate: new Date(),
+        priority: "Medium" 
+    },
+    {   id: 3,
+        title: "Sample Title 30", 
+        description: "Sample Text 30",
+        dueDate: new Date(),
+        priority: "Low" 
+    },
+]
+
+const defaultTaskList1 = 
+    {
+        id: 1,
+        nameTaskList : "Task List1",
+        tasks: defaultTasks1
+    };
+
+const defaultTaskList2 = 
+    {
+        id: 2,
+        nameTaskList : "Task List2",
+        tasks: defaultTasks2
+    };
+
+const defaultUser = 
+    {
+        name: "Jimmy",
+        tasks: defaultTasks1,
+        tasklists: [defaultTaskList1, defaultTaskList2]
+    }
+
 function Login() {
     // Temporarly save all signed up users here, the array does get cleared upon reload of page
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([defaultUser]);
 
     const [name, setName] = useState("");
     const [isSignUp, setIsSignUp] = useState(false);
@@ -35,8 +89,9 @@ function Login() {
         return;
         }
 
-        localStorage.setItem("nameUser", name);
+        localStorage.setItem("nameUser", users[userIndex].name);
         localStorage.setItem("tasksUser", JSON.stringify(users[userIndex].tasks));
+        localStorage.setItem("tasklistsUser", JSON.stringify(users[userIndex].tasklists));
 
         nav("/todo");
     }
@@ -54,13 +109,13 @@ function Login() {
             return;
         }
 
-        users[name] = {
-            tasks: defaultTasks,
-        };
+        //users[name] = {
+            //tasks: defaultTasks1,
+        //};
         // TODO: Test this
         setUsers(prevUsers => [
             ...prevUsers,
-            { name: name, tasks: defaultTasks }
+            { name: name, tasks: defaultTasks2 }
         ]);
 
         //localStorage.setItem("users", JSON.stringify(users));
