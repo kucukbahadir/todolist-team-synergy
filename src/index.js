@@ -4,6 +4,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
+import {SessionService} from "./services/SessionService";
 
 
 // This is where the HTML gets rendered and added to "index.html"

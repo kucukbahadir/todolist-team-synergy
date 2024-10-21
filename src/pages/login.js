@@ -20,25 +20,28 @@ function Login() {
     const nav = useNavigate();
 
     function handleLogin(event) {
-        event.preventDefault();  // Prevent reloading the page
 
-        // Empty string check
-        if (!name) {
-            alert("Please enter a valid name");
-            return;
-        }
-            
-        // Get index of the user
-        const userIndex = users.findIndex((element) => {return element.name == name})
-        if (userIndex < 0) {
-            alert("User not found. Please sign up.");
-        return;
-        }
 
-        localStorage.setItem("nameUser", name);
-        localStorage.setItem("tasksUser", JSON.stringify(users[userIndex].tasks));
 
-        nav("/todo");
+        // event.preventDefault();  // Prevent reloading the page
+        //
+        // // Empty string check
+        // if (!name) {
+        //     alert("Please enter a valid name");
+        //     return;
+        // }
+        //
+        // // Get index of the user
+        // const userIndex = users.findIndex((element) => {return element.name == name})
+        // if (userIndex < 0) {
+        //     alert("User not found. Please sign up.");
+        // return;
+        // }
+        //
+        // localStorage.setItem("nameUser", name);
+        // localStorage.setItem("tasksUser", JSON.stringify(users[userIndex].tasks));
+        //
+        // nav("/todo");
     }
 
     function handleSignUp(event){

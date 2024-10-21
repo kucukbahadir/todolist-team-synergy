@@ -1,3 +1,5 @@
+import {createContext, useContext} from "react";
+
 /**
  * This service is responsible for managing the session of the user.
  *
@@ -175,4 +177,35 @@ export class SessionService {
             return JSON.parse(window.sessionStorage.getItem("user")).id;
         }
     }
+
 }
+
+/**
+ * Context for the session service.
+ * @type {React.Context<null>}
+ */
+const SessionContext = createContext(null);
+
+/**
+ * Provider for the session service.
+ * @param children
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const SessionProvider = ({ children }) => {
+    const sessionService = new SessionService("http://localhost:5000", "token");
+
+    return (
+        <SessionContext.Provider value={sessionService}>
+            {children}
+        </SessionContext.Provider>
+    );
+};
+
+/**
+ * Custom hook to access the session service.
+ * @returns {null}
+ */
+export const useSession = () => {
+    return useContext(SessionContext);
+};
