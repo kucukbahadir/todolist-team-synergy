@@ -20,6 +20,7 @@ const Todo = () => {
             let arrayLists = JSON.parse(jsonLists);
             //console.log(arrayLists);
             setLists(arrayLists);
+            console.log("Lists: ", lists)
         }
     }, []);
 
@@ -51,7 +52,7 @@ const Todo = () => {
         }
 
         if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
-            const newTodo = {
+            const newTask = {
                 id: list.tasks.length + 1, // add an id for the to do
                 title: newTodoTitle,
                 description: newTodoDescription,
@@ -60,12 +61,13 @@ const Todo = () => {
                 completed: false
             };
             // Update the to do's list by adding the new to do and reset the input fields
-            let updatedTodos = [...list.tasks, newTodo];
-            // TODO: somehow update the tasks of the correct list in lists
-            //setList(updatedTodos);
+            let updatedTasks = [...list.tasks, newTask];
+            const updatedList = { ...list, tasks: updatedTasks };
 
-            // Set the new todos into the localStorage
-            localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); 
+            setList(updatedList);
+            setLists(prevLists =>
+            prevLists.map(lst => (lst.id === updatedList.id ? updatedList : lst))
+        ); 
 
             // Reset input fields
             setNewTodoTitle(""); 
@@ -124,7 +126,7 @@ const Todo = () => {
     };
 
     const completeTask = (todo) => {
-        todo.completed = true;
+        //todo.completed = true;
 
         // Get all tasks from localStorage
         //let jsonString = localStorage.getItem("tasksUser");
