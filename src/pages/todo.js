@@ -15,7 +15,8 @@ const Todo = () => {
     useEffect(() => {   // This will run when the component is first mounted (or the page is reloaded)
         setName(localStorage.getItem("nameUser"))
         
-        let jsonLists = localStorage.getItem("tasklistsUser");
+        const jsonLists = localStorage.getItem("tasklistsUser");
+        //console.log(jsonLists)
         if (jsonLists) {
             let arrayLists = JSON.parse(jsonLists);
             //console.log(arrayLists);
@@ -62,12 +63,17 @@ const Todo = () => {
             };
             // Update the to do's list by adding the new to do and reset the input fields
             let updatedTasks = [...list.tasks, newTask];
+
             const updatedList = { ...list, tasks: updatedTasks };
+            const updatedLists = lists.map(element => 
+                (element.id === updatedList.id ? updatedList : element)
+            );
 
             setList(updatedList);
-            setLists(prevLists =>
-            prevLists.map(lst => (lst.id === updatedList.id ? updatedList : lst))
-        ); 
+            setLists(updatedLists);
+
+            localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists))
+         
 
             // Reset input fields
             setNewTodoTitle(""); 
@@ -82,11 +88,14 @@ const Todo = () => {
         const updatedTasks = list.tasks.filter((todo) => todo.id !== id);
         
         const updatedList = { ...list, tasks: updatedTasks };
+        const updatedLists = lists.map(element => 
+            (element.id === updatedList.id ? updatedList : element)
+        );
 
         setList(updatedList);
-        setLists(prevLists =>
-            prevLists.map(lst => (lst.id === updatedList.id ? updatedList : lst))
-        );
+        setLists(updatedLists);
+
+        localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
     };
 
     //Function to sort Todos
@@ -122,35 +131,28 @@ const Todo = () => {
         // Temporary solution to access this to-do item in the detail page
         //localStorage.setItem(todo.id, JSON.stringify(todo));
 
+        // TODO: Rework details to work with TaskLists
         navigate(`/detail/${todo.id}`);
+        //navigate(`detail/${list.id}/${todo.id}`)
     };
 
     const completeTask = (todo) => {
-        //todo.completed = true;
-
-        // Get all tasks from localStorage
-        //let jsonString = localStorage.getItem("tasksUser");
-        //let allTodos = [];
-
-        //if (jsonString) {
-            //allTodos = JSON.parse(jsonString);
-        //}
-
-        // Set the completed status of the task to the opposite of what it was
-        /*const updatedTodos = allTodos.map((t) => {
-            if (t.id === todo.id) {
-                t.completed = !t.completed; // Toggle de voltooide status
+        const updatedTasks = list.tasks.map(task => {
+            if (task.id === todo.id) {
+                return { ...task, completed: true };
             }
-            return t;
-        });*/
+            return task;
+        });
 
-        // Update the localStorage with the updated tasks
-        //localStorage.setItem("tasksUser", JSON.stringify(updatedTodos));
+        const updatedList = { ...list, tasks: updatedTasks };
 
-        // Filter out the completed tasks
-        // TODO: fix this
-        //setTodos(updatedTodos.filter((t) => !t.completed));
-    }
+        setList({ ...list, tasks: updatedTasks });
+        setLists(prevLists =>
+            prevLists.map(lst => (lst.id === updatedList.id ? updatedList : lst))
+        );
+
+        //localStorage.setItem("tasklistsUser", lists);
+    };
 
     return (
         <div className="container-fluid">
@@ -318,7 +320,7 @@ const Todo = () => {
             {/* Displaying the list of to do's */}
             <div className="container-fluid">
                 <div className="row justify-content-center align-items-center g-2">
-                    {sortedAndFilteredTodos().map((sortedTasks) => (
+                    {sortedAndFilteredTodos().map((sortedTasks) => {if (!sortedTasks.completed) { return (
                         <div key={sortedTasks.id} className="col-3">
                             <div className="card border-5">
                                 <br />
@@ -371,7 +373,7 @@ const Todo = () => {
                                 <br/>
                             </div>
                         </div>
-                    ))}
+                    )}})}
                 </div>
             </div>
         </div>
