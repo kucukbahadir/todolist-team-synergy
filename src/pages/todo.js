@@ -6,7 +6,8 @@ const Todo = () => {
     const navigate = useNavigate();
     const [name, setName] = useState("");
     const [lists, setLists] = useState([]);
-    const [tasks, setTasks] = useState();
+    const [list, setList] = useState();
+    //const [tasks, setTasks] = useState([]);
     //const [listTodos, setListTodos] = useState([]);
     //const [todos, setTodos] = useState([]);
 
@@ -17,30 +18,15 @@ const Todo = () => {
         let jsonLists = localStorage.getItem("tasklistsUser");
         if (jsonLists) {
             let arrayLists = JSON.parse(jsonLists);
-            console.log(arrayLists);
+            //console.log(arrayLists);
             setLists(arrayLists);
         }
-
-        /*
-        let jsonString = localStorage.getItem("tasksUser");
-
-        if (jsonString) {
-            let jsonArray = JSON.parse(jsonString).filter((todo) => !todo.completed); // Filter out completed to do's
-            setTodos(jsonArray);
-        }
-            */
-
     }, []);
 
     const handleSetList = (id) => {
-        //e.preventDefault();
-        console.log("passed id: " + id)
         lists.forEach(element => {
-            console.log("element id: " + element.id)
             if (element.id == id) {
-                console.log("match")
-                setTasks(element.tasks);
-                console.log(tasks);
+                setList(element)
                 return;
             }
         });
@@ -58,9 +44,15 @@ const Todo = () => {
     // Function to add a new to do
     const buttonAddToDo = (e) => {
         e.preventDefault();
+
+        if (list == null) {
+            alert("Please select a list")
+            return;
+        }
+
         if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
             const newTodo = {
-                id: tasks.length + 1, // add an id for the to do
+                id: list.tasks.length + 1, // add an id for the to do
                 title: newTodoTitle,
                 description: newTodoDescription,
                 dueDate: new Date(newTodoDueDate),
@@ -68,8 +60,9 @@ const Todo = () => {
                 completed: false
             };
             // Update the to do's list by adding the new to do and reset the input fields
-            let updatedTodos = [...tasks, newTodo];
-            setTasks(updatedTodos);
+            let updatedTodos = [...list.tasks, newTodo];
+            // TODO: somehow update the tasks of the correct list in lists
+            //setList(updatedTodos);
 
             // Set the new todos into the localStorage
             localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); 
@@ -79,45 +72,48 @@ const Todo = () => {
             setNewTodoDescription("");
             setNewTodoDueDate("");
             setNewTodoPriority("");
-
         }
     };
 
     // Function to delete a to do by its id
     const handleDelete = (id) => {
-        // Filter out the to do with the matching ID and update the to do's list
-        // TODO: fix this
-        //const updatedTodos = todos.filter((todo) => todo.id !== id);
-        //setTodos(updatedTodos);
+        const updatedTasks = list.tasks.filter((todo) => todo.id !== id);
+        
+        const updatedList = { ...list, tasks: updatedTasks };
 
-        // TODO: fix this
-        //localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); // Set the new todos into the localStorage
+        setList(updatedList);
+        setLists(prevLists =>
+            prevLists.map(lst => (lst.id === updatedList.id ? updatedList : lst))
+        );
     };
 
     //Function to sort Todos
-    const sortedAndFilteredTodos = () =>   {
-        let filteredTodos = tasks || [];
+    const sortedAndFilteredTodos = () => {
+        let filteredTodos = list ? list.tasks : []; // Safer initialization
 
+    
         if (priorityFilter) {
-            filteredTodos = tasks.filter((todo) => todo.priority === priorityFilter);
+            filteredTodos = filteredTodos.filter((todo) => todo.priority === priorityFilter);
         }
-
+    
         if (sortCriteria === "id") {
             filteredTodos.sort((a, b) => (sortOrder === "asc" ? a.id - b.id : b.id - a.id));
-        } else if (sortCriteria == "dueDate") {
+        } else if (sortCriteria === "dueDate") {
             filteredTodos.sort((a, b) => {
                 const dateA = new Date(a.dueDate);
                 const dateB = new Date(b.dueDate);
-                return sortOrder == "asc" ? dateA - dateB : dateB - dateA;
+                return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
             });
-        } else if(sortCriteria === "priority") {
-            const priorityOrder = {High: 3, Medium: 2, Low: 1};
+        } else if (sortCriteria === "priority") {
+            const priorityOrder = { High: 3, Medium: 2, Low: 1 };
             filteredTodos.sort((a, b) => {
-                return sortOrder === "asc" ? priorityOrder[a.priority] - priorityOrder[b.priority] : priorityOrder[b.priority] - priorityOrder[a.priority]
+                return sortOrder === "asc"
+                    ? priorityOrder[a.priority] - priorityOrder[b.priority]
+                    : priorityOrder[b.priority] - priorityOrder[a.priority];
             });
         }
-
-        return filteredTodos
+        
+        return filteredTodos;
     };
 
     const viewDetails = (todo) => {
@@ -128,29 +124,30 @@ const Todo = () => {
     };
 
     const completeTask = (todo) => {
+        todo.completed = true;
 
         // Get all tasks from localStorage
-        let jsonString = localStorage.getItem("tasksUser");
-        let allTodos = [];
+        //let jsonString = localStorage.getItem("tasksUser");
+        //let allTodos = [];
 
-        if (jsonString) {
-            allTodos = JSON.parse(jsonString);
-        }
+        //if (jsonString) {
+            //allTodos = JSON.parse(jsonString);
+        //}
 
         // Set the completed status of the task to the opposite of what it was
-        const updatedTodos = allTodos.map((t) => {
+        /*const updatedTodos = allTodos.map((t) => {
             if (t.id === todo.id) {
                 t.completed = !t.completed; // Toggle de voltooide status
             }
             return t;
-        });
+        });*/
 
         // Update the localStorage with the updated tasks
-        localStorage.setItem("tasksUser", JSON.stringify(updatedTodos));
+        //localStorage.setItem("tasksUser", JSON.stringify(updatedTodos));
 
         // Filter out the completed tasks
         // TODO: fix this
-        // setTodos(updatedTodos.filter((t) => !t.completed));
+        //setTodos(updatedTodos.filter((t) => !t.completed));
     }
 
     return (
@@ -311,28 +308,27 @@ const Todo = () => {
             {/* Display the list of task lists */}
             <div>
                 <form onSubmit={(e) => {e.preventDefault()}}>
-                {lists.map((lists) => (
-                    <button type="button" key={lists.id} onClick={() => {handleSetList(lists.id)}}>{lists.nameTaskList}</button>
+                {lists.map((task) => (
+                    <button type="button" key={task.id} onClick={() => {handleSetList(task.id)}}>{task.nameTaskList}</button>
                 ) )}
                 </form>
             </div>
             {/* Displaying the list of to do's */}
-            {/* Currently displays todo's saved in localStorage, not from a taskList */}
             <div className="container-fluid">
                 <div className="row justify-content-center align-items-center g-2">
-                    {sortedAndFilteredTodos().map((tasks) => (
-                        <div key={tasks.id} className="col-3">
+                    {sortedAndFilteredTodos().map((sortedTasks) => (
+                        <div key={sortedTasks.id} className="col-3">
                             <div className="card border-5">
                                 <br />
                                 <div className="card-body custom-card">
-                                    <h4 className="card-title">{tasks.title}</h4>
+                                    <h4 className="card-title">{sortedTasks.title}</h4>
                                     {/* Maybe use string.slice() to only show a set amount of characters in case of giant descriptions
                                     https://www.w3schools.com/jsref/jsref_slice_string.asp */}
-                                    <p className="card-text">{tasks.description}</p>
+                                    <p className="card-text">{sortedTasks.description}</p>
                                     {/* Task detail for the to do */}
                                     <p className="card-text">
                                         <small className="text-muted">Task
-                                            ID: {tasks.id}</small> {/* Displaying the task ID */}
+                                            ID: {sortedTasks.id}</small> {/* Displaying the task ID */}
                                     </p>
                                     <p className="card-text">
                                         {/*
@@ -340,33 +336,33 @@ const Todo = () => {
                                             If the condition is true, the first option will be return.
                                             If the condition is false, the second option gets returned.
                                         */}
-                                        <small className={new Date(tasks.dueDate) < new Date() ? ("text-danger") : ("text-muted")}>
-                                            Due Date: {new Date(tasks.dueDate) <= new Date() ? ("Overdue") : new Date(tasks.dueDate).toDateString()}
+                                        <small className={new Date(sortedTasks.dueDate) < new Date() ? ("text-danger") : ("text-muted")}>
+                                            Due Date: {new Date(sortedTasks.dueDate) <= new Date() ? ("Overdue") : new Date(sortedTasks.dueDate).toDateString()}
                                         </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">
                                         <small className={
                                             (() => {
-                                                switch(tasks.priority) {
+                                                switch(sortedTasks.priority) {
                                                     case "High":    return "text-danger";
                                                     case "Medium":  return "text-primary";
                                                     case "Low":     return "text-success";
                                                     default:        return "text-warning";
                                                 }
                                             })() // <- Immediately call the function
-                                            }>Priority: {tasks.priority}</small> {/* Display priority */}
+                                            }>Priority: {sortedTasks.priority}</small> {/* Display priority */}
                                     </p>
                                     {/* Delete button */}
                                     <button
                                         className="btn btn-outline-danger p-2 m-1"
-                                        onClick={() => handleDelete(tasks.id)} // Delete the to do by its ID
+                                        onClick={() => handleDelete(sortedTasks.id)} // Delete the to do by its ID
                                     >
                                         Delete
                                     </button>
-                                    <button onClick={() => viewDetails(tasks)} className="btn btn-outline-secondary p-2 m-1">
+                                    <button onClick={() => viewDetails(sortedTasks)} className="btn btn-outline-secondary p-2 m-1">
                                         Edit
                                     </button>
-                                    <button onClick={() => completeTask(tasks)} className="btn btn-outline-success p-2 m-1">
+                                    <button onClick={() => completeTask(sortedTasks)} className="btn btn-outline-success p-2 m-1">
                                         Complete
                                     </button>
                                 </div>
