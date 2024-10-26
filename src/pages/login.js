@@ -61,7 +61,7 @@ const defaultTaskList2 =
 const defaultUser = 
     {
         name: "Jimmy",
-        tasks: defaultTasks1,
+        //tasks: defaultTasks1,
         tasklists: [defaultTaskList1, defaultTaskList2]
     }
 
