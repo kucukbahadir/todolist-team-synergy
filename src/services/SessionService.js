@@ -18,7 +18,6 @@ class Session {
         this.STORAGE_NAME = storageName;
         this.URL = url;
 
-        this.logToken();
     }
 
     /**
@@ -119,13 +118,6 @@ class Session {
     saveToken(token, user) {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
-    }
-
-    /**
-     * Method logs the token to the console.
-     */
-    logToken() {
-        console.log("Session recovered token: ", localStorage.getItem("token"))
     }
 
     /**
