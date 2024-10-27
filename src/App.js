@@ -14,11 +14,10 @@ import Completed from "./pages/completed";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from './components/ProtectedRoute.js';
 import NoPage from "./pages/noPage.js";
-import {SessionProvider} from "./services/SessionService";
 
 function App() {
   return (
-      <SessionProvider>
+
         <div className="App">
           <Navbar />
           <main className="App-main">
@@ -40,7 +39,7 @@ function App() {
               </Routes>
           </main>
         </div>
-      </SessionProvider>
+
   );
 }
 

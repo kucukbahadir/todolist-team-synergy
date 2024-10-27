@@ -1,11 +1,9 @@
-import {createContext, useContext} from "react";
-
 /**
  * This service is responsible for managing the session of the user.
  *
  * @author Yassin Rahou
  */
-export class SessionService {
+class Session {
 
     URL;
     STORAGE_NAME;
@@ -65,7 +63,8 @@ export class SessionService {
      * @returns {Promise<any|null>}
      */
     async requestCode(email) {
-        const body = JSON.stringify({email: email})
+        const body = JSON.stringify({email: email});
+
         let req = {
             method: 'POST',
             headers: {
@@ -75,19 +74,7 @@ export class SessionService {
             credentials: 'include',
         }
 
-        let response = await fetch(this.URL + "/auth/request-code", req);
-
-        if (response.ok) {
-            let user = await response.json();
-            this.saveToken(
-                response.headers.get('Authorization'),
-                user
-            );
-            return user;
-        } else {
-            console.log(response)
-            return null;
-        }
+        return await fetch(this.URL + "/auth/request-code", req);
     }
 
     /**
@@ -129,10 +116,10 @@ export class SessionService {
      */
     signOut(){
         // Remove token from service
-        window.sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
 
         // Remove user from service
-        window.sessionStorage.removeItem("user");
+        localStorage.removeItem("user");
     }
 
     /**
@@ -141,15 +128,15 @@ export class SessionService {
      * @param user - User to save
      */
     saveToken(token, user) {
-        window.sessionStorage.setItem("token", token);
-        window.sessionStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
     }
 
     /**
      * Method logs the token to the console.
      */
     logToken() {
-        console.log("Session recovered token: ", window.sessionStorage.getItem("token"))
+        console.log("Session recovered token: ", localStorage.getItem("token"))
     }
 
     /**
@@ -157,15 +144,15 @@ export class SessionService {
      * @returns {string | null}
      */
     getToken() {
-        return window.sessionStorage.getItem("token");
+        return localStorage.getItem("token");
     }
 
     /**
      * Method returns the user.
-     * @returns {string | null}
+     * @returns {boolean}
      */
     isAuthenticated() {
-        return !!window.sessionStorage.getItem("token");
+        return !!localStorage.getItem("token");
     }
 
     /**
@@ -174,38 +161,12 @@ export class SessionService {
      */
     getUserId() {
         if (this.isAuthenticated()) {
-            return JSON.parse(window.sessionStorage.getItem("user")).id;
+            return JSON.parse(localStorage.getItem("user")).id;
         }
     }
 
 }
+// Export a singleton instance in the same file
+export const SessionService = Object.freeze(new Session("http://localhost:5000", "token"));
 
-/**
- * Context for the session service.
- * @type {React.Context<null>}
- */
-const SessionContext = createContext(null);
 
-/**
- * Provider for the session service.
- * @param children
- * @returns {JSX.Element}
- * @constructor
- */
-export const SessionProvider = ({ children }) => {
-    const sessionService = new SessionService("http://localhost:5000", "token");
-
-    return (
-        <SessionContext.Provider value={sessionService}>
-            {children}
-        </SessionContext.Provider>
-    );
-};
-
-/**
- * Custom hook to access the session service.
- * @returns {null}
- */
-export const useSession = () => {
-    return useContext(SessionContext);
-};
