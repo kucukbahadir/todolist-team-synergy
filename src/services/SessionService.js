@@ -84,7 +84,8 @@ class Session {
      * @param email - Email of the user
      */
     async registerUser(email) {
-        const body = JSON.stringify({email: email})
+        const body = JSON.stringify({email: email});
+
         let req = {
             method: 'POST',
             headers: {
@@ -94,19 +95,7 @@ class Session {
             credentials: 'include',
         }
 
-        let response = await fetch(this.URL + "/auth/register", req);
-
-        if (response.ok) {
-            let user = await response.json();
-            this.saveToken(
-                response.headers.get('Authorization'),
-                user
-            );
-            return user;
-        } else {
-            console.log(response)
-            return null;
-        }
+        return await fetch(this.URL + "/auth/register", req);
     }
 
     /**

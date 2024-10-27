@@ -18,7 +18,7 @@ function Login() {
     // Temporarly save all signed up users here, the array does get cleared upon reload of page
     const [users, setUsers] = useState([]);
 
-    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [isSignUp, setIsSignUp] = useState(false);
     const nav = useNavigate();
@@ -30,7 +30,7 @@ function Login() {
 
         event.preventDefault();
 
-        let res = await SessionService.requestCode(name);
+        let res = await SessionService.requestCode(email);
 
         if (res.status === 200) {
             setShowModal(true);
@@ -40,20 +40,19 @@ function Login() {
     }
 
     async function handleVerificationSubmit() {
-        let user = await SessionService.verifyCode(name, verificationCode);
+        let user = await SessionService.verifyCode(email, verificationCode);
 
         if (user) {
             alert("Login successful!");
+            closeModal();
             nav("/todo");
         } else {
             alert("Invalid verification code. Please try again");
         }
-
-        closeModal();
     }
 
     async function handleResendCode() {
-        let res = await SessionService.requestCode(name);
+        let res = await SessionService.requestCode(email);
 
         if (res.status === 200) {
             setResendMessage("A new verification code has been sent!");
@@ -62,35 +61,18 @@ function Login() {
         }
     }
 
-    function handleSignUp(event){
+    async function handleSignUp(event) {
         event.preventDefault();
 
-        
+        let res = await SessionService.registerUser(email);
 
-        // event.preventDefault();
-        //
-        // if (!name) {
-        //     alert("Please enter a valid name");
-        //     return;
-        // }
-        //
-        // if (users.includes(name)) {
-        //     alert("User already exists! Please login.");
-        //     return;
-        // }
-        //
-        // users[name] = {
-        //     tasks: defaultTasks,
-        // };
-        // // TODO: Test this
-        // setUsers(prevUsers => [
-        //     ...prevUsers,
-        //     { name: name, tasks: defaultTasks }
-        // ]);
-        //
-        // //localStorage.setItem("users", JSON.stringify(users));
-        // alert("User created! You can now login.");
-        // setIsSignUp(false);
+        if (res.status === 200) {
+            setShowModal(true);
+        } else if (res.status === 409) {
+            alert("User already exists! Please login.");
+        } else {
+            alert("Failed to sign up. Please try again.");
+        }
     }
 
     return (
@@ -99,10 +81,10 @@ function Login() {
                 <input
                     className="form-control"
                     type="text"
-                    name="name"
-                    value={name}
-                    placeholder="Name?"
-                    onChange={(e) => setName(e.target.value)} // Update useState of "name" when input changes
+                    name="email"
+                    value={email}
+                    placeholder="Email"
+                    onChange={(e) => setEmail(e.target.value)} // Update useState of "name" when input changes
                 />
 
                 <button type="sumbit" className="btn btn-primary">
