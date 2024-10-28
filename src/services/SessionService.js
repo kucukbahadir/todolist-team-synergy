@@ -17,7 +17,6 @@ class Session {
     constructor(url, storageName) {
         this.STORAGE_NAME = storageName;
         this.URL = url;
-
     }
 
     /**

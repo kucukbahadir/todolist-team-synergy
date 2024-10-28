@@ -23,7 +23,7 @@ const Navbar = () => {
                 </li>
                 <li>
                     {isLoggedIn ? (
-                        <button onClick={handleSignOut} className="text-gray border-b-2 pb-2 hover:border-sky-600">
+                        <button onClick={handleSignOut} className="text-gray border-b-2 m-0 pb-2 hover:border-sky-600">
                             Sign Out
                         </button>
                     ) : (
