@@ -16,16 +16,12 @@ class FetchInterceptor{
     unregister;
 
     constructor(session, nav) {
-
         this.session = session;
         this.nav = nav;
 
         FetchInterceptor.theInstance = this;
 
         this.unregister = fetchIntercept.register(this);
-
-        console.log("FetchInterceptor has been created, current token: ", FetchInterceptor.theInstance.session.getToken());
-
     }
 
     request(url, options){

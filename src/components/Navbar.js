@@ -8,7 +8,9 @@ const Navbar = () => {
 
     useEffect(() => {
         setIsLoggedIn(SessionService.isAuthenticated());
-    }, []);
+    } , [
+        SessionService.isAuthenticated()
+    ]);
 
     const handleSignOut = () => {
         SessionService.signOut();
@@ -23,9 +25,9 @@ const Navbar = () => {
                 </li>
                 <li>
                     {isLoggedIn ? (
-                        <button onClick={handleSignOut} className="text-gray border-b-2 m-0 pb-2 hover:border-sky-600">
+                        <Link onClick={handleSignOut} className="text-gray border-b-2 m-0 pb-2 hover:border-sky-600">
                             Sign Out
-                        </button>
+                        </Link>
                     ) : (
                         <Link to="/login" className="text-gray border-b-2 p-2 hover:border-sky-600">Login</Link>
                     )}

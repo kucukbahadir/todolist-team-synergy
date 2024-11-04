@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e2aac78-71d3-4917-bb20-d4af2af04640" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/services/FetchInterceptor.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Navbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/completed.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/completed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/SessionService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/SessionService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/FetchInterceptor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/FetchInterceptor.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -150,6 +145,8 @@
       <workItem from="1730041861754" duration="3143000" />
       <workItem from="1730046511884" duration="949000" />
       <workItem from="1730106838875" duration="4504000" />
+      <workItem from="1730717588767" duration="4504000" />
+      <workItem from="1730728706645" duration="2194000" />
     </task>
     <servers />
   </component>
