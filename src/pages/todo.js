@@ -131,8 +131,8 @@ const Todo = () => {
         //localStorage.setItem(todo.id, JSON.stringify(todo));
 
         // TODO: Rework details to work with TaskLists
-        navigate(`/detail/${todo.id}`);
-        //navigate(`detail/${list.id}/${todo.id}`)
+        //navigate(`/detail/${todo.id}`);
+        navigate(`/detail/${list.id}/${todo.id}`)
     };
 
     const completeTask = (todo) => {

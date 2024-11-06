@@ -8,22 +8,23 @@ const Detail = () => {
     const {listID, taskID} = useParams();
 
     const [oldTodo, setOldTodo] = useState({});
-    const [newTodo, setNewTodo] = useState({
+    const [newTask, setNewTask] = useState({
         title: "",
         description: "",
         dueDate: "",
         priority: "",
         completed:  false
     });
-    const [oldTodos, setOldTodos] = useState([]);
+    const [oldLists, setOldLists] = useState([]);
+    const [oldList, setOldList] = useState([]);
 
     // Load todos from localStorage
     useEffect(() => {
         // This will run when the component is first mounted (or the page is reloaded)
         const jsonLists = localStorage.getItem("tasklistsUser");
         let jsonArray = [];
-        let list;
-        let task
+        let list = [];
+        let task;
 
         if (jsonLists){
             jsonArray = JSON.parse(jsonLists);
@@ -42,40 +43,45 @@ const Detail = () => {
                 }
             });
 
-            //setOldTodos(jsonArray);
+            setOldTodo(task);
+            setNewTask(task);
 
-            // Looks through jsonArray to find todo with specified id
-            /* console.log("id: " + id);
-            jsonArray.forEach(e => {
-                console.log("e.id: " + e.id)
-                if (e.id == id){
-                    console.log("HIT")
-                    setOldTodo(e);
-                    setNewTodo(e);
-                }
-            }); */
+            setOldList(list);
+            setOldLists(jsonArray);
         }
     }, []);
 
     const onSave = () => {
-        let newTodos = oldTodos
-        let counter = 0
+        console.log("List", oldList)
+        console.log("Lists", oldLists)
 
-        oldTodos.forEach(e => {
-            if (e.id == id){
-                newTodos[counter] = newTodo;
-            }
-            counter++;
-        })
+        // Attempt 1
+        //let newList = oldList.tasks.map(tsk => (tsk.id == newTask.id ? newTask : tsk));
+        //let newLists = oldLists.map(lst => (lst.id == newList.id ? newList : lst));
+
+        // Attempt 2
+        /* // Step 1: Update the specific Task in the List
+        let updatedList = oldList
+            .find(lst => lst.id === listID) // Find the specific List
+            .tasks.map(task => (task.id === taskID ? newTask : task)); // Update the task if IDs match
+
+        // Create the new List with updated tasks
+        let newList = {
+            ...oldLists.find(lst => lst.id === listID),
+            tasks: updatedList
+        };
+
+        // Step 2: Update the Lists array with the modified List
+        let newLists = oldLists.map(lst => (lst.id === listID ? newList : lst)); */
 
         // Doesn't set the oldTodos to newTodos because user gets navigated of the page anyway
-        localStorage.setItem("tasksUser", JSON.stringify(newTodos))
+        localStorage.setItem("tasklistsUser", JSON.stringify(newLists))
 
         navigate("/todo");
     };
 
     const onReset = () => {
-        setNewTodo(oldTodo);
+        setNewTask(oldTodo);
     };
 
     const onCancel = () => {
@@ -95,9 +101,9 @@ const Detail = () => {
                             type="text"
                             className="card-title border-2 border-gray-200"
                             placeholder="Title"
-                            value={newTodo.title}
-                            onChange={(e) => setNewTodo({
-                                ...newTodo,
+                            value={newTask.title}
+                            onChange={(e) => setNewTask({
+                                ...newTask,
                                 title: e.target.value
                             })}
                         />
@@ -110,8 +116,8 @@ const Detail = () => {
                             type="text"
                             className="card-text border-2 border-gray-200"
                             placeholder="Description"
-                            value={newTodo.description}
-                            onChange={(e) => setNewTodo({...newTodo, description: e.target.value})}
+                            value={newTask.description}
+                            onChange={(e) => setNewTask({...newTask, description: e.target.value})}
                         />
                     </div>
 
@@ -120,17 +126,17 @@ const Detail = () => {
                         <input
                             type="date"
                             className="border-2 border-gray-200"
-                            value={newTodo.dueDate}
-                            onChange={(e) => setNewTodo({...newTodo, dueDate: e.target.value})}
+                            value={newTask.dueDate}
+                            onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
                         />
                     </div>
 
                     <div className={"flex flex-col p-3"}>
                         <label className={"text-sm align-self-start"} htmlFor={"priority"}>Priority</label>
                         <select
-                            value={newTodo.priority}
+                            value={newTask.priority}
                             className="border-2 border-gray-200"
-                            onChange={(e) => setNewTodo({...newTodo, priority: e.target.value})}
+                            onChange={(e) => setNewTask({...newTask, priority: e.target.value})}
                         >
                             <option value="High">High</option>
                             <option value="Medium">Medium</option>
