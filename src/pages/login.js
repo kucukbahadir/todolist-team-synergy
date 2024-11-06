@@ -7,19 +7,22 @@ const defaultTasks1 = [
         title: "Sample Title 1", 
         description: "Sample Text 1",
         dueDate: new Date(),
-        priority: "High" 
+        priority: "High",
+        completed: false
     },
     {   id: 2,
         title: "Sample Title 2", 
         description: "Sample Text 2",
         dueDate: new Date(),
-        priority: "Medium" 
+        priority: "Medium" ,
+        completed: false
     },
     {   id: 3,
         title: "Sample Title 3", 
         description: "Sample Text 3 ",
         dueDate: new Date(),
-        priority: "Low" 
+        priority: "Low" ,
+        completed: false
     },
 ]
 
@@ -28,19 +31,22 @@ const defaultTasks2 = [
         title: "Sample Title 10", 
         description: "Sample Text 10",
         dueDate: new Date(),
-        priority: "High" 
+        priority: "High" ,
+        completed: false
     },
     {   id: 2,
         title: "Sample Title 20", 
         description: "Sample Text 20",
         dueDate: new Date(),
-        priority: "Medium" 
+        priority: "Medium" ,
+        completed: false
     },
     {   id: 3,
         title: "Sample Title 30", 
         description: "Sample Text 30",
         dueDate: new Date(),
-        priority: "Low" 
+        priority: "Low" ,
+        completed: false
     },
 ]
 

@@ -2,20 +2,34 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 const Completed = () => {
-
-    const [todos, setTodos] = useState([]);
+    const [lists, setLists] = useState([]);
+    //const [todos, setTodos] = useState([]);
+    const [completed, setCompleted] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        let jsonString = localStorage.getItem("tasksUser");
-        let jsonArray = [];
+        const jsonLists = localStorage.getItem("tasklistsUser");
 
-        if (jsonString) {
+        if (jsonLists) {
+            const arrayLists = JSON.parse(jsonLists);
+            console.log("Parsed", arrayLists)
+
+            let filterArray = [];
+
+            arrayLists.forEach(list => {
+                list.tasks.forEach(task => {
+                    if (task.completed) {
+                        filterArray.push(task)
+                    }
+                });
+            });
+            
+            setCompleted(filterArray);
             // Filter out the completed tasks
-            jsonArray = JSON.parse(jsonString).filter((todo) => todo.completed === true);
-            setTodos(jsonArray);
+            //jsonArray = JSON.parse(jsonString).filter((todo) => todo.completed === true);
+            //setTodos(jsonArray);
         }
-    }, [todos]);
+    }, []);
 
     const onIncomplete = (id) => {
         let jsonString = localStorage.getItem("tasksUser");
@@ -29,7 +43,7 @@ const Completed = () => {
                 return todo;
             });
             localStorage.setItem("tasksUser", JSON.stringify(jsonArray));
-            setTodos(jsonArray);
+            //setTodos(jsonArray);
         }
     }
 
@@ -40,7 +54,7 @@ const Completed = () => {
         if (jsonString){
             jsonArray = JSON.parse(jsonString).filter((todo) => todo.id !== id);
             localStorage.setItem("tasksUser", JSON.stringify(jsonArray));
-            setTodos(jsonArray);
+            //setTodos(jsonArray);
         }
     }
 
@@ -51,14 +65,14 @@ const Completed = () => {
                     Completed Tasks
                 </h1>
             </div>
-            {todos.length === 0 &&
+            {completed.length === 0 &&
                 <div className={"flex flex-col gap-3 justify-center items-center"}>
                     <h1 className={"text-2xl font-bold text-white"}>No tasks completed yet</h1>
                     <button className={"btn btn-outline-info"} onClick={() => navigate("/todo")}>Add Task</button>
                 </div>
             }
             <div className={"flex flex-row flex-wrap gap-3 justify-center"}>
-                {todos.map((todo) => (
+                {completed.map((todo) => (
                     <div key={todo.id}>
                         <div className="card border-5 p-3 w-80 h-100">
                             <div className="card-body custom-card flex flex-col justify-content-between">

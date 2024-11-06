@@ -19,9 +19,8 @@ const Todo = () => {
         //console.log(jsonLists)
         if (jsonLists) {
             let arrayLists = JSON.parse(jsonLists);
-            //console.log(arrayLists);
+            console.log(arrayLists);
             setLists(arrayLists);
-            console.log("Lists: ", lists)
         }
     }, []);
 
@@ -151,7 +150,7 @@ const Todo = () => {
             prevLists.map(lst => (lst.id === updatedList.id ? updatedList : lst))
         );
 
-        //localStorage.setItem("tasklistsUser", lists);
+        localStorage.setItem("tasklistsUser", JSON.stringify(lists));
     };
 
     return (
