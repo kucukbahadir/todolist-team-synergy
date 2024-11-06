@@ -5,29 +5,47 @@ import {useNavigate, useParams} from "react-router-dom";
 const Detail = () => {
 
     const navigate = useNavigate();
-    const {id} = useParams();
+    const {listID, taskID} = useParams();
 
     const [oldTodo, setOldTodo] = useState({});
     const [newTodo, setNewTodo] = useState({
         title: "",
         description: "",
         dueDate: "",
-        priority: ""
+        priority: "",
+        completed:  false
     });
     const [oldTodos, setOldTodos] = useState([]);
 
     // Load todos from localStorage
     useEffect(() => {
         // This will run when the component is first mounted (or the page is reloaded)
-        let jsonString = localStorage.getItem("tasksUser");
-        let jsonArray = []
+        const jsonLists = localStorage.getItem("tasklistsUser");
+        let jsonArray = [];
+        let list;
+        let task
 
-        if (jsonString){
-            jsonArray = JSON.parse(jsonString);
-            setOldTodos(jsonArray);
+        if (jsonLists){
+            jsonArray = JSON.parse(jsonLists);
+
+            // Find correct list by id
+            jsonArray.forEach(_list => {
+                if (_list.id == listID) {
+                    list = _list;
+                }
+            });
+
+            // Find correct task by id
+            list.tasks.forEach(_task => {
+                if (_task.id == taskID) {
+                    task = _task;
+                }
+            });
+
+            //setOldTodos(jsonArray);
 
             // Looks through jsonArray to find todo with specified id
-            console.log("id: " + id);
+            /* console.log("id: " + id);
             jsonArray.forEach(e => {
                 console.log("e.id: " + e.id)
                 if (e.id == id){
@@ -35,9 +53,9 @@ const Detail = () => {
                     setOldTodo(e);
                     setNewTodo(e);
                 }
-            });
+            }); */
         }
-    }, [id]);
+    }, []);
 
     const onSave = () => {
         let newTodos = oldTodos
