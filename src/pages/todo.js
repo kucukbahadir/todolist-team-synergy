@@ -13,8 +13,8 @@ const Todo = () => {
 
     // Load todos from localStorage
     useEffect(() => {   // This will run when the component is first mounted (or the page is reloaded)
+        console.log("Todo Page")
         setName(localStorage.getItem("nameUser"))
-        
         const jsonLists = localStorage.getItem("tasklistsUser");
         //console.log(jsonLists)
         if (jsonLists) {
