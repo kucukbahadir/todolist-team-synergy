@@ -1,9 +1,9 @@
 import './App.css';
 
 import {
-  BrowserRouter,
-  Routes,
-  Route,
+    BrowserRouter,
+    Routes,
+    Route, useNavigate,
 } from "react-router-dom";
 
 import Home from "./pages/home";
@@ -14,9 +14,13 @@ import Completed from "./pages/completed";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from './components/ProtectedRoute.js';
 import NoPage from "./pages/noPage.js";
-
+import {SessionService} from "./services/SessionService";
+import FetchInterceptor from "./services/FetchInterceptor";
 
 function App() {
+  const navigate = useNavigate();
+  new FetchInterceptor(SessionService, navigate);
+
   return (
     <div className="App">
       <Navbar />
