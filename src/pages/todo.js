@@ -13,13 +13,13 @@ const Todo = () => {
 
     // Load todos from localStorage
     useEffect(() => {   // This will run when the component is first mounted (or the page is reloaded)
-        console.log("Todo Page")
+        //console.log("Todo Page")
         setName(localStorage.getItem("nameUser"))
         const jsonLists = localStorage.getItem("tasklistsUser");
         //console.log(jsonLists)
         if (jsonLists) {
             let arrayLists = JSON.parse(jsonLists);
-            console.log(arrayLists);
+            //console.log(arrayLists);
             setLists(arrayLists);
         }
     }, []);
@@ -137,6 +137,7 @@ const Todo = () => {
 
     const completeTask = (todo) => {
         const updatedTasks = list.tasks.map(task => {
+            // Can be replaced for a teriary operator
             if (task.id === todo.id) {
                 return { ...task, completed: true };
             }
@@ -144,13 +145,13 @@ const Todo = () => {
         });
 
         const updatedList = { ...list, tasks: updatedTasks };
+        console.log("Updated List", updatedList);
+        setList(updatedList);
 
-        setList({ ...list, tasks: updatedTasks });
-        setLists(prevLists =>
-            prevLists.map(lst => (lst.id === updatedList.id ? updatedList : lst))
-        );
+        let updatedLists = lists.map(lst => { return lst.id == updatedList.id ? updatedList : lst});
+        setLists(updatedLists);
 
-        localStorage.setItem("tasklistsUser", JSON.stringify(lists));
+        localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
     };
 
     return (

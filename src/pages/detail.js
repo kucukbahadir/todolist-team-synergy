@@ -52,36 +52,12 @@ const Detail = () => {
     }, []);
 
     const onSave = () => {
-        //console.log("List", oldList)
-        //console.log("Lists", oldLists)
         console.log("Updated task: ", newTask);
-
-        // Attempt 1
-        //let newList = oldList.tasks.map(tsk => (tsk.id == newTask.id ? newTask : tsk));
-        //let newLists = oldLists.map(lst => (lst.id == newList.id ? newList : lst));
-
-        // Attempt 2
-        /* // Step 1: Update the specific Task in the List
-        let updatedList = oldList
-            .find(lst => lst.id === listID) // Find the specific List
-            .tasks.map(task => (task.id === taskID ? newTask : task)); // Update the task if IDs match
-
-        // Create the new List with updated tasks
-        let newList = {
-            ...oldLists.find(lst => lst.id === listID),
-            tasks: updatedList
-        };
-
-        // Step 2: Update the Lists array with the modified List
-        let newLists = oldLists.map(lst => (lst.id === listID ? newList : lst)); */
 
         // Attempt 3
         let newTasks = oldList.tasks.map(tsk => (tsk.id == newTask.id ? newTask : tsk));
         const newList = { ...oldList, tasks: newTasks };
         let newLists = oldLists.map(lst => { return lst.id == newList.id ? newList : lst});
-
-        //console.log("New List: ", newList);
-        //console.log("New Lists: ", newLists);
 
         // Doesn't set the oldTodos to newTodos because user gets navigated of the page anyway
         localStorage.setItem("tasklistsUser", JSON.stringify(newLists))
