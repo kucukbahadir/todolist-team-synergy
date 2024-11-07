@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 const Completed = () => {
-    const [lists, setLists] = useState([]);
+    //const [lists, setLists] = useState([]);
     //const [todos, setTodos] = useState([]);
     const [completed, setCompleted] = useState([]);
     const navigate = useNavigate();
@@ -31,6 +31,7 @@ const Completed = () => {
         }
     }, []);
 
+    // Broken
     const onIncomplete = (id) => {
         let jsonString = localStorage.getItem("tasksUser");
         let jsonArray = []
@@ -47,6 +48,7 @@ const Completed = () => {
         }
     }
 
+    // Broken
     const onDelete = (id) => {
         let jsonString = localStorage.getItem("tasksUser");
         let jsonArray = []
@@ -98,12 +100,13 @@ const Completed = () => {
                                     </small>
                                 </p>
                                 <div className={"flex justify-center gap-2 mt-2"}>
-                                    <button className={"btn btn-outline-info"} onClick={
+                                    {/* Broken */}
+                                    {/* <button className={"btn btn-outline-info"} onClick={
                                         () => onIncomplete(todo.id)
-                                    }>Set Incomplete</button>
-                                    <button className={"btn btn-outline-danger"} onClick={
+                                    }>Set Incomplete</button> */}
+                                    {/* <button className={"btn btn-outline-danger"} onClick={
                                         () => onDelete(todo.id)
-                                    }>Delete</button>
+                                    }>Delete</button> */}
                                 </div>
                             </div>
                         </div>
