@@ -41,6 +41,8 @@ const Todo = () => {
                 priority: newTodoPriority,
                 completed: false
             };
+
+
             // Update the to do's list by adding the new to do and reset the input fields
             let updatedTodos = [...todos, newTodo];
             setTodos(updatedTodos);

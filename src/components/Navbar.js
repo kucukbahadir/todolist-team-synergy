@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import '../main.css';
 import {SessionService} from '../services/SessionService';
+import Notifications from "./Notifications";
 
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -37,6 +38,9 @@ const Navbar = () => {
                 </li>
                 <li>
                     <Link to="/completed" className="text-gray border-b-2 p-2 hover:border-sky-600">Completed</Link>
+                </li>
+                <li>
+                    <Notifications/>
                 </li>
             </ul>
         </nav>
