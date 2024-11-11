@@ -12,7 +12,7 @@ const Completed = () => {
 
         if (jsonLists) {
             const arrayLists = JSON.parse(jsonLists);
-            console.log("Parsed", arrayLists)
+            //console.log("Parsed", arrayLists)
 
             let filterArray = [];
 
@@ -30,38 +30,40 @@ const Completed = () => {
 
     // Broken
     const onIncomplete = (id) => {
-        /* let jsonString = localStorage.getItem("tasksUser");
-        let jsonArray = []
-
-        if (jsonString){
-            jsonArray = JSON.parse(jsonString).map((todo) => {
-                if (todo.id === id){
-                    todo.completed = false;
-                }
-                return todo;
-            });
-            localStorage.setItem("tasksUser", JSON.stringify(jsonArray));
-            //setTodos(jsonArray);
-        } */
        const jsonLists = localStorage.getItem("tasklistsUser");
 
         if (jsonLists) {
-            const arrayLists = JSON.parse(jsonLists);
-            //console.log("Parsed", arrayLists)
+            let arrayLists = JSON.parse(jsonLists);
 
-            //let filterArray = [];
+            let listsCounter = 0;
+            let tasksCounter = 0;
+
+            let listsFinal = null;
+            let tasksFinal = null;
 
             // This system does not account for duplicate Task id's
             arrayLists.forEach(list => {
+                //console.log("List", listsCounter, list)
                 list.tasks.forEach(task => {
+                    //console.log("Task", tasksCounter, task)
                     if (task.id == id){
                         if (task.completed) {
-                            // TODO: This prob wont work (editing a list while looping through it)
-                            // Make a system with index counters
-                            task.completed = false;
+                            //task.completed = false;
+                            listsFinal = listsCounter;
+                            tasksFinal = tasksCounter;
                     }}
+                    tasksCounter++
                 });
+                tasksCounter = 0;
+                listsCounter++;
             });
+
+            //console.log("List", listsFinal);
+            //console.log("Task", tasksFinal);
+
+            // Doesn't work smoothly but it works
+            arrayLists[listsFinal].tasks[tasksFinal].completed = false;
+            localStorage.setItem("tasklistsUser", JSON.stringify(arrayLists))
             
             //setCompleted(filterArray);
         }
