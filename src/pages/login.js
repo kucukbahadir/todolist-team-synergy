@@ -112,7 +112,7 @@ function Login() {
                                 style={{ cursor: "pointer"}}
                                 onClick={() => setIsSignUp(true)}
                             >
-                                {" "}Sign in here
+                                {" "}Sign up here
                             </span>
                         </p>
                     )}
