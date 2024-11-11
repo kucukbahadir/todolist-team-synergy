@@ -100,10 +100,10 @@ const Completed = () => {
                                     </small>
                                 </p>
                                 <div className={"flex justify-center gap-2 mt-2"}>
-                                    {/* Broken */}
-                                    {/* <button className={"btn btn-outline-info"} onClick={
+                                    <button className={"btn btn-outline-info"} onClick={
                                         () => onIncomplete(todo.id)
-                                    }>Set Incomplete</button> */}
+                                    }>Set Incomplete</button>
+                                    {/* Broken */}
                                     {/* <button className={"btn btn-outline-danger"} onClick={
                                         () => onDelete(todo.id)
                                     }>Delete</button> */}

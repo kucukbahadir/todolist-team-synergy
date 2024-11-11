@@ -311,10 +311,13 @@ const Todo = () => {
             
             {/* Display the list of task lists */}
             <div>
-                <form onSubmit={(e) => {e.preventDefault()}}>
-                {lists.map((task) => (
-                    <button type="button" key={task.id} onClick={() => {handleSetList(task.id)}}>{task.nameTaskList}</button>
-                ) )}
+                <form onSubmit={(e) => { e.preventDefault(); }}>
+                    <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
+                        <option value="" disabled>Select a task</option>
+                        {lists.map((task) => (
+                        <option key={task.id} value={task.id}>{task.nameTaskList}</option>
+                        ))}
+                    </select>
                 </form>
             </div>
             {/* Displaying the list of to do's */}
