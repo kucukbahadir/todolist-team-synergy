@@ -25,15 +25,12 @@ const Completed = () => {
             });
             
             setCompleted(filterArray);
-            // Filter out the completed tasks
-            //jsonArray = JSON.parse(jsonString).filter((todo) => todo.completed === true);
-            //setTodos(jsonArray);
         }
     }, []);
 
     // Broken
     const onIncomplete = (id) => {
-        let jsonString = localStorage.getItem("tasksUser");
+        /* let jsonString = localStorage.getItem("tasksUser");
         let jsonArray = []
 
         if (jsonString){
@@ -45,6 +42,28 @@ const Completed = () => {
             });
             localStorage.setItem("tasksUser", JSON.stringify(jsonArray));
             //setTodos(jsonArray);
+        } */
+       const jsonLists = localStorage.getItem("tasklistsUser");
+
+        if (jsonLists) {
+            const arrayLists = JSON.parse(jsonLists);
+            //console.log("Parsed", arrayLists)
+
+            //let filterArray = [];
+
+            // This system does not account for duplicate Task id's
+            arrayLists.forEach(list => {
+                list.tasks.forEach(task => {
+                    if (task.id == id){
+                        if (task.completed) {
+                            // TODO: This prob wont work (editing a list while looping through it)
+                            // Make a system with index counters
+                            task.completed = false;
+                    }}
+                });
+            });
+            
+            //setCompleted(filterArray);
         }
     }
 
