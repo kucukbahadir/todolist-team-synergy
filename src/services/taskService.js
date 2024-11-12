@@ -111,5 +111,30 @@ class TaskService {
         }
     }
     
+    /**
+     * Delete a task by ID.
+     * @param {string} id - Task ID
+     * @returns {Promise<boolean>}
+     */
+    async deleteTask(id) {
+        try {
+            const response = await fetch(`${this.URL}/tasks/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                return true;
+            } else {
+                console.error(`Failed to delete task with ID ${id}:`, response);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            return false;
+        }
+    }
+
 }
 export const taskService = new TaskService("http://localhost:5000");
