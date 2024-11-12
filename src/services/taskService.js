@@ -92,7 +92,7 @@ class TaskService {
      */
     async updateTask(id, taskUpdates) {
         try {
-            const response = await fetch(`${this.URL}/tasks/${id}`, {
+            const response = await fetch(`${this.URL}/api/tasks/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(taskUpdates),
@@ -110,7 +110,7 @@ class TaskService {
             return null;
         }
     }
-    
+
     /**
      * Delete a task by ID.
      * @param {string} id - Task ID
@@ -118,7 +118,7 @@ class TaskService {
      */
     async deleteTask(id) {
         try {
-            const response = await fetch(`${this.URL}/tasks/${id}`, {
+            const response = await fetch(`${this.URL}/api/tasks/${id}`, {  // Corrected API URL
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -136,5 +136,32 @@ class TaskService {
         }
     }
 
+    /**
+     * Assign a user to a task by task ID.
+     * @param {string} id - Task ID
+     * @param {string} userId - User ID to assign
+     * @returns {Promise<any|null>}
+     */
+    async assignUserToTask(id, userId) {
+        try {
+            const response = await fetch(`${this.URL}/api/tasks/${id}/assign`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId }),
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                return await response.json();
+            } else {
+                console.error(`Failed to assign user to task with ID ${id}:`, response);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error assigning user to task:', error);
+            return null;
+        }
+    }
 }
+
 export const taskService = new TaskService("http://localhost:5000");
