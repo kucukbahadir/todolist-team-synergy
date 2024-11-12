@@ -141,12 +141,12 @@ class Session {
      */
     getUserId() {
         if (this.isAuthenticated()) {
-            return JSON.parse(localStorage.getItem("user")).id;
+            return JSON.parse(localStorage.getItem("user"))._id;
         }
     }
 
 }
 // Export a singleton instance in the same file
-export const SessionService = Object.freeze(new Session("http://localhost:5000", "token"));
+export const SessionService = Object.freeze(new Session(process.env.REACT_APP_API_URL, "token"));
 
 

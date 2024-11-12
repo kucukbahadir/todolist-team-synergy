@@ -12,7 +12,6 @@ import ProtectedRoute from './components/ProtectedRoute.js';
 import NoPage from "./pages/noPage.js";
 import { SessionService } from "./services/SessionService";
 import FetchInterceptor from "./services/FetchInterceptor";
-import { NotificationAdaptor } from "./services/NotificationAdaptor";
 
 function App() {
     const navigate = useNavigate();
@@ -21,19 +20,15 @@ function App() {
         // Initialize FetchInterceptor with SessionService and navigate function
         const fetchInterceptor = new FetchInterceptor(SessionService, navigate);
 
-        // Initialize NotificationAdaptor
-        const notificationAdaptor = new NotificationAdaptor("http://localhost:5000");
-
         // Optionally store instances in session or context if needed elsewhere
         return () => {
             // Cleanup if needed
             fetchInterceptor.unregister();
-            notificationAdaptor.disconnect();
         };
     }, [navigate]);
 
     return (
-        <div className="App">
+        <div className="App" >
             <Navbar />
             <main className="App-main">
                 <Routes>

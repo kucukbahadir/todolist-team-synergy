@@ -1,4 +1,4 @@
-export class NotificationAdaptor {
+class Adaptor {
 
     socketUrl;
     _newSocket = null;
@@ -115,3 +115,5 @@ export class NotificationAdaptor {
         console.log(`Disconnected from notification server ${this.socketUrl}`);
     }
 }
+
+export const NotificationAdaptor = new Adaptor(process.env.REACT_APP_API_URL + "/notification");
