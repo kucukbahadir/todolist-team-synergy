@@ -83,6 +83,33 @@ class TaskService {
             return null;
         }
     }
+
+    /**
+     * Update an existing task by ID.
+     * @param {string} id - Task ID
+     * @param {object} taskUpdates - Object containing fields to update
+     * @returns {Promise<any|null>}
+     */
+    async updateTask(id, taskUpdates) {
+        try {
+            const response = await fetch(`${this.URL}/tasks/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(taskUpdates),
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                return await response.json();
+            } else {
+                console.error(`Failed to update task with ID ${id}:`, response);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error updating task:', error);
+            return null;
+        }
+    }
     
 }
 export const taskService = new TaskService("http://localhost:5000");
