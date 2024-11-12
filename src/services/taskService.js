@@ -15,7 +15,7 @@ class TaskService {
      */
     async getAllTasks() {
         try {
-            const response = await fetch(`${this.URL}/tasks`, {
+            const response = await fetch(`${this.URL}/api/tasks`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -40,7 +40,7 @@ class TaskService {
      */
     async getTaskById(id) {
         try {
-            const response = await fetch(`${this.URL}/tasks/${id}`, {
+            const response = await fetch(`${this.URL}/api/tasks/${id}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -54,6 +54,32 @@ class TaskService {
             }
         } catch (error) {
             console.error('Error fetching task by ID:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Create a new task.
+     * @param {object} task - Task data
+     * @returns {Promise<any|null>}
+     */
+    async createTask(task) {
+        try {
+            const response = await fetch(`${this.URL}/api/tasks`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(task),
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                return await response.json();
+            } else {
+                console.error('Failed to create task:', response);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error creating task:', error);
             return null;
         }
     }
