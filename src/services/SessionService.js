@@ -43,25 +43,43 @@ class Session {
 
         if (response.ok) {
             let user = await response.json();
-            //console.log("User", user)
+            
 
-            /* console.log(user.sharedLists)
-            if (user.sharedLists.length > 0) {
-                let req = {
+            // Get the shared Lists from the db here\
+            if (user.sharedLists && user.sharedLists.length > 0) {
+                const listIDs = user.sharedLists.join(',');
+                let url = `${this.URL}/api/lists?ids=${listIDs}`;
+                //console.log(url);
+                let listResponse = await fetch(url, {
                     method: "GET",
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                    },
+                });
+
+                
+        
+                if (listResponse.ok) {
+                    let lists = await listResponse.json();
+                    //const sharedLists = await listResponse.json();
+                    console.log("Shared", lists);
+
+                    this.saveToken(
+                        response.headers.get('Authorization'),
+                        user,
+                        lists
+                    );
+                } else {
+                    console.error("Error fetching shared lists:", listResponse.status);
+                    console.error(listResponse.message);
                 }
 
-                let anwser = await fetch(this.URL + `api/lists/${user.sharedLists[0]}`, req);
-                //localStorage.setItem("tasklistsUser", response);
-            } */
+                
+            }
 
-            this.saveToken(
-                response.headers.get('Authorization'),
-                user
-            );
+            //let lists = await listResponse.json()
+
+            
             return user;
         } else {
             console.log(response)
@@ -112,10 +130,6 @@ class Session {
         return await fetch(this.URL + "/auth/register", req);
     }
 
-    async getLists() {
-
-    }
-
     /**
      * Method signs out the user.
      *
@@ -127,6 +141,9 @@ class Session {
 
         // Remove user from service
         localStorage.removeItem("user");
+
+        // Remove task lists from service
+        localStorage.removeItem("temp");
     }
 
     /**
@@ -134,9 +151,11 @@ class Session {
      * @param token - Token to save
      * @param user - User to save
      */
-    saveToken(token, user) {
+    saveToken(token, user, lists) {
+        console.log("Saving")
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("lists", JSON.stringify(lists));
     }
 
     /**
