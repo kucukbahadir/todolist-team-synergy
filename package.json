@@ -13,6 +13,7 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.26.2",
     "react-scripts": "latest",
+    "sweetalert2": "^11.14.5",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

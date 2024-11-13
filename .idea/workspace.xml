@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="0e2aac78-71d3-4917-bb20-d4af2af04640" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Notifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Notifications.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/FetchInterceptor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/FetchInterceptor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/SessionService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/SessionService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +26,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../todolist-team-synergy-backend" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -42,7 +41,7 @@
   "keyToString": {
     "Jest.renders learn react link.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/SYNRGY-92",
+    "git-widget-placeholder": "feature/SYNRGY-89",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/yasra/Studie/Stage/todolist-team-synergy-backend",
     "node.js.detected.package.eslint": "true",
@@ -64,7 +63,7 @@
       <recent name="C:\Users\yasra\Studie\Stage\todolist-team-synergy\src\components" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.dev">
+  <component name="RunManager" selected="npm.start">
     <configuration name="renders learn react link" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/node_modules/react-scripts" />
@@ -161,7 +160,10 @@
       <workItem from="1731336042837" duration="1633000" />
       <workItem from="1731407211891" duration="2166000" />
       <workItem from="1731489625358" duration="5577000" />
-      <workItem from="1731495794624" duration="3772000" />
+      <workItem from="1731495794624" duration="4362000" />
+      <workItem from="1731500367132" duration="2229000" />
+      <workItem from="1731503051047" duration="5182000" />
+      <workItem from="1731510096400" duration="16501000" />
     </task>
     <servers />
   </component>
