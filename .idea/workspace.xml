@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e2aac78-71d3-4917-bb20-d4af2af04640" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../todolist-team-synergy-backend/routes/taskRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/../todolist-team-synergy-backend/routes/taskRoute.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Notifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Notifications.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -26,7 +25,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../todolist-team-synergy-backend" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -41,7 +40,7 @@
   "keyToString": {
     "Jest.renders learn react link.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/SYNRGY-89",
+    "git-widget-placeholder": "feature/SYNRGY-92",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/yasra/Studie/Stage/todolist-team-synergy-backend",
     "node.js.detected.package.eslint": "true",

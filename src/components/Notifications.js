@@ -26,13 +26,16 @@ const Notifications = () => {
             await NotificationAdaptor.subscribe(`notifications-${userId}`, fetchNotifications);
 
             // Show the last notification as a toast
-            await NotificationAdaptor.subscribe(`notifications-${userId}`, showToast);
+            await NotificationAdaptor.subscribe(`new-task-${userId}`, showToast);
         });
 
         // Cleanup: unsubscribe when the component unmounts or userId changes
         return () => {
             if (userId) {
                  NotificationAdaptor.unsubscribe(`notifications-${userId}`, fetchNotifications);
+
+                 // Unsubscribe from the new-task topic
+                 NotificationAdaptor.unsubscribe(`new-task-${userId}`, showToast);
             }
         };
     }, [userId]);
@@ -102,9 +105,13 @@ const Notifications = () => {
         }
     }
 
-    const showToast = () => {
+    const showToast = async () => {
 
-        const notification = notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+        const notification = await notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+
+        if (!notification) {
+            return;
+        }
 
         Swal.fire({
             position: 'top-end',
