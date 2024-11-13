@@ -149,7 +149,6 @@ class Session {
      * Fetches task lists for the authenticated user.
      * @returns {Promise<any[]>} - An array of task list objects or an error if fetch fails.
      */
-
     async getUserLists() {
         const token = this.getToken();
         if (!token) {
@@ -165,7 +164,13 @@ class Session {
             credentials: 'include'
         };
 
-        
+        let response = await fetch(`${this.URL}/api/lists`, req);
+        if (response.ok) {
+            return await response.json() //Should return an array of task lists.
+        } else {
+            console.error("Failed to fetch task lists:", response);
+            throw new Error("Failed to fetch task lists.")
+        }
     }
 
 }
