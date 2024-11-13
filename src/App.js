@@ -15,11 +15,9 @@ import FetchInterceptor from "./services/FetchInterceptor";
 
 function App() {
     const navigate = useNavigate();
+    const fetchInterceptor = new FetchInterceptor(SessionService, navigate);
 
     useEffect(() => {
-        // Initialize FetchInterceptor with SessionService and navigate function
-        const fetchInterceptor = new FetchInterceptor(SessionService, navigate);
-
         // Optionally store instances in session or context if needed elsewhere
         return () => {
             // Cleanup if needed
