@@ -39,9 +39,25 @@ class Session {
         }
 
         let response = await fetch(this.URL + "/auth/verify-code", req);
+        //console.log("Response", response);
 
         if (response.ok) {
             let user = await response.json();
+            //console.log("User", user)
+
+            /* console.log(user.sharedLists)
+            if (user.sharedLists.length > 0) {
+                let req = {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }
+
+                let anwser = await fetch(this.URL + `api/lists/${user.sharedLists[0]}`, req);
+                //localStorage.setItem("tasklistsUser", response);
+            } */
+
             this.saveToken(
                 response.headers.get('Authorization'),
                 user
@@ -94,6 +110,10 @@ class Session {
         }
 
         return await fetch(this.URL + "/auth/register", req);
+    }
+
+    async getLists() {
+
     }
 
     /**

@@ -12,16 +12,21 @@ const Todo = () => {
     //const [todos, setTodos] = useState([]);
 
     // Load todos from localStorage
-    useEffect(() => {   // This will run when the component is first mounted (or the page is reloaded)
-        //console.log("Todo Page")
-        setName(localStorage.getItem("nameUser"))
-        const jsonLists = localStorage.getItem("tasklistsUser");
-        //console.log(jsonLists)
-        if (jsonLists) {
-            let arrayLists = JSON.parse(jsonLists);
-            //console.log(arrayLists);
-            setLists(arrayLists);
-        }
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        setName(user.email);
+
+        // TODO:
+        //setLists();
+        
+        // This will run when the component is first mounted (or the page is reloaded)
+        //let jsonString = localStorage.getItem("tasksUser");
+
+        /* if (jsonString) {
+            let jsonArray = JSON.parse(jsonString).filter((todo) => !todo.completed); // Filter out completed to do's
+            setTodos(jsonArray);
+        } */
+
     }, []);
 
     const handleSetList = (id) => {
