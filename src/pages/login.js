@@ -108,7 +108,15 @@ function Login() {
         if (user) {
             alert("Login successful!");
             closeModal();
-            nav("/todo");
+
+            try {
+                // Fetch task lists for the loggin in user
+                const taskLists = await SessionService.getUserTaskLists();
+                nav("/todo", {state: { taskLists }}); 
+            } catch (error) {
+                console.error("Error fetching task lists: ", error); //Pass tasklist to todo page
+                alert("Failed to load task lists.");
+            }
         } else {
             alert("Invalid verification code. Please try again");
         }
