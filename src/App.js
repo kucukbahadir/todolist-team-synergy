@@ -43,7 +43,7 @@ function App() {
                         </ProtectedRoute>
                     } />
                     <Route path="*" element={<NoPage />} />
-                    <Route path="/detail/:id" element={<Detail />} />
+                    <Route path="/detail/:listID/:taskID" element={<Detail />} />
                 </Routes>
             </main>
         </div>

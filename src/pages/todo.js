@@ -5,20 +5,33 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const Todo = () => {
     const navigate = useNavigate();
     const [name, setName] = useState("");
-    const [todos, setTodos] = useState([]);
+    const [lists, setLists] = useState([]);
+    const [list, setList] = useState();
+    //const [tasks, setTasks] = useState([]);
+    //const [listTodos, setListTodos] = useState([]);
+    //const [todos, setTodos] = useState([]);
 
     // Load todos from localStorage
-    useEffect(() => {
+    useEffect(() => {   // This will run when the component is first mounted (or the page is reloaded)
+        //console.log("Todo Page")
         setName(localStorage.getItem("nameUser"))
-        // This will run when the component is first mounted (or the page is reloaded)
-        let jsonString = localStorage.getItem("tasksUser");
-
-        if (jsonString) {
-            let jsonArray = JSON.parse(jsonString).filter((todo) => !todo.completed); // Filter out completed to do's
-            setTodos(jsonArray);
+        const jsonLists = localStorage.getItem("tasklistsUser");
+        //console.log(jsonLists)
+        if (jsonLists) {
+            let arrayLists = JSON.parse(jsonLists);
+            //console.log(arrayLists);
+            setLists(arrayLists);
         }
-
     }, []);
+
+    const handleSetList = (id) => {
+        lists.forEach(element => {
+            if (element.id == id) {
+                setList(element)
+                return;
+            }
+        });
+    }
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
     const [newTodoDescription, setNewTodoDescription] = useState("");
@@ -32,9 +45,15 @@ const Todo = () => {
     // Function to add a new to do
     const buttonAddToDo = (e) => {
         e.preventDefault();
+
+        if (list == null) {
+            alert("Please select a list")
+            return;
+        }
+
         if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
-            const newTodo = {
-                id: todos.length + 1, // add an id for the to do
+            const newTask = {
+                id: list.tasks.length + 1, // add an id for the to do
                 title: newTodoTitle,
                 description: newTodoDescription,
                 dueDate: new Date(newTodoDueDate),
@@ -44,87 +63,98 @@ const Todo = () => {
 
 
             // Update the to do's list by adding the new to do and reset the input fields
-            let updatedTodos = [...todos, newTodo];
-            setTodos(updatedTodos);
+            let updatedTasks = [...list.tasks, newTask];
 
-            // Set the new todos into the localStorage
-            localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); 
+            const updatedList = { ...list, tasks: updatedTasks };
+            const updatedLists = lists.map(element => 
+                (element.id === updatedList.id ? updatedList : element)
+            );
+
+            setList(updatedList);
+            setLists(updatedLists);
+
+            localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists))
+         
 
             // Reset input fields
             setNewTodoTitle(""); 
             setNewTodoDescription("");
             setNewTodoDueDate("");
             setNewTodoPriority("");
-
         }
     };
 
     // Function to delete a to do by its id
     const handleDelete = (id) => {
-        // Filter out the to do with the matching ID and update the to do's list
-        const updatedTodos = todos.filter((todo) => todo.id !== id);
-        setTodos(updatedTodos);
+        const updatedTasks = list.tasks.filter((todo) => todo.id !== id);
+        
+        const updatedList = { ...list, tasks: updatedTasks };
+        const updatedLists = lists.map(element => 
+            (element.id === updatedList.id ? updatedList : element)
+        );
 
-        localStorage.setItem("tasksUser", JSON.stringify(updatedTodos)); // Set the new todos into the localStorage
+        setList(updatedList);
+        setLists(updatedLists);
+
+        localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
     };
 
     //Function to sort Todos
-    const sortedAndFilteredTodos = () =>   {
-        let filteredTodos = todos;
+    const sortedAndFilteredTodos = () => {
+        let filteredTodos = list ? list.tasks : []; // Safer initialization
 
+    
         if (priorityFilter) {
-            filteredTodos = todos.filter((todo) => todo.priority === priorityFilter);
+            filteredTodos = filteredTodos.filter((todo) => todo.priority === priorityFilter);
         }
-
+    
         if (sortCriteria === "id") {
             filteredTodos.sort((a, b) => (sortOrder === "asc" ? a.id - b.id : b.id - a.id));
-        } else if (sortCriteria == "dueDate") {
+        } else if (sortCriteria === "dueDate") {
             filteredTodos.sort((a, b) => {
                 const dateA = new Date(a.dueDate);
                 const dateB = new Date(b.dueDate);
-                return sortOrder == "asc" ? dateA - dateB : dateB - dateA;
+                return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
             });
-        } else if(sortCriteria === "priority") {
-            const priorityOrder = {High: 3, Medium: 2, Low: 1};
+        } else if (sortCriteria === "priority") {
+            const priorityOrder = { High: 3, Medium: 2, Low: 1 };
             filteredTodos.sort((a, b) => {
-                return sortOrder === "asc" ? priorityOrder[a.priority] - priorityOrder[b.priority] : priorityOrder[b.priority] - priorityOrder[a.priority]
+                return sortOrder === "asc"
+                    ? priorityOrder[a.priority] - priorityOrder[b.priority]
+                    : priorityOrder[b.priority] - priorityOrder[a.priority];
             });
         }
-
-        return filteredTodos
+        
+        return filteredTodos;
     };
 
     const viewDetails = (todo) => {
         // Temporary solution to access this to-do item in the detail page
         //localStorage.setItem(todo.id, JSON.stringify(todo));
 
-        navigate(`/detail/${todo.id}`);
+        // TODO: Rework details to work with TaskLists
+        //navigate(`/detail/${todo.id}`);
+        navigate(`/detail/${list.id}/${todo.id}`)
     };
 
     const completeTask = (todo) => {
-
-        // Get all tasks from localStorage
-        let jsonString = localStorage.getItem("tasksUser");
-        let allTodos = [];
-
-        if (jsonString) {
-            allTodos = JSON.parse(jsonString);
-        }
-
-        // Set the completed status of the task to the opposite of what it was
-        const updatedTodos = allTodos.map((t) => {
-            if (t.id === todo.id) {
-                t.completed = !t.completed; // Toggle de voltooide status
+        const updatedTasks = list.tasks.map(task => {
+            // Can be replaced for a teriary operator
+            if (task.id === todo.id) {
+                return { ...task, completed: true };
             }
-            return t;
+            return task;
         });
 
-        // Update the localStorage with the updated tasks
-        localStorage.setItem("tasksUser", JSON.stringify(updatedTodos));
+        const updatedList = { ...list, tasks: updatedTasks };
+        console.log("Updated List", updatedList);
+        setList(updatedList);
 
-        // Filter out the completed tasks
-        setTodos(updatedTodos.filter((t) => !t.completed));
-    }
+        let updatedLists = lists.map(lst => { return lst.id == updatedList.id ? updatedList : lst});
+        setLists(updatedLists);
+
+        localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
+    };
 
     return (
         <div className="container-fluid">
@@ -169,8 +199,8 @@ const Todo = () => {
                     </select>
                 </div>
 
-            {/* Sort Criteria */}
-            <div className="col-4 fluid">
+                {/* Sort Criteria */}
+                <div className="col-4 fluid">
                     <label>Sort by: </label>
                     <select
                         className="form-control"
@@ -280,23 +310,34 @@ const Todo = () => {
             )}
 
             <br />
-
+            
+            {/* Display the list of task lists */}
+            <div>
+                <form onSubmit={(e) => { e.preventDefault(); }}>
+                    <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
+                        <option value="" disabled>Select a task</option>
+                        {lists.map((task) => (
+                        <option key={task.id} value={task.id}>{task.nameTaskList}</option>
+                        ))}
+                    </select>
+                </form>
+            </div>
             {/* Displaying the list of to do's */}
             <div className="container-fluid">
                 <div className="row justify-content-center align-items-center g-2">
-                    {sortedAndFilteredTodos().map((todo) => (
-                        <div key={todo.id} className="col-3">
+                    {sortedAndFilteredTodos().map((sortedTasks) => {if (!sortedTasks.completed) { return (
+                        <div key={sortedTasks.id} className="col-3">
                             <div className="card border-5">
                                 <br />
                                 <div className="card-body custom-card">
-                                    <h4 className="card-title">{todo.title}</h4>
+                                    <h4 className="card-title">{sortedTasks.title}</h4>
                                     {/* Maybe use string.slice() to only show a set amount of characters in case of giant descriptions
                                     https://www.w3schools.com/jsref/jsref_slice_string.asp */}
-                                    <p className="card-text">{todo.description}</p>
+                                    <p className="card-text">{sortedTasks.description}</p>
                                     {/* Task detail for the to do */}
                                     <p className="card-text">
                                         <small className="text-muted">Task
-                                            ID: {todo.id}</small> {/* Displaying the task ID */}
+                                            ID: {sortedTasks.id}</small> {/* Displaying the task ID */}
                                     </p>
                                     <p className="card-text">
                                         {/*
@@ -304,40 +345,40 @@ const Todo = () => {
                                             If the condition is true, the first option will be return.
                                             If the condition is false, the second option gets returned.
                                         */}
-                                        <small className={new Date(todo.dueDate) < new Date() ? ("text-danger") : ("text-muted")}>
-                                            Due Date: {new Date(todo.dueDate) <= new Date() ? ("Overdue") : new Date(todo.dueDate).toDateString()}
+                                        <small className={new Date(sortedTasks.dueDate) < new Date() ? ("text-danger") : ("text-muted")}>
+                                            Due Date: {new Date(sortedTasks.dueDate) <= new Date() ? ("Overdue") : new Date(sortedTasks.dueDate).toDateString()}
                                         </small> {/* Display due date */}
                                     </p>
                                     <p className="card-text">
                                         <small className={
                                             (() => {
-                                                switch(todo.priority) {
+                                                switch(sortedTasks.priority) {
                                                     case "High":    return "text-danger";
                                                     case "Medium":  return "text-primary";
                                                     case "Low":     return "text-success";
                                                     default:        return "text-warning";
                                                 }
                                             })() // <- Immediately call the function
-                                            }>Priority: {todo.priority}</small> {/* Display priority */}
+                                            }>Priority: {sortedTasks.priority}</small> {/* Display priority */}
                                     </p>
                                     {/* Delete button */}
                                     <button
                                         className="btn btn-outline-danger p-2 m-1"
-                                        onClick={() => handleDelete(todo.id)} // Delete the to do by its ID
+                                        onClick={() => handleDelete(sortedTasks.id)} // Delete the to do by its ID
                                     >
                                         Delete
                                     </button>
-                                    <button onClick={() => viewDetails(todo)} className="btn btn-outline-secondary p-2 m-1">
+                                    <button onClick={() => viewDetails(sortedTasks)} className="btn btn-outline-secondary p-2 m-1">
                                         Edit
                                     </button>
-                                    <button onClick={() => completeTask(todo)} className="btn btn-outline-success p-2 m-1">
+                                    <button onClick={() => completeTask(sortedTasks)} className="btn btn-outline-success p-2 m-1">
                                         Complete
                                     </button>
                                 </div>
                                 <br/>
                             </div>
                         </div>
-                    ))}
+                    )}})}
                 </div>
             </div>
         </div>
