@@ -145,6 +145,29 @@ class Session {
         }
     }
 
+    /**
+     * Fetches task lists for the authenticated user.
+     * @returns {Promise<any[]>} - An array of task list objects or an error if fetch fails.
+     */
+
+    async getUserLists() {
+        const token = this.getToken();
+        if (!token) {
+            throw new Error("User is not authenticated.")
+        }
+
+        let req = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            credentials: 'include'
+        };
+
+        
+    }
+
 }
 // Export a singleton instance in the same file
 export const SessionService = Object.freeze(new Session("http://localhost:5000", "token"));
