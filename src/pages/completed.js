@@ -8,10 +8,25 @@ const Completed = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const jsonLists = localStorage.getItem("tasklistsUser");
+        const _lists = JSON.parse(localStorage.getItem("lists"))    // Contains the lists Objects
+        console.log("Lists", _lists)
 
-        if (jsonLists) {
-            const arrayLists = JSON.parse(jsonLists);
+        let totalTasksIDs = [];
+
+        _lists.forEach(element => {
+            if (element.tasks.length != 0){
+                let ids = element.tasks.join(",");
+                totalTasksIDs.push(ids);}
+        });
+        console.log(totalTasksIDs);
+        totalTasksIDs = totalTasksIDs.join(",");
+
+        console.log(totalTasksIDs);
+        
+        //setLists(_lists);
+
+        /* if (_lists) {
+            const arrayLists = JSON.parse(_lists);
             //console.log("Parsed", arrayLists)
 
             let filterArray = [];
@@ -25,7 +40,7 @@ const Completed = () => {
             });
             
             setCompleted(filterArray);
-        }
+        } */
     }, []);
 
     // Broken
