@@ -2,37 +2,74 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 const Completed = () => {
-
-    const [todos, setTodos] = useState([]);
+    //const [lists, setLists] = useState([]);
+    //const [todos, setTodos] = useState([]);
+    const [completed, setCompleted] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        let jsonString = localStorage.getItem("tasksUser");
-        let jsonArray = [];
+        const jsonLists = localStorage.getItem("tasklistsUser");
 
-        if (jsonString) {
-            // Filter out the completed tasks
-            jsonArray = JSON.parse(jsonString).filter((todo) => todo.completed === true);
-            setTodos(jsonArray);
-        }
-    }, [todos]);
+        if (jsonLists) {
+            const arrayLists = JSON.parse(jsonLists);
+            //console.log("Parsed", arrayLists)
 
-    const onIncomplete = (id) => {
-        let jsonString = localStorage.getItem("tasksUser");
-        let jsonArray = []
+            let filterArray = [];
 
-        if (jsonString){
-            jsonArray = JSON.parse(jsonString).map((todo) => {
-                if (todo.id === id){
-                    todo.completed = false;
-                }
-                return todo;
+            arrayLists.forEach(list => {
+                list.tasks.forEach(task => {
+                    if (task.completed) {
+                        filterArray.push(task)
+                    }
+                });
             });
-            localStorage.setItem("tasksUser", JSON.stringify(jsonArray));
-            setTodos(jsonArray);
+            
+            setCompleted(filterArray);
+        }
+    }, []);
+
+    // Broken
+    const onIncomplete = (id) => {
+       const jsonLists = localStorage.getItem("tasklistsUser");
+
+        if (jsonLists) {
+            let arrayLists = JSON.parse(jsonLists);
+
+            let listsCounter = 0;
+            let tasksCounter = 0;
+
+            let listsFinal = null;
+            let tasksFinal = null;
+
+            // This system does not account for duplicate Task id's
+            arrayLists.forEach(list => {
+                //console.log("List", listsCounter, list)
+                list.tasks.forEach(task => {
+                    //console.log("Task", tasksCounter, task)
+                    if (task.id == id){
+                        if (task.completed) {
+                            //task.completed = false;
+                            listsFinal = listsCounter;
+                            tasksFinal = tasksCounter;
+                    }}
+                    tasksCounter++
+                });
+                tasksCounter = 0;
+                listsCounter++;
+            });
+
+            //console.log("List", listsFinal);
+            //console.log("Task", tasksFinal);
+
+            // Doesn't work smoothly but it works
+            arrayLists[listsFinal].tasks[tasksFinal].completed = false;
+            localStorage.setItem("tasklistsUser", JSON.stringify(arrayLists))
+            
+            //setCompleted(filterArray);
         }
     }
 
+    // Broken
     const onDelete = (id) => {
         let jsonString = localStorage.getItem("tasksUser");
         let jsonArray = []
@@ -40,7 +77,7 @@ const Completed = () => {
         if (jsonString){
             jsonArray = JSON.parse(jsonString).filter((todo) => todo.id !== id);
             localStorage.setItem("tasksUser", JSON.stringify(jsonArray));
-            setTodos(jsonArray);
+            //setTodos(jsonArray);
         }
     }
 
@@ -51,14 +88,14 @@ const Completed = () => {
                     Completed Tasks
                 </h1>
             </div>
-            {todos.length === 0 &&
+            {completed.length === 0 &&
                 <div className={"flex flex-col gap-3 justify-center items-center"}>
                     <h1 className={"text-2xl font-bold text-white"}>No tasks completed yet</h1>
                     <button className={"btn btn-outline-info"} onClick={() => navigate("/todo")}>Add Task</button>
                 </div>
             }
             <div className={"flex flex-row flex-wrap gap-3 justify-center"}>
-                {todos.map((todo) => (
+                {completed.map((todo) => (
                     <div key={todo.id}>
                         <div className="card border-5 p-3 w-80 h-100">
                             <div className="card-body custom-card flex flex-col justify-content-between">
@@ -87,9 +124,10 @@ const Completed = () => {
                                     <button className={"btn btn-outline-info"} onClick={
                                         () => onIncomplete(todo.id)
                                     }>Set Incomplete</button>
-                                    <button className={"btn btn-outline-danger"} onClick={
+                                    {/* Broken */}
+                                    {/* <button className={"btn btn-outline-danger"} onClick={
                                         () => onDelete(todo.id)
-                                    }>Delete</button>
+                                    }>Delete</button> */}
                                 </div>
                             </div>
                         </div>
