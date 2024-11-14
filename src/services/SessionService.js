@@ -126,25 +126,6 @@ class Session {
         return await fetch(this.URL + "/auth/register", req);
     }
 
-    async getTasks(taskIDs) {
-        let url = `${this.URL}/api/tasks?ids=${taskIDs}`;
-        //console.log(url);
-        let response = await fetch(url, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-
-        if (response.ok) {
-            let tasks = await response.json();
-            console.log("Tasks", tasks)
-            return tasks;
-        } else {
-            console.error("fuck")
-        }
-    }
-
     /**
      * Method signs out the user.
      *

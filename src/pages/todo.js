@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { SessionService } from "../services/SessionService";
+import { taskService } from "../services/taskService";
+//const {ObjectId} = require('mongodb');
 
 const Todo = () => {
     const navigate = useNavigate();
     const [name, setName] = useState("");
-    const [lists, setLists] = useState([]);
-    const [list, setList] = useState();
-    const [tasks, setTasks] = useState([]);
+    const [lists, setLists] = useState([]);     // Contains the all task_list Objects
+    const [list, setList] = useState();         // Contains the selected task_list Object
+    const [tasks, setTasks] = useState([]);     // Contains the task Objects
     //const [listTodos, setListTodos] = useState([]);
     //const [todos, setTodos] = useState([]);
 
@@ -18,9 +19,9 @@ const Todo = () => {
         setName(user.email);
 
         // TODO:
-        const lists = JSON.parse(localStorage.getItem("lists"))
-        console.log(lists)
-        setLists(lists);
+        const _lists = JSON.parse(localStorage.getItem("lists"))
+        console.log("Lists", _lists)
+        setLists(_lists);
         
         // This will run when the component is first mounted (or the page is reloaded)
         //let jsonString = localStorage.getItem("tasksUser");
@@ -33,20 +34,21 @@ const Todo = () => {
     }, []);
 
     async function handleSetList(id) {
-        let list;
+        let _list;
         lists.forEach(element => {
             if (element._id == id) {
-                list = element
+                _list = element
                 setList(element);
                 //break;
             }
         });
 
         // TODO: Get lists task from db
-        console.log("List", list)
-        const taskIDs = list.tasks.join(",");
-        console.log("IDs", taskIDs)
-        let tasks = await SessionService.getTasks(taskIDs);
+        console.log("List", _list);
+        const taskIDs = _list.tasks.join(",");
+        //console.log("IDs", taskIDs);
+
+        let tasks = await taskService.getTasks(taskIDs);
         setTasks(tasks);
     }
 
@@ -71,6 +73,7 @@ const Todo = () => {
         if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
             const newTask = {
                 id: list.tasks.length + 1, // add an id for the to do
+                //_id: new ObjectId(),
                 title: newTodoTitle,
                 description: newTodoDescription,
                 dueDate: new Date(newTodoDueDate),
@@ -153,21 +156,32 @@ const Todo = () => {
     };
 
     // Broken
-    const completeTask = (todo) => {
+    async function completeTask(todo) {
+        let updatedTask = todo;
+        updatedTask.completed = true;
+        console.log("Updated Task", updatedTask)
+        // Update task in db
+        let update = await taskService.updateTask(updatedTask._id, updatedTask);
+
+        // Update the task in the tasks useState
         const updatedTasks = tasks.map(task => {
             // Can be replaced for a teriary operator
-            if (task.id === todo.id) {
+            if (task._id === todo._id) {
                 return { ...task, completed: true };
             }
             return task;
-        });
+        });        
+        
+        console.log("Updated tasks", updatedTasks);
+        setTasks(updatedTasks);
 
-        const updatedList = { ...list, tasks: updatedTasks };
+        // Update list with the
+        /* const updatedList = { ...list, tasks: updatedTasks };
         console.log("Updated List", updatedList);
-        setList(updatedList);
+        setList(updatedList); */
 
-        let updatedLists = lists.map(lst => { return lst.id == updatedList.id ? updatedList : lst});
-        setLists(updatedLists);
+        /* let updatedLists = lists.map(lst => { return lst.id == updatedList.id ? updatedList : lst});
+        setLists(updatedLists); */
 
         //localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
     };
