@@ -114,7 +114,7 @@ const Todo = () => {
         setList(updatedList);
         setLists(updatedLists);
 
-        localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
+        //localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
     };
 
     //Function to sort Todos

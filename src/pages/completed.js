@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import { taskService } from "../services/taskService";
 
 const Completed = () => {
     //const [lists, setLists] = useState([]);
@@ -8,81 +9,42 @@ const Completed = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const _lists = JSON.parse(localStorage.getItem("lists"))    // Contains the lists Objects
-        console.log("Lists", _lists)
-
-        let totalTasksIDs = [];
-
-        _lists.forEach(element => {
-            if (element.tasks.length != 0){
-                let ids = element.tasks.join(",");
-                totalTasksIDs.push(ids);}
-        });
-        console.log(totalTasksIDs);
-        totalTasksIDs = totalTasksIDs.join(",");
-
-        console.log(totalTasksIDs);
-        
-        //setLists(_lists);
-
-        /* if (_lists) {
-            const arrayLists = JSON.parse(_lists);
-            //console.log("Parsed", arrayLists)
-
-            let filterArray = [];
-
-            arrayLists.forEach(list => {
-                list.tasks.forEach(task => {
-                    if (task.completed) {
-                        filterArray.push(task)
+        const fetchTasks = async () => {
+            try {
+                const _lists = JSON.parse(localStorage.getItem("lists")); // Contains the lists objects
+                console.log("Lists", _lists);
+    
+                let totalTasksIDs = [];
+    
+                _lists.forEach(element => {
+                    if (element.tasks.length !== 0) {
+                        const ids = element.tasks.join(",");
+                        totalTasksIDs.push(ids);
                     }
                 });
-            });
-            
-            setCompleted(filterArray);
-        } */
-    }, []);
+    
+                totalTasksIDs = totalTasksIDs.join(","); // Join all task IDs into a single comma-separated string
+                const tasks = await taskService.getTasks(totalTasksIDs); // Await the fetched tasks data
+                console.log("Tasks", tasks);
+    
+                const filterArray = tasks.filter(task => task.completed); // Filter completed tasks directly
+                setCompleted(filterArray); // Update state with completed tasks
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            }
+        };
+    
+        fetchTasks(); // Call the async function
+    }, []); // Empty dependency array to run on mount
 
-    // Broken
     const onIncomplete = (id) => {
-       const jsonLists = localStorage.getItem("tasklistsUser");
+        taskService.updateTask(id, { completed: false})
 
-        if (jsonLists) {
-            let arrayLists = JSON.parse(jsonLists);
-
-            let listsCounter = 0;
-            let tasksCounter = 0;
-
-            let listsFinal = null;
-            let tasksFinal = null;
-
-            // This system does not account for duplicate Task id's
-            arrayLists.forEach(list => {
-                //console.log("List", listsCounter, list)
-                list.tasks.forEach(task => {
-                    //console.log("Task", tasksCounter, task)
-                    if (task.id == id){
-                        if (task.completed) {
-                            //task.completed = false;
-                            listsFinal = listsCounter;
-                            tasksFinal = tasksCounter;
-                    }}
-                    tasksCounter++
-                });
-                tasksCounter = 0;
-                listsCounter++;
-            });
-
-            //console.log("List", listsFinal);
-            //console.log("Task", tasksFinal);
-
-            // Doesn't work smoothly but it works
-            arrayLists[listsFinal].tasks[tasksFinal].completed = false;
-            localStorage.setItem("tasklistsUser", JSON.stringify(arrayLists))
-            
-            //setCompleted(filterArray);
+        let updatedCompleted = completed.filter(task => (task && task._id != id));
+        console.log("Updated", updatedCompleted);
+        setCompleted(updatedCompleted);
         }
-    }
+    
 
     // Broken
     const onDelete = (id) => {
@@ -111,7 +73,7 @@ const Completed = () => {
             }
             <div className={"flex flex-row flex-wrap gap-3 justify-center"}>
                 {completed.map((todo) => (
-                    <div key={todo.id}>
+                    <div key={todo._id}>
                         <div className="card border-5 p-3 w-80 h-100">
                             <div className="card-body custom-card flex flex-col justify-content-between">
                                 <h4 className="card-title text-ellipsis overflow-hidden whitespace-nowrap">
@@ -122,7 +84,7 @@ const Completed = () => {
                                 </p>
                                 <p className="card-text">
                                     <small className="text-muted">
-                                        Task ID: {todo.id}
+                                        Task ID: {todo._id}
                                     </small>
                                 </p>
                                 <p className="card-text">
@@ -137,7 +99,7 @@ const Completed = () => {
                                 </p>
                                 <div className={"flex justify-center gap-2 mt-2"}>
                                     <button className={"btn btn-outline-info"} onClick={
-                                        () => onIncomplete(todo.id)
+                                        () => onIncomplete(todo._id)
                                     }>Set Incomplete</button>
                                     {/* Broken */}
                                     {/* <button className={"btn btn-outline-danger"} onClick={

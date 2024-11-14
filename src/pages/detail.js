@@ -60,7 +60,7 @@ const Detail = () => {
         let newLists = oldLists.map(lst => { return lst.id == newList.id ? newList : lst});
 
         // Doesn't set the oldTodos to newTodos because user gets navigated of the page anyway
-        localStorage.setItem("tasklistsUser", JSON.stringify(newLists))
+        //localStorage.setItem("tasklistsUser", JSON.stringify(newLists))
 
         navigate("/todo");
     };
