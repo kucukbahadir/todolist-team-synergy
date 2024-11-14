@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { SessionService } from "../services/SessionService";
 
 const Todo = () => {
     const navigate = useNavigate();
     const [name, setName] = useState("");
     const [lists, setLists] = useState([]);
     const [list, setList] = useState();
-    //const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState([]);
     //const [listTodos, setListTodos] = useState([]);
     //const [todos, setTodos] = useState([]);
 
@@ -17,7 +18,9 @@ const Todo = () => {
         setName(user.email);
 
         // TODO:
-        //setLists();
+        const lists = JSON.parse(localStorage.getItem("lists"))
+        console.log(lists)
+        setLists(lists);
         
         // This will run when the component is first mounted (or the page is reloaded)
         //let jsonString = localStorage.getItem("tasksUser");
@@ -29,13 +32,22 @@ const Todo = () => {
 
     }, []);
 
-    const handleSetList = (id) => {
+    async function handleSetList(id) {
+        let list;
         lists.forEach(element => {
-            if (element.id == id) {
-                setList(element)
-                return;
+            if (element._id == id) {
+                list = element
+                setList(element);
+                //break;
             }
         });
+
+        // TODO: Get lists task from db
+        console.log("List", list)
+        const taskIDs = list.tasks.join(",");
+        console.log("IDs", taskIDs)
+        let tasks = await SessionService.getTasks(taskIDs);
+        setTasks(tasks);
     }
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
@@ -76,7 +88,7 @@ const Todo = () => {
             setList(updatedList);
             setLists(updatedLists);
 
-            localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists))
+            //localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists))
          
 
             // Reset input fields
@@ -104,7 +116,7 @@ const Todo = () => {
 
     //Function to sort Todos
     const sortedAndFilteredTodos = () => {
-        let filteredTodos = list ? list.tasks : []; // Safer initialization
+        let filteredTodos = tasks ? tasks : []; // Safer initialization
 
     
         if (priorityFilter) {
@@ -140,8 +152,9 @@ const Todo = () => {
         navigate(`/detail/${list.id}/${todo.id}`)
     };
 
+    // Broken
     const completeTask = (todo) => {
-        const updatedTasks = list.tasks.map(task => {
+        const updatedTasks = tasks.map(task => {
             // Can be replaced for a teriary operator
             if (task.id === todo.id) {
                 return { ...task, completed: true };
@@ -156,7 +169,7 @@ const Todo = () => {
         let updatedLists = lists.map(lst => { return lst.id == updatedList.id ? updatedList : lst});
         setLists(updatedLists);
 
-        localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
+        //localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
     };
 
     return (
@@ -318,9 +331,9 @@ const Todo = () => {
             <div>
                 <form onSubmit={(e) => { e.preventDefault(); }}>
                     <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
-                        <option value="" disabled>Select a task</option>
+                        <option value="" disabled>Select a list</option>
                         {lists.map((task) => (
-                        <option key={task.id} value={task.id}>{task.nameTaskList}</option>
+                        <option key={task._id} value={task._id}>{task.title}</option>
                         ))}
                     </select>
                 </form>
@@ -340,7 +353,7 @@ const Todo = () => {
                                     {/* Task detail for the to do */}
                                     <p className="card-text">
                                         <small className="text-muted">Task
-                                            ID: {sortedTasks.id}</small> {/* Displaying the task ID */}
+                                            ID: {sortedTasks._id}</small> {/* Displaying the task ID */}
                                     </p>
                                     <p className="card-text">
                                         {/*

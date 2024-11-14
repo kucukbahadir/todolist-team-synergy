@@ -43,23 +43,25 @@ class Session {
 
         if (response.ok) {
             let user = await response.json();
+            console.log("Res ok")
             
 
             // Get the shared Lists from the db here\
             if (user.sharedLists && user.sharedLists.length > 0) {
                 const listIDs = user.sharedLists.join(',');
-                let url = `${this.URL}/api/lists?ids=${listIDs}`;
+                let url = `${this.URL}/lists?ids=${listIDs}`;
                 //console.log(url);
                 let listResponse = await fetch(url, {
                     method: "GET",
                     headers: {
                         'Content-Type': 'application/json',
-                    },
+                    }
                 });
-
-                
+                console.log("List Response", listResponse)            
         
                 if (listResponse.ok) {
+                    // TODO: Technically already needs token here to acces /api/
+                    // Temp fix: Removed /api/ from route
                     let lists = await listResponse.json();
                     //const sharedLists = await listResponse.json();
                     console.log("Shared", lists);
@@ -71,14 +73,8 @@ class Session {
                     );
                 } else {
                     console.error("Error fetching shared lists:", listResponse.status);
-                    console.error(listResponse.message);
                 }
-
-                
             }
-
-            //let lists = await listResponse.json()
-
             
             return user;
         } else {
@@ -128,6 +124,25 @@ class Session {
         }
 
         return await fetch(this.URL + "/auth/register", req);
+    }
+
+    async getTasks(taskIDs) {
+        let url = `${this.URL}/api/tasks?ids=${taskIDs}`;
+        //console.log(url);
+        let response = await fetch(url, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (response.ok) {
+            let tasks = await response.json();
+            console.log("Tasks", tasks)
+            return tasks;
+        } else {
+            console.error("fuck")
+        }
     }
 
     /**
