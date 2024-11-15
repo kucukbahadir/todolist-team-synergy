@@ -1,14 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {SessionService} from '../services/SessionService';
-import { taskService } from '../services/taskService';
+import {taskService} from '../services/taskService';
 
 const Todo = () => {
-    const [tasks, setTasks] = useState([]); // State to hold tasks
-    const [loading, setLoading] = useState(true); // Loading state
-    const [error, setError] = useState(null); // Error state
-    const [form, setForm] = useState({ title: '', description: '', dueDate: '', priority: 'Medium'}); // Form state
-    const [editingTask, setEditingTask] = useState(null); // Editing task state
-    const [assignUserId, setAssignUserId] = useState(''); // State for assigning user to task
+    const [tasks, setTasks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [form, setForm] = useState({title: '', description: '', dueDate: '', priority: 'Medium'});
+    const [editingTask, setEditingTask] = useState(null);
+    const [assignUserId, setAssignUserId] = useState('');
+
+    // New state variables for filtering and sorting
+    const [priorityFilter, setPriorityFilter] = useState('');
+    const [sortCriteria, setSortCriteria] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
 
     const fetchTasks = async () => {
         setLoading(true);
@@ -35,7 +40,7 @@ const Todo = () => {
                 await taskService.createTask(form);
             }
             fetchTasks();
-            setForm({ title: '', description: '', dueDate: '', priority: 'Medium' });
+            setForm({title: '', description: '', dueDate: '', priority: 'Medium'});
             setEditingTask(null);
         } catch (err) {
             setError(`Failed to ${editingTask ? 'update' : 'create'} task`);
@@ -61,73 +66,98 @@ const Todo = () => {
         }
     };
 
+    // Filter and sort tasks based on selected criteria
+    const filteredAndSortedTasks = tasks
+        .filter((task) => {
+            if (!priorityFilter) return true;
+            return task.priority === priorityFilter;
+        })
+        .sort((a, b) => {
+            if (!sortCriteria) return 0;
+            const fieldA = a[sortCriteria];
+            const fieldB = b[sortCriteria];
+            if (sortOrder === 'asc') {
+                return fieldA > fieldB ? 1 : -1;
+            } else {
+                return fieldA < fieldB ? 1 : -1;
+            }
+        });
+
     if (loading) return <div>Loading tasks...</div>;
     if (error) return <div>Error: {error}</div>;
 
-    return (
-        <div className="container my-4">
-            <h1 className="text-center mb-4">To Do List</h1>
-            <div className="card mb-4">
-                <div className="card-body">
-                    <h5 className="card-title">{editingTask ? 'Update Task' : 'Create Task'}</h5>
-                    <form onSubmit={handleSave}>
-                        <div className="mb-3">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Title"
-                                value={form.title}
-                                onChange={(e) => setForm({...form, title: e.target.value})}
-                                required
-                            />
+    return (<div className="container-fluid">
+            <style>
+                {`
+                    .custom-card {
+                        transition: transform 0.3s;
+                    }
+                    .custom-card:hover {
+                        transform: scale(1.05);
+                    }
+                `}
+            </style>
+            <div className="container-fluid bg-black rounded-pill">
+                <br/>
+                <div className="row justify-content-center align-items-center text-center">
+                    <div className="col"></div>
+                    <div className="col">
+                        <div className="underline p-2">
+                            <h2 className="tx-pro">To Do List</h2>
                         </div>
-                        <div className="mb-3">
-                            <textarea
-                                className="form-control"
-                                placeholder="Description"
-                                value={form.description}
-                                onChange={(e) => setForm({...form, description: e.target.value})}
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <input
-                                type="date"
-                                className="form-control"
-                                value={form.dueDate}
-                                onChange={(e) => setForm({...form, dueDate: e.target.value})}
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <select
-                                className="form-select"
-                                value={form.priority}
-                                onChange={(e) => setForm({...form, priority: e.target.value})}
-                            >
-                                <option value="Low">Low</option>
-                                <option value="Medium">Medium</option>
-                                <option value="High">High</option>
-                            </select>
-                        </div>
-                        <button type="submit" className="btn btn-primary me-2">
-                            {editingTask ? 'Update Task' : 'Create Task'}
-                        </button>
-                        {editingTask && (
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={() => setEditingTask(null)}
-                            >
-                                Cancel
-                            </button>
-                        )}
-                    </form>
+                    </div>
+                    <div className="col"></div>
+                </div>
+                <br/>
+            </div>
+            <br/>
+
+            {/* Filter and Sort Controls */}
+            <div className="row">
+                <div className="col-4 fluid">
+                    <label>Filter by Priority: </label>
+                    <select
+                        className="form-control"
+                        value={priorityFilter}
+                        onChange={(e) => setPriorityFilter(e.target.value)}
+                    >
+                        <option value="">All</option>
+                        <option className="text-danger" value="High">High</option>
+                        <option className="text-primary" value="Medium">Medium</option>
+                        <option className="text-success" value="Low">Low</option>
+                    </select>
+                </div>
+
+                <div className="col-4 fluid">
+                    <label>Sort by: </label>
+                    <select
+                        className="form-control"
+                        value={sortCriteria}
+                        onChange={(e) => setSortCriteria(e.target.value)}
+                    >
+                        <option value="">None</option>
+                        <option value="title">Title</option>
+                        <option value="dueDate">Due Date</option>
+                        <option value="priority">Priority</option>
+                    </select>
+                </div>
+
+                <div className="col-4 fluid">
+                    <label>Order: </label>
+                    <select
+                        className="form-control"
+                        value={sortOrder}
+                        onChange={(e) => setSortOrder(e.target.value)}
+                    >
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
                 </div>
             </div>
-
+            <br/><br/>
             <div className="row">
-                {tasks.map((task) => (
-                    <div key={task._id} className="col-md-4 mb-4">
-                        <div className="card">
+                {filteredAndSortedTasks.map((task) => (<div key={task._id} className="col-md-4 mb-4">
+                        <div className="card custom-card">
                             <div className="card-body">
                                 <h5 className="card-title">{task.title}</h5>
                                 <p className="card-text">{task.description}</p>
@@ -154,11 +184,9 @@ const Todo = () => {
                                 </button>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    </div>))}
             </div>
-        </div>
-    );
+        </div>);
 };
 
 export default Todo;
