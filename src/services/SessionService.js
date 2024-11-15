@@ -3,6 +3,8 @@
  *
  * @author Yassin Rahou
  */
+import { taskListService } from "./TaskListService";
+
 class Session {
 
     URL;
@@ -39,16 +41,55 @@ class Session {
         }
 
         let response = await fetch(this.URL + "/auth/verify-code", req);
+        //console.log("Response", response);
 
         if (response.ok) {
             let user = await response.json();
+            console.log("Res ok")
+            
+
+            // Get the shared Lists from the db here\
+            /* if (user.sharedLists && user.sharedLists.length > 0) {
+                const listIDs = user.sharedLists.join(',');
+                let url = `${this.URL}/lists?ids=${listIDs}`;
+                //console.log(url);
+                let listResponse = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                console.log("List Response", listResponse)            
+        
+                if (listResponse.ok) {
+                    // TODO: Technically already needs token here to acces /api/
+                    // Temp fix: Removed /api/ from route
+                    let lists = await listResponse.json();
+                    //const sharedLists = await listResponse.json();
+                    console.log("Shared", lists);
+
+                    
+                } else {
+                    console.error("Error fetching shared lists:", listResponse.status);
+                }
+            } */
             this.saveToken(
                 response.headers.get('Authorization'),
-                user
+                user,
+                null
             );
+
+            let lists = await taskListService.getTaskLists(user);
+
+            this.saveToken(
+                null,
+                null,
+                lists
+            )
+            
             return user;
         } else {
-            console.log(response)
+            console.error(response)
             return null;
         }
     }
@@ -107,6 +148,9 @@ class Session {
 
         // Remove user from service
         localStorage.removeItem("user");
+
+        // Remove task lists from service
+        localStorage.removeItem("temp");
     }
 
     /**
@@ -114,18 +158,14 @@ class Session {
      * @param token - Token to save
      * @param user - User to save
      */
-    saveToken(token, user) {
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
+    saveToken(token, user, lists) {
+        console.log("Saving")
+        if (token)  {localStorage.setItem("token", token);}
+        if (user)   {localStorage.setItem("user", JSON.stringify(user));}
+        if (lists)  {localStorage.setItem("lists", JSON.stringify(lists));}
     }
 
-    /**
-     * Method returns the token.
-     * @returns {string | null}
-     */
-    getToken() {
-        return localStorage.getItem("token");
-    }
+
 
     /**
      * Method returns the user.
@@ -136,17 +176,25 @@ class Session {
     }
 
     /**
-     * Method returns the user.
-     * @returns {string | null}
+     * Method to fetch the token, ensuring it is available after page reload
+     */
+    getCurrentToken() {
+        return localStorage.getItem("token");
+    }
+
+    /**
+     * Ensure user is authenticated and return userId
      */
     getUserId() {
         if (this.isAuthenticated()) {
-            return JSON.parse(localStorage.getItem("user")).id;
+            return JSON.parse(localStorage.getItem("user"))._id;
+        } else {
+            return null;
         }
     }
 
 }
 // Export a singleton instance in the same file
-export const SessionService = Object.freeze(new Session("http://localhost:5000", "token"));
+export const SessionService = Object.freeze(new Session(process.env.REACT_APP_API_URL, "token"));
 
 

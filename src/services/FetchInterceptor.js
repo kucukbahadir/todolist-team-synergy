@@ -25,7 +25,7 @@ class FetchInterceptor{
     }
 
     request(url, options){
-        let token = FetchInterceptor.theInstance.session.getToken();
+        let token = FetchInterceptor.theInstance.session.getCurrentToken();
 
         if (token == null){
             return[url, options];

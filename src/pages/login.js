@@ -108,7 +108,7 @@ function Login() {
         if (user) {
             alert("Login successful!");
             closeModal();
-            nav("/todo");
+            //nav("/todo");
         } else {
             alert("Invalid verification code. Please try again");
         }
@@ -175,7 +175,7 @@ function Login() {
                                 style={{ cursor: "pointer"}}
                                 onClick={() => setIsSignUp(true)}
                             >
-                                {" "}Sign in here
+                                {" "}Sign up here
                             </span>
                         </p>
                     )}

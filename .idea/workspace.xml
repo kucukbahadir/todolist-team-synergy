@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0e2aac78-71d3-4917-bb20-d4af2af04640" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Navbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/FetchInterceptor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/FetchInterceptor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Notifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Notifications.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +39,7 @@
   &quot;keyToString&quot;: {
     &quot;Jest.renders learn react link.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/SYNRGY-85&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/SYNRGY-92&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/yasra/Studie/Stage/todolist-team-synergy-backend&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -58,10 +57,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\yasra\Studie\Stage\todolist-team-synergy" />
       <recent name="C:\Users\yasra\Studie\Stage\todolist-team-synergy\src\components" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.start">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="renders learn react link" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/node_modules/react-scripts" />
@@ -106,8 +106,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.start" />
         <item itemvalue="npm.dev" />
+        <item itemvalue="npm.start" />
         <item itemvalue="npm.build" />
         <item itemvalue="Jest.renders learn react link" />
       </list>
@@ -147,6 +147,22 @@
       <workItem from="1730106838875" duration="4504000" />
       <workItem from="1730717588767" duration="4504000" />
       <workItem from="1730728706645" duration="2194000" />
+      <workItem from="1730821186677" duration="1647000" />
+      <workItem from="1730824956686" duration="920000" />
+      <workItem from="1730826438128" duration="2593000" />
+      <workItem from="1730884087635" duration="184000" />
+      <workItem from="1730884312796" duration="9832000" />
+      <workItem from="1730914153646" duration="22996000" />
+      <workItem from="1731274078867" duration="2564000" />
+      <workItem from="1731279227955" duration="11681000" />
+      <workItem from="1731336042837" duration="1633000" />
+      <workItem from="1731407211891" duration="2166000" />
+      <workItem from="1731489625358" duration="5577000" />
+      <workItem from="1731495794624" duration="4362000" />
+      <workItem from="1731500367132" duration="2229000" />
+      <workItem from="1731503051047" duration="5182000" />
+      <workItem from="1731510096400" duration="16501000" />
+      <workItem from="1731663744324" duration="2317000" />
     </task>
     <servers />
   </component>
