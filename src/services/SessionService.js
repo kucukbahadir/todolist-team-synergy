@@ -3,6 +3,8 @@
  *
  * @author Yassin Rahou
  */
+import { taskListService } from "./TaskListService";
+
 class Session {
 
     URL;
@@ -47,7 +49,7 @@ class Session {
             
 
             // Get the shared Lists from the db here\
-            if (user.sharedLists && user.sharedLists.length > 0) {
+            /* if (user.sharedLists && user.sharedLists.length > 0) {
                 const listIDs = user.sharedLists.join(',');
                 let url = `${this.URL}/lists?ids=${listIDs}`;
                 //console.log(url);
@@ -66,19 +68,28 @@ class Session {
                     //const sharedLists = await listResponse.json();
                     console.log("Shared", lists);
 
-                    this.saveToken(
-                        response.headers.get('Authorization'),
-                        user,
-                        lists
-                    );
+                    
                 } else {
                     console.error("Error fetching shared lists:", listResponse.status);
                 }
-            }
+            } */
+            this.saveToken(
+                response.headers.get('Authorization'),
+                user,
+                null
+            );
+
+            let lists = await taskListService.getTaskLists(user);
+
+            this.saveToken(
+                null,
+                null,
+                lists
+            )
             
             return user;
         } else {
-            console.log(response)
+            console.error(response)
             return null;
         }
     }
@@ -149,9 +160,9 @@ class Session {
      */
     saveToken(token, user, lists) {
         console.log("Saving")
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("lists", JSON.stringify(lists));
+        if (token)  {localStorage.setItem("token", token);}
+        if (user)   {localStorage.setItem("user", JSON.stringify(user));}
+        if (lists)  {localStorage.setItem("lists", JSON.stringify(lists));}
     }
 
     /**

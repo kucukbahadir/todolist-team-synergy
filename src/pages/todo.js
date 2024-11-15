@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { taskService } from "../services/taskService";
+import { taskListService } from "../services/TaskListService";
+
 //const {ObjectId} = require('mongodb');
 
 const Todo = () => {
@@ -53,17 +55,16 @@ const Todo = () => {
     const [priorityFilter, setPriorityFilter] = useState("");
 
     // Function to add a new to do
-    const buttonAddToDo = (e) => {
+    async function buttonAddToDo(e) {
         e.preventDefault();
 
         if (list == null) {
-            alert("Please select a list")
+            alert("Please select a list");
             return;
         }
 
         if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
             const newTask = {
-                id: list.tasks.length + 1, // add an id for the to do
                 //_id: new ObjectId(),
                 title: newTodoTitle,
                 description: newTodoDescription,
@@ -71,41 +72,33 @@ const Todo = () => {
                 priority: newTodoPriority,
                 completed: false
             };
-            // Update the to do's list by adding the new to do and reset the input fields
-            let updatedTasks = [...list.tasks, newTask];
 
-            const updatedList = { ...list, tasks: updatedTasks };
-            const updatedLists = lists.map(element => 
-                (element.id === updatedList.id ? updatedList : element)
-            );
+            let insertedTask = await taskService.createTask(newTask);
+            console.log("Inserted", insertedTask);
 
-            setList(updatedList);
-            setLists(updatedLists);
+            let updatedTasks = [...tasks, insertedTask];
+            setTasks(updatedTasks);
 
-            //localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists))
-         
+            let updatedListTasks = list
+            updatedListTasks.tasks.push(insertedTask._id)
+            //console.log(updatedListTasks._id, insertedTask._id)
+            taskListService.updateTaskList(updatedListTasks._id, insertedTask._id)
+            setList(updatedListTasks);
 
             // Reset input fields
-            setNewTodoTitle(""); 
-            setNewTodoDescription("");
-            setNewTodoDueDate("");
-            setNewTodoPriority("");
+            //setNewTodoTitle(""); 
+            //setNewTodoDescription("");
+            //setNewTodoDueDate("");
+            //setNewTodoPriority("");
         }
     };
 
     // Function to delete a to do by its id
     const handleDelete = (id) => {
-        const updatedTasks = list.tasks.filter((todo) => todo.id !== id);
-        
-        const updatedList = { ...list, tasks: updatedTasks };
-        const updatedLists = lists.map(element => 
-            (element.id === updatedList.id ? updatedList : element)
-        );
+        const updatedTasks = tasks.filter((todo) => todo._id !== id);
+        setTasks(updatedTasks);
 
-        setList(updatedList);
-        setLists(updatedLists);
-
-        //localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
+        taskService.deleteTask(id);
     };
 
     //Function to sort Todos
@@ -382,7 +375,7 @@ const Todo = () => {
                                     {/* Delete button */}
                                     <button
                                         className="btn btn-outline-danger p-2 m-1"
-                                        onClick={() => handleDelete(sortedTasks.id)} // Delete the to do by its ID
+                                        onClick={() => handleDelete(sortedTasks._id)} // Delete the to do by its ID
                                     >
                                         Delete
                                     </button>
