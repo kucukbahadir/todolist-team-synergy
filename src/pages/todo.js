@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SessionService } from "../services/SessionService";
 
 const Todo = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const [taskLists, setTaskLists] = useState(location.state?.taskLists || []);
+
     const [name, setName] = useState("");
     const [lists, setLists] = useState([]);
     const [list, setList] = useState();
@@ -154,6 +158,21 @@ const Todo = () => {
 
         localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
     };
+
+
+    useEffect(() => {
+        if (!taskLists.length) {
+            async function fetchTaskLists() {
+                 try {
+                     const lists = await SessionService.getUserLists();
+                    setTaskLists(lists);
+                } catch (error) {
+                    console.error("Failed to fetch task lists: ", error);
+                }
+            }
+            fetchTaskLists();
+        }
+    });
 
     return (
         <div className="container-fluid">
@@ -315,7 +334,7 @@ const Todo = () => {
                 <form onSubmit={(e) => { e.preventDefault(); }}>
                     <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
                         <option value="" disabled>Select a task</option>
-                        {lists.map((task) => (
+                        {taskLists.map((task) => (
                         <option key={task.id} value={task.id}>{task.nameTaskList}</option>
                         ))}
                     </select>

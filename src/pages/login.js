@@ -111,7 +111,7 @@ function Login() {
 
             try {
                 // Fetch task lists for the loggin in user
-                const taskLists = await SessionService.getUserTaskLists();
+                const taskLists = await SessionService.getUserLists();
                 nav("/todo", {state: { taskLists }}); 
             } catch (error) {
                 console.error("Error fetching task lists: ", error); //Pass tasklist to todo page
