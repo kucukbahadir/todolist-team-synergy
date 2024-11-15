@@ -22,15 +22,6 @@ const Todo = () => {
         const _lists = JSON.parse(localStorage.getItem("lists"))
         console.log("Lists", _lists)
         setLists(_lists);
-        
-        // This will run when the component is first mounted (or the page is reloaded)
-        //let jsonString = localStorage.getItem("tasksUser");
-
-        /* if (jsonString) {
-            let jsonArray = JSON.parse(jsonString).filter((todo) => !todo.completed); // Filter out completed to do's
-            setTodos(jsonArray);
-        } */
-
     }, []);
 
     async function handleSetList(id) {
@@ -147,15 +138,12 @@ const Todo = () => {
     };
 
     const viewDetails = (todo) => {
-        // Temporary solution to access this to-do item in the detail page
-        //localStorage.setItem(todo.id, JSON.stringify(todo));
-
-        // TODO: Rework details to work with TaskLists
-        //navigate(`/detail/${todo.id}`);
-        navigate(`/detail/${list.id}/${todo.id}`)
+        // TODO: list._id is pointless
+        //navigate(`/detail/${todo._id}`);
+        navigate(`/detail/${list._id}/${todo._id}`)
     };
 
-    // Broken
+
     async function completeTask(todo) {
         let updatedTask = todo;
         updatedTask.completed = true;

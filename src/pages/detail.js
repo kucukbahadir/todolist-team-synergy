@@ -1,63 +1,47 @@
 import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useNavigate, useParams} from "react-router-dom";
+import { taskService } from "../services/taskService";
 
 const Detail = () => {
 
     const navigate = useNavigate();
     const {listID, taskID} = useParams();
 
-    const [oldTodo, setOldTodo] = useState({});
+    const [oldTask, setOldTask] = useState({});
     const [newTask, setNewTask] = useState({
         title: "",
         description: "",
         dueDate: "",
         priority: "",
-        completed:  false
+        completed:  false,
+        updatedAt: new Date()
     });
-    const [oldLists, setOldLists] = useState([]);
-    const [oldList, setOldList] = useState([]);
+    //const [oldLists, setOldLists] = useState([]);
+    //const [oldList, setOldList] = useState([]);
 
     // Load todos from localStorage
     useEffect(() => {
-        // This will run when the component is first mounted (or the page is reloaded)
-        const jsonLists = localStorage.getItem("tasklistsUser");
-        let jsonArray = [];
-        let list = [];
-        let task;
+        async function getTask(taskID) {
+            let task = await taskService.getTaskById(taskID);
+            //console.log("Task", task);
 
-        if (jsonLists){
-            jsonArray = JSON.parse(jsonLists);
-
-            // Find correct list by id
-            jsonArray.forEach(_list => {
-                if (_list.id == listID) {
-                    list = _list;
-                }
-            });
-
-            // Find correct task by id
-            list.tasks.forEach(_task => {
-                if (_task.id == taskID) {
-                    task = _task;
-                }
-            });
-
-            setOldTodo(task);
             setNewTask(task);
-
-            setOldList(list);
-            setOldLists(jsonArray);
+            setOldTask(task);
         }
+
+        getTask(taskID)
     }, []);
 
     const onSave = () => {
         console.log("Updated task: ", newTask);
 
+        taskService.updateTask(newTask._id, newTask);
+
         // Attempt 3
-        let newTasks = oldList.tasks.map(tsk => (tsk.id == newTask.id ? newTask : tsk));
-        const newList = { ...oldList, tasks: newTasks };
-        let newLists = oldLists.map(lst => { return lst.id == newList.id ? newList : lst});
+        //let newTasks = oldList.tasks.map(tsk => (tsk.id == newTask.id ? newTask : tsk));
+        //const newList = { ...oldList, tasks: newTasks };
+        //let newLists = oldLists.map(lst => { return lst.id == newList.id ? newList : lst});
 
         // Doesn't set the oldTodos to newTodos because user gets navigated of the page anyway
         //localStorage.setItem("tasklistsUser", JSON.stringify(newLists))
@@ -66,7 +50,7 @@ const Detail = () => {
     };
 
     const onReset = () => {
-        setNewTask(oldTodo);
+        setNewTask(oldTask);
     };
 
     const onCancel = () => {
