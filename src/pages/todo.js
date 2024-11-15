@@ -97,6 +97,7 @@ const Todo = () => {
                     }
                 `}
             </style>
+        <br/><br/>
             <div className="container-fluid bg-black rounded-pill">
                 <br/>
                 <div className="row justify-content-center align-items-center text-center">
