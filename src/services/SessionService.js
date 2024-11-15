@@ -119,13 +119,7 @@ class Session {
         localStorage.setItem("user", JSON.stringify(user));
     }
 
-    /**
-     * Method returns the token.
-     * @returns {string | null}
-     */
-    getToken() {
-        return localStorage.getItem("token");
-    }
+
 
     /**
      * Method returns the user.
@@ -136,17 +130,25 @@ class Session {
     }
 
     /**
-     * Method returns the user.
-     * @returns {string | null}
+     * Method to fetch the token, ensuring it is available after page reload
+     */
+    getCurrentToken() {
+        return localStorage.getItem("token");
+    }
+
+    /**
+     * Ensure user is authenticated and return userId
      */
     getUserId() {
         if (this.isAuthenticated()) {
-            return JSON.parse(localStorage.getItem("user")).id;
+            return JSON.parse(localStorage.getItem("user"))._id;
+        } else {
+            return null;
         }
     }
 
 }
 // Export a singleton instance in the same file
-export const SessionService = Object.freeze(new Session("http://localhost:5000", "token"));
+export const SessionService = Object.freeze(new Session(process.env.REACT_APP_API_URL, "token"));
 
 
