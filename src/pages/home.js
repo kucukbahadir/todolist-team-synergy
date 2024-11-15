@@ -11,6 +11,8 @@ const Home = () => {
         //sessionStorage.clear(); // sessionStorage doesn't get used in the application
     }
 
+    localStorage.clear();
+
     return (
         <div>
             <img src={logo} className="App-logo" alt="logo" />
