@@ -105,25 +105,27 @@ const Notifications = () => {
         }
     }
 
-    const showToast = async () => {
+    async function showToast(){
 
-        const notification = await notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+        await fetchNotifications().then(async () => {
+            const notification = await notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-        if (!notification) {
-            return;
-        }
+            if (!notification) {
+                return;
+            }
 
-        Swal.fire({
-            position: 'top-end',
-            icon: 'info',
-            title: notification.title,
-            text: notification.message,
-            showConfirmButton: false,
-            timer: 4000,
-            toast: true,
-            background: '#343a40',
-            color: '#ffffff',
-            footer: `<a href="${notification.link}" target="_blank" class="swal-toast-link">Go to link</a>`
+            await Swal.fire({
+                position: 'top-end',
+                icon: 'info',
+                title: notification.title,
+                text: notification.message,
+                showConfirmButton: false,
+                timer: 4000,
+                toast: true,
+                background: '#343a40',
+                color: '#ffffff',
+                footer: `<a href="${notification.link}" target="_blank" class="swal-toast-link">Go to link</a>`
+            });
         });
     }
 
