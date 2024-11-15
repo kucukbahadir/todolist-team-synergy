@@ -1,26 +1,22 @@
 import React, {useEffect, useState} from 'react';
 import {SessionService} from '../services/SessionService';
+import { taskService } from '../services/taskService';
 
 const Todo = () => {
     const [tasks, setTasks] = useState([]); // State to hold tasks
     const [loading, setLoading] = useState(true); // Loading state
     const [error, setError] = useState(null); // Error state
-    const [form, setForm] = useState({title: '', description: '', dueDate: '', priority: 'Medium'}); // Form state
+    const [form, setForm] = useState({ title: '', description: '', dueDate: '', priority: 'Medium'}); // Form state
     const [editingTask, setEditingTask] = useState(null); // Editing task state
     const [assignUserId, setAssignUserId] = useState(''); // State for assigning user to task
 
-    // Fetch tasks from the backend
     const fetchTasks = async () => {
+        setLoading(true);
         try {
-            setLoading(true);
-            const response = await fetch('http://localhost:5000/api/tasks', {
-                headers: {Authorization: SessionService.getToken()},
-            });
-            if (!response.ok) throw new Error('Failed to fetch tasks');
-            const data = await response.json();
-            setTasks(data);
+            const data = await taskService.getAllTasks();
+            setTasks(data || []);
         } catch (err) {
-            setError(err.message);
+            setError('Failed to fetch tasks');
         } finally {
             setLoading(false);
         }
@@ -30,64 +26,38 @@ const Todo = () => {
         fetchTasks();
     }, []);
 
-    // Create or Update Task
     const handleSave = async (e) => {
         e.preventDefault();
-
-        const url = editingTask
-            ? `http://localhost:5000/api/tasks/${editingTask._id}`
-            : 'http://localhost:5000/api/tasks';
-        const method = editingTask ? 'PUT' : 'POST';
-
         try {
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: SessionService.getToken(),
-                },
-                body: JSON.stringify(form),
-            });
-            if (!response.ok) throw new Error(`Failed to ${editingTask ? 'update' : 'create'} task`);
-
-            fetchTasks(); // Refresh tasks list
-            setForm({title: '', description: '', dueDate: '', priority: 'Medium'}); // Reset form
-            setEditingTask(null); // Clear editing state
+            if (editingTask) {
+                await taskService.updateTask(editingTask._id, form);
+            } else {
+                await taskService.createTask(form);
+            }
+            fetchTasks();
+            setForm({ title: '', description: '', dueDate: '', priority: 'Medium' });
+            setEditingTask(null);
         } catch (err) {
-            console.error(err);
+            setError(`Failed to ${editingTask ? 'update' : 'create'} task`);
         }
     };
 
-    // Delete Task
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
-                method: 'DELETE',
-                headers: {Authorization: SessionService.getToken()},
-            });
-            if (!response.ok) throw new Error('Failed to delete task');
-            fetchTasks(); // Refresh tasks list
+            await taskService.deleteTask(id);
+            fetchTasks();
         } catch (err) {
-            console.error(err);
+            setError('Failed to delete task');
         }
     };
 
-    // Assign Task to User
     const handleAssign = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/tasks/${id}/assign`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: SessionService.getToken(),
-                },
-                body: JSON.stringify({userId: assignUserId}),
-            });
-            if (!response.ok) throw new Error('Failed to assign user to task');
-            fetchTasks(); // Refresh tasks list
-            setAssignUserId(''); // Clear assign input
+            await taskService.assignUserToTask(id, assignUserId);
+            fetchTasks();
+            setAssignUserId('');
         } catch (err) {
-            console.error(err);
+            setError('Failed to assign user to task');
         }
     };
 
@@ -161,17 +131,9 @@ const Todo = () => {
                             <div className="card-body">
                                 <h5 className="card-title">{task.title}</h5>
                                 <p className="card-text">{task.description}</p>
-                                <p>
-                                    <strong>Due Date:</strong>{' '}
-                                    {new Date(task.dueDate).toLocaleDateString()}
-                                </p>
-                                <p>
-                                    <strong>Priority:</strong> {task.priority}
-                                </p>
-                                <p>
-                                    <strong>Status:</strong>{' '}
-                                    {task.completed ? 'Completed' : 'Pending'}
-                                </p>
+                                <p><strong>Due Date:</strong> {new Date(task.dueDate).toLocaleDateString()}</p>
+                                <p><strong>Priority:</strong> {task.priority}</p>
+                                <p><strong>Status:</strong> {task.completed ? 'Completed' : 'Pending'}</p>
                                 <div className="mb-3">
                                     <input
                                         type="text"
@@ -181,22 +143,13 @@ const Todo = () => {
                                         onChange={(e) => setAssignUserId(e.target.value)}
                                     />
                                 </div>
-                                <button
-                                    className="btn btn-success me-2"
-                                    onClick={() => setEditingTask(task)}
-                                >
+                                <button className="btn btn-success me-2" onClick={() => setEditingTask(task)}>
                                     Edit
                                 </button>
-                                <button
-                                    className="btn btn-danger me-2"
-                                    onClick={() => handleDelete(task._id)}
-                                >
+                                <button className="btn btn-danger me-2" onClick={() => handleDelete(task._id)}>
                                     Delete
                                 </button>
-                                <button
-                                    className="btn btn-secondary"
-                                    onClick={() => handleAssign(task._id)}
-                                >
+                                <button className="btn btn-secondary" onClick={() => handleAssign(task._id)}>
                                     Assign
                                 </button>
                             </div>
