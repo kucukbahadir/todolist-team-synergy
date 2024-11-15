@@ -159,7 +159,7 @@ const Todo = () => {
                     </div>
                     {/* Submit button to either add or update a task */}
                     <div className="col-md-2">
-                        <button type="submit" className="btn btn-primary w-100">
+                        <button type="submit" className="btn btn-outline-success w-100">
                             {editingTask ? 'Update Task' : 'Add Task'}
                         </button>
                     </div>
@@ -245,9 +245,9 @@ const Todo = () => {
                                         onChange={(e) => setAssignUserId(e.target.value)}
                                     />
                                     {/* Buttons for editing, deleting, and assigning users */}
-                                    <button className="btn btn-success me-2" onClick={() => setEditingTask(task)}>Edit</button>
-                                    <button className="btn btn-danger me-2" onClick={() => handleDelete(task._id)}>Delete</button>
-                                    <button className="btn btn-secondary" onClick={() => handleAssign(task._id)}>Assign</button>
+                                    <button className="btn btn-outline-success me-2" onClick={() => setEditingTask(task)}>Edit</button>
+                                    <button className="btn btn-outline-danger me-2" onClick={() => handleDelete(task._id)}>Delete</button>
+                                    <button className="btn btn-outline-secondary" onClick={() => handleAssign(task._id)}>Assign</button>
                                 </div>
                             </div>
                         </div>
