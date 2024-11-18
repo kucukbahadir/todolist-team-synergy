@@ -137,6 +137,21 @@ class Session {
         return await fetch(this.URL + "/auth/register", req);
     }
 
+    async getUser(email) {
+        let req = {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }
+        
+        const res = await fetch(`${this.URL}/auth/user/${email}`, req);
+        
+        if (res.ok) {
+            return res.json()
+        }
+    }
+
     /**
      * Method signs out the user.
      *
@@ -192,7 +207,6 @@ class Session {
             return null;
         }
     }
-
 }
 // Export a singleton instance in the same file
 export const SessionService = Object.freeze(new Session(process.env.REACT_APP_API_URL, "token"));

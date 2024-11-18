@@ -49,10 +49,11 @@ const Todo = () => {
         //console.log("IDs", taskIDs);
 
         let tasks = await taskService.getTasks(taskIDs);
-        if (tasks.length == 0) {
-            setTasks([]);
+        //setTasks(tasks);
+        if (tasks) {
+            setTasks(tasks);
         } else {
-        setTasks(tasks); }
+        setTasks([]); }
     }
 
     // Function to handle saving a new or edited task
@@ -107,6 +108,26 @@ const Todo = () => {
         // TODO: list._id is pointless
         //navigate(`/detail/${todo._id}`);
         navigate(`/detail/${list._id}/${todo._id}`)
+    };
+
+    async function completeTask(todo) {
+        let updatedTask = todo;
+        updatedTask.completed = true;
+        console.log("Updated Task", updatedTask)
+        // Update task in db
+        let update = await taskService.updateTask(updatedTask._id, updatedTask);
+
+        // Update the task in the tasks useState
+        const updatedTasks = tasks.map(task => {
+            // Can be replaced for a teriary operator
+            if (task._id === todo._id) {
+                return { ...task, completed: true };
+            }
+            return task;
+        });        
+        
+        console.log("Updated tasks", updatedTasks);
+        setTasks(updatedTasks);
     };
 
     // Filter and sort tasks based on the user-selected filters and sorting criteria
@@ -277,6 +298,8 @@ const Todo = () => {
                 const dueDateClass = new Date(task.dueDate) < new Date() ? "text-danger" : "text-muted";
                 const priorityClass = task.priority === "High" ? "text-danger" : task.priority === "Medium" ? "text-primary" : "text-success";
 
+                if( task.completed) { return (null); }
+
                 return (<div key={task._id} className="col-md-4 mb-4">
                         <div className="card custom-card">
                             <div className="card-body">
@@ -293,13 +316,6 @@ const Todo = () => {
                                 </p>
                                 {/*<p><strong>Status: </strong>{task.completed ? 'Completed' : 'Pending'}</p>
                                 {/* User assignment */}
-                                <input
-                                    type="text"
-                                    className="form-control mb-3"
-                                    placeholder="Assign User ID"
-                                    value={assignUserId}
-                                    onChange={(e) => setAssignUserId(e.target.value)}
-                                />
                                 {/* Status Toggle Button */}
                                 {/* <button
                                     className={`btn ${task.completed ? 'btn-outline-warning' : 'btn-outline-info'} m-2`}
@@ -315,9 +331,9 @@ const Todo = () => {
                                 <button className="btn btn-outline-danger me-2"
                                         onClick={() => handleDelete(task._id)}>Delete
                                 </button>
-                                <button className="btn btn-outline-secondary"
-                                        onClick={() => handleAssign(task._id)}>Assign
-                                </button>
+                                <button onClick={() => completeTask(task)} className="btn btn-outline-success p-2 m-1">
+                                        Complete
+                                    </button>
                             </div>
                         </div>
                     </div>
