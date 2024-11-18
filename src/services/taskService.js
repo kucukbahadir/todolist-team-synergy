@@ -13,23 +13,22 @@ class TaskService {
      * Fetch all tasks.
      * @returns {Promise<any|null>}
      */
-    async getAllTasks() {
-        try {
-            const response = await fetch(`${this.URL}/api/tasks`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-            });
-
-            if (response.ok) {
-                return await response.json();
-            } else {
-                console.error('Failed to fetch tasks:', response);
-                return null;
+    async getTasks(taskIDs) {
+        let url = `${this.URL}/api/tasks?ids=${taskIDs}`;
+        //console.log(url);
+        let response = await fetch(url, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
             }
-        } catch (error) {
-            console.error('Error fetching tasks:', error);
-            return null;
+        });
+
+        if (response.ok) {
+            let tasks = await response.json();
+            console.log("Tasks", tasks)
+            return tasks;
+        } else {
+            console.error("fuck")
         }
     }
 

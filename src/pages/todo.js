@@ -1,14 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {SessionService} from '../services/SessionService';
+//import {SessionService} from '../services/SessionService';
 import {taskService} from '../services/taskService';
+import { useNavigate } from 'react-router-dom';
+import {taskListService} from '../services/TaskListService'
 
 const Todo = () => {
     // State for storing tasks, loading status, error message, form data and more
-    const [tasks, setTasks] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const navigate = useNavigate()
+    const [name, setName] = useState("");
+    const [lists, setLists] = useState([]);     // Contains the all task_list Objects
+    const [list, setList] = useState();         // Contains the selected task_list Object
+    const [tasks, setTasks] = useState([]);     // Contains the task Objects
+    
+    //const [error, setError] = useState(null);
     const [form, setForm] = useState({title: '', description: '', dueDate: '', priority: 'Medium'});
-    const [editingTask, setEditingTask] = useState(null);
+    //const [editingTask, setEditingTask] = useState(null);
     const [assignUserId, setAssignUserId] = useState('');
 
     // Filtering and Sorting State
@@ -17,60 +23,90 @@ const Todo = () => {
     const [sortOrder, setSortOrder] = useState('asc');
 
     // Function to fetch tasks from the backend using taskService
-    const fetchTasks = async () => {
-        setLoading(true);
-        try {
-            const data = await taskService.getAllTasks();
-            setTasks(data || []);
-        } catch (err) {
-            setError('Failed to fetch tasks');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // useEffect hook to fetch tasks when the component mounts
     useEffect(() => {
-        fetchTasks(); // Call fetchTasks on component mount
+        const user = JSON.parse(localStorage.getItem("user"));
+        setName(user.email);
+
+        // TODO:
+        const _lists = JSON.parse(localStorage.getItem("lists"))
+        console.log("Lists", _lists)
+        setLists(_lists);
     }, []);
 
+    async function handleSetList(id) {
+        let _list;
+        lists.forEach(element => {
+            if (element._id == id) {
+                _list = element
+                setList(element);
+                //break;
+            }
+        });
+
+        // TODO: Get lists task from db
+        console.log("List", _list);
+        const taskIDs = _list.tasks.join(",");
+        //console.log("IDs", taskIDs);
+
+        let tasks = await taskService.getTasks(taskIDs);
+        if (tasks.length == 0) {
+            setTasks([]);
+        } else {
+        setTasks(tasks); }
+    }
+
     // Function to handle saving a new or edited task
-    const handleSave = async (e) => {
+    const handleAddTask = async (e) => {
         e.preventDefault();
         try {
-            // If editing, update the existing task; otherwise, create a new task
-            if (editingTask) {
-                await taskService.updateTask(editingTask._id, form);
-            } else {
-                await taskService.createTask(form);
-            }
-            fetchTasks(); // Fetch updated task list
+            let insertedTask = await taskService.createTask(form);
+            console.log("Inserted", insertedTask);
+
+            let updatedTasks = [...tasks, insertedTask];
+            setTasks(updatedTasks);
+
+            let updatedListTasks = list
+            updatedListTasks.tasks.push(insertedTask._id)
+            //console.log(updatedListTasks._id, insertedTask._id)
+            taskListService.updateTaskList(updatedListTasks._id, insertedTask._id)
+            setList(updatedListTasks);
+
+
             setForm({title: '', description: '', dueDate: '', priority: 'Medium'});
-            setEditingTask(null); // Clear the editing task
         } catch (err) {
-            setError(`Failed to ${editingTask ? 'update' : 'create'} task`); // Set error if save fails
+            //setError(`Failed to ${editingTask ? 'update' : 'create'} task`); // Set error if save fails
+            console.log(err);
         }
     };
 
-    // Function to handle deleting a task
-    const handleDelete = async (id) => {
-        try {
-            await taskService.deleteTask(id); // Delete the task
-            fetchTasks();
-        } catch (err) {
-            setError('Failed to delete task'); // Set error if deletion fails
-        }
+    // Function to delete a to do by its id
+    const handleDelete = (id) => {
+        const updatedTasks = tasks.filter((todo) => todo._id !== id);
+        setTasks(updatedTasks);
+
+        taskService.deleteTask(id);
     };
 
     // Function to handle assigning a user to a task
     const handleAssign = async (id) => {
         try {
-            await taskService.assignUserToTask(id, assignUserId); // Assign user to the task
-            fetchTasks();
-            setAssignUserId('');
+            //await taskService.assignUserToTask(id, assignUserId); // Assign user to the task
+            //fetchTasks();
+            //setAssignUserId('');
+
+            // Get uid from mail
+            // Add uid to task assignedToUser
+
         } catch (err) {
-            setError('Failed to assign user to task'); // Set error if assignment fails
+            //setError('Failed to assign user to task'); // Set error if assignment fails
+            console.log(err);
         }
+    };
+
+    const viewDetails = (todo) => {
+        // TODO: list._id is pointless
+        //navigate(`/detail/${todo._id}`);
+        navigate(`/detail/${list._id}/${todo._id}`)
     };
 
     // Filter and sort tasks based on the user-selected filters and sorting criteria
@@ -90,20 +126,21 @@ const Todo = () => {
             }
         });
 
-    const handleToggleStatus = async (id, currentStatus) => {
+    /* const handleToggleStatus = async (id, currentStatus) => {
         try {
             // Toggle the task completion status
             await taskService.updateTask(id, {completed: !currentStatus});
-            fetchTasks(); // Fetch updated task list
+            //fetchTasks(); // Fetch updated task list
         } catch (err) {
-            setError('Failed to update task status');
+            //setError('Failed to update task status');
+            console.log(err);
         }
-    };
+    }; */
 
 
     // Display loading state or error message if applicable
-    if (loading) return <div>Loading tasks...</div>;
-    if (error) return <div>Error: {error}</div>;
+    //if (loading) return <div>Loading tasks...</div>;
+    //if (error) return <div>Error: {error}</div>;
 
     return (<div className="container-fluid">
         {/* Custom styling for cards */}
@@ -121,7 +158,7 @@ const Todo = () => {
         </div>
 
         {/* Form for Adding or Editing Tasks */}
-        <form onSubmit={handleSave} className="mb-4">
+        <form onSubmit={handleAddTask} className="mb-4">
             <div className="row mb-3">
                 {/* Title input field */}
                 <div className="col-md-3">
@@ -170,7 +207,8 @@ const Todo = () => {
                 {/* Submit button to either add or update a task */}
                 <div className="col-md-2">
                     <button type="submit" className="btn btn-outline-success w-100">
-                        {editingTask ? 'Update Task' : 'Add Task'}
+                        {/*editingTask ? 'Update Task' : 'Add Task'*/}
+                        Add task
                     </button>
                 </div>
             </div>
@@ -220,6 +258,18 @@ const Todo = () => {
             </div>
         </div>
 
+        {/* Display the list of task lists */}
+        <div>
+                <form onSubmit={(e) => { e.preventDefault(); }}>
+                    <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
+                        <option value="" disabled>Select a list</option>
+                        {lists.map((task) => (
+                        <option key={task._id} value={task._id}>{task.title}</option>
+                        ))}
+                    </select>
+                </form>
+            </div>
+
         {/* Displaying the tasks */}
         <div className="row">
             {filteredAndSortedTasks.map((task) => {
@@ -241,7 +291,7 @@ const Todo = () => {
                                 <p><strong>Priority: </strong>
                                     <span className={priorityClass}>{task.priority}</span>
                                 </p>
-                                <p><strong>Status: </strong>{task.completed ? 'Completed' : 'Pending'}</p>
+                                {/*<p><strong>Status: </strong>{task.completed ? 'Completed' : 'Pending'}</p>
                                 {/* User assignment */}
                                 <input
                                     type="text"
@@ -251,15 +301,16 @@ const Todo = () => {
                                     onChange={(e) => setAssignUserId(e.target.value)}
                                 />
                                 {/* Status Toggle Button */}
-                                <button
+                                {/* <button
                                     className={`btn ${task.completed ? 'btn-outline-warning' : 'btn-outline-info'} m-2`}
                                     onClick={() => handleToggleStatus(task._id, task.completed)}
                                 >
                                     {task.completed ? 'Mark as Pending' : 'Mark as Completed'}
-                                </button>
+                                </button> */}
                                 {/* Buttons for editing, deleting, and assigning users */}
+                                
                                 <button className="btn btn-outline-success me-2"
-                                        onClick={() => setEditingTask(task)}>Edit
+                                        onClick={() => viewDetails(task)}>Edit
                                 </button>
                                 <button className="btn btn-outline-danger me-2"
                                         onClick={() => handleDelete(task._id)}>Delete
