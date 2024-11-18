@@ -42,7 +42,7 @@ const Detail = () => {
         console.log("Updated task: ", newTask);
 
         // Verify new user
-        let u = await SessionService.getUser(mail);
+        let u = await SessionService.getUserbyMail(mail);
         console.log("u", u)
 
         if (u) {
@@ -64,7 +64,7 @@ const Detail = () => {
         // Doesn't set the oldTodos to newTodos because user gets navigated of the page anyway
         //localStorage.setItem("tasklistsUser", JSON.stringify(newLists))
 
-        //navigate("/todo");
+        navigate("/todo");
     };
 
     const onReset = () => {

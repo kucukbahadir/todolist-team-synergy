@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {taskService} from '../services/taskService';
 import { useNavigate } from 'react-router-dom';
 import {taskListService} from '../services/TaskListService'
+import { SessionService } from '../services/SessionService';
 
 const Todo = () => {
     // State for storing tasks, loading status, error message, form data and more
@@ -48,12 +49,32 @@ const Todo = () => {
         const taskIDs = _list.tasks.join(",");
         //console.log("IDs", taskIDs);
 
-        let tasks = await taskService.getTasks(taskIDs);
-        //setTasks(tasks);
-        if (tasks) {
-            setTasks(tasks);
+        let _tasks = await taskService.getTasks(taskIDs);
+        //setTasks(_tasks);
+
+        if (_tasks && _tasks.length > 0) {
+            // Fetch users associated with each task
+            for (let i = 0; i < _tasks.length; i++) {
+                try {
+                    const temp = await SessionService.getUserbyID(_tasks[i].assignedToUser);
+        
+                    if (temp) {
+                        console.log(`User data for task ${i}:`, temp);
+                        _tasks[i].mail = temp.email;
+                    } else {
+                        console.warn(`No user found for task ${i} with user ID:`, _tasks[i].assignedToUser);
+                    }
+                } catch (error) {
+                    console.error(`Error fetching user for task ${i}:`, error);
+                }
+            }
+            setTasks(_tasks);
         } else {
-        setTasks([]); }
+            // If no tasks were retrieved or tasks is null
+            console.warn("No tasks retrieved.");
+            setTasks([]);
+        }
+        console.log("tasks", tasks)
     }
 
     // Function to handle saving a new or edited task
@@ -86,22 +107,6 @@ const Todo = () => {
         setTasks(updatedTasks);
 
         taskService.deleteTask(id);
-    };
-
-    // Function to handle assigning a user to a task
-    const handleAssign = async (id) => {
-        try {
-            //await taskService.assignUserToTask(id, assignUserId); // Assign user to the task
-            //fetchTasks();
-            //setAssignUserId('');
-
-            // Get uid from mail
-            // Add uid to task assignedToUser
-
-        } catch (err) {
-            //setError('Failed to assign user to task'); // Set error if assignment fails
-            console.log(err);
-        }
     };
 
     const viewDetails = (todo) => {
@@ -314,6 +319,7 @@ const Todo = () => {
                                 <p><strong>Priority: </strong>
                                     <span className={priorityClass}>{task.priority}</span>
                                 </p>
+                                <p><strong>Assigned to: </strong>{task.mail}</p>
                                 {/*<p><strong>Status: </strong>{task.completed ? 'Completed' : 'Pending'}</p>
                                 {/* User assignment */}
                                 {/* Status Toggle Button */}

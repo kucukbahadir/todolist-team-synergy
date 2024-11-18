@@ -137,7 +137,7 @@ class Session {
         return await fetch(this.URL + "/auth/register", req);
     }
 
-    async getUser(email) {
+    async getUserbyMail(email) {
         let req = {
             method: "GET",
             headers: {
@@ -145,7 +145,22 @@ class Session {
             }
         }
         
-        const res = await fetch(`${this.URL}/auth/user/${email}`, req);
+        const res = await fetch(`${this.URL}/auth/mail/${email}`, req);
+        
+        if (res.ok) {
+            return res.json()
+        }
+    }
+
+    async getUserbyID(id) {
+        let req = {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }
+        console.log(id)        
+        const res = await fetch(`${this.URL}/auth/id/${id}`, req);
         
         if (res.ok) {
             return res.json()
