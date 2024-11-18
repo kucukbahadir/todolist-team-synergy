@@ -14,10 +14,11 @@ const Todo = () => {
     const [taskLists, setTaskLists] = useState(location.state?.taskLists || []);
 
     const [name, setName] = useState("");
+    const [newListTitle, setNewListTitle] = useState(""); 
     const [lists, setLists] = useState([]);     // Contains the all task_list Objects
     const [list, setList] = useState();         // Contains the selected task_list Object
     const [tasks, setTasks] = useState([]);     // Contains the task Objects
-    const [newListTitle, setNewListTitle] = useState(""); 
+    
     //const [listTodos, setListTodos] = useState([]);
     //const [todos, setTodos] = useState([]);
 
@@ -189,7 +190,7 @@ const Todo = () => {
     });
 
     const handleCreateList = async () => {
-        if (!newListsTitle) {
+        if (!newListTitle) {
             alert("Please enter a title for the task list." );
             return;
         }
@@ -367,7 +368,22 @@ const Todo = () => {
             )}
 
             <br />
-            
+            <div className="container my-3">
+                <input
+                    type="text"
+                    className="form=control"
+                    placeholder="Enter a title"
+                    value={newListTitle}
+                    onChange={(e) => setNewListTitle(e.target.value)}
+                />
+                <br></br>
+                <button
+                    className="btn btn-outline-success"
+                    onClick={handleCreateList}
+                >
+                    Create New Task List
+                </button>
+            </div>
             
 
             {/* Display the list of task lists */}
