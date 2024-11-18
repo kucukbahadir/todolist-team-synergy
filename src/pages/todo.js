@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { SessionService } from "../services/SessionService";
+import { taskService } from "../services/taskService";
+import { taskListService } from "../services/TaskListService";
+
+//const {ObjectId} = require('mongodb');
 
 const Todo = () => {
     const navigate = useNavigate();
@@ -10,32 +13,40 @@ const Todo = () => {
     const [taskLists, setTaskLists] = useState(location.state?.taskLists || []);
 
     const [name, setName] = useState("");
-    const [lists, setLists] = useState([]);
-    const [list, setList] = useState();
-    //const [tasks, setTasks] = useState([]);
+    const [lists, setLists] = useState([]);     // Contains the all task_list Objects
+    const [list, setList] = useState();         // Contains the selected task_list Object
+    const [tasks, setTasks] = useState([]);     // Contains the task Objects
     //const [listTodos, setListTodos] = useState([]);
     //const [todos, setTodos] = useState([]);
 
     // Load todos from localStorage
-    useEffect(() => {   // This will run when the component is first mounted (or the page is reloaded)
-        //console.log("Todo Page")
-        setName(localStorage.getItem("nameUser"))
-        const jsonLists = localStorage.getItem("tasklistsUser");
-        //console.log(jsonLists)
-        if (jsonLists) {
-            let arrayLists = JSON.parse(jsonLists);
-            //console.log(arrayLists);
-            setLists(arrayLists);
-        }
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        setName(user.email);
+
+        // TODO:
+        const _lists = JSON.parse(localStorage.getItem("lists"))
+        console.log("Lists", _lists)
+        setLists(_lists);
     }, []);
 
-    const handleSetList = (id) => {
+    async function handleSetList(id) {
+        let _list;
         lists.forEach(element => {
-            if (element.id == id) {
-                setList(element)
-                return;
+            if (element._id == id) {
+                _list = element
+                setList(element);
+                //break;
             }
         });
+
+        // TODO: Get lists task from db
+        console.log("List", _list);
+        const taskIDs = _list.tasks.join(",");
+        //console.log("IDs", taskIDs);
+
+        let tasks = await taskService.getTasks(taskIDs);
+        setTasks(tasks);
     }
 
     const [newTodoTitle, setNewTodoTitle] = useState("");
@@ -48,63 +59,55 @@ const Todo = () => {
     const [priorityFilter, setPriorityFilter] = useState("");
 
     // Function to add a new to do
-    const buttonAddToDo = (e) => {
+    async function buttonAddToDo(e) {
         e.preventDefault();
 
         if (list == null) {
-            alert("Please select a list")
+            alert("Please select a list");
             return;
         }
 
         if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
             const newTask = {
-                id: list.tasks.length + 1, // add an id for the to do
+                //_id: new ObjectId(),
                 title: newTodoTitle,
                 description: newTodoDescription,
                 dueDate: new Date(newTodoDueDate),
                 priority: newTodoPriority,
                 completed: false
             };
-            // Update the to do's list by adding the new to do and reset the input fields
-            let updatedTasks = [...list.tasks, newTask];
 
-            const updatedList = { ...list, tasks: updatedTasks };
-            const updatedLists = lists.map(element => 
-                (element.id === updatedList.id ? updatedList : element)
-            );
+            let insertedTask = await taskService.createTask(newTask);
+            console.log("Inserted", insertedTask);
 
-            setList(updatedList);
-            setLists(updatedLists);
+            let updatedTasks = [...tasks, insertedTask];
+            setTasks(updatedTasks);
 
-            localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists))
-         
+            let updatedListTasks = list
+            updatedListTasks.tasks.push(insertedTask._id)
+            //console.log(updatedListTasks._id, insertedTask._id)
+            taskListService.updateTaskList(updatedListTasks._id, insertedTask._id)
+            setList(updatedListTasks);
 
             // Reset input fields
-            setNewTodoTitle(""); 
-            setNewTodoDescription("");
-            setNewTodoDueDate("");
-            setNewTodoPriority("");
+            //setNewTodoTitle(""); 
+            //setNewTodoDescription("");
+            //setNewTodoDueDate("");
+            //setNewTodoPriority("");
         }
     };
 
     // Function to delete a to do by its id
     const handleDelete = (id) => {
-        const updatedTasks = list.tasks.filter((todo) => todo.id !== id);
-        
-        const updatedList = { ...list, tasks: updatedTasks };
-        const updatedLists = lists.map(element => 
-            (element.id === updatedList.id ? updatedList : element)
-        );
+        const updatedTasks = tasks.filter((todo) => todo._id !== id);
+        setTasks(updatedTasks);
 
-        setList(updatedList);
-        setLists(updatedLists);
-
-        localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
+        taskService.deleteTask(id);
     };
 
     //Function to sort Todos
     const sortedAndFilteredTodos = () => {
-        let filteredTodos = list ? list.tasks : []; // Safer initialization
+        let filteredTodos = tasks ? tasks : []; // Safer initialization
 
     
         if (priorityFilter) {
@@ -132,31 +135,40 @@ const Todo = () => {
     };
 
     const viewDetails = (todo) => {
-        // Temporary solution to access this to-do item in the detail page
-        //localStorage.setItem(todo.id, JSON.stringify(todo));
-
-        // TODO: Rework details to work with TaskLists
-        //navigate(`/detail/${todo.id}`);
-        navigate(`/detail/${list.id}/${todo.id}`)
+        // TODO: list._id is pointless
+        //navigate(`/detail/${todo._id}`);
+        navigate(`/detail/${list._id}/${todo._id}`)
     };
 
-    const completeTask = (todo) => {
-        const updatedTasks = list.tasks.map(task => {
+
+    async function completeTask(todo) {
+        let updatedTask = todo;
+        updatedTask.completed = true;
+        console.log("Updated Task", updatedTask)
+        // Update task in db
+        let update = await taskService.updateTask(updatedTask._id, updatedTask);
+
+        // Update the task in the tasks useState
+        const updatedTasks = tasks.map(task => {
             // Can be replaced for a teriary operator
-            if (task.id === todo.id) {
+            if (task._id === todo._id) {
                 return { ...task, completed: true };
             }
             return task;
-        });
+        });        
+        
+        console.log("Updated tasks", updatedTasks);
+        setTasks(updatedTasks);
 
-        const updatedList = { ...list, tasks: updatedTasks };
+        // Update list with the
+        /* const updatedList = { ...list, tasks: updatedTasks };
         console.log("Updated List", updatedList);
-        setList(updatedList);
+        setList(updatedList); */
 
-        let updatedLists = lists.map(lst => { return lst.id == updatedList.id ? updatedList : lst});
-        setLists(updatedLists);
+        /* let updatedLists = lists.map(lst => { return lst.id == updatedList.id ? updatedList : lst});
+        setLists(updatedLists); */
 
-        localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
+        //localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
     };
 
 
@@ -333,9 +345,9 @@ const Todo = () => {
             <div>
                 <form onSubmit={(e) => { e.preventDefault(); }}>
                     <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
-                        <option value="" disabled>Select a task</option>
-                        {taskLists.map((task) => (
-                        <option key={task.id} value={task.id}>{task.nameTaskList}</option>
+                        <option value="" disabled>Select a list</option>
+                        {lists.map((task) => (
+                        <option key={task._id} value={task._id}>{task.title}</option>
                         ))}
                     </select>
                 </form>
@@ -355,7 +367,7 @@ const Todo = () => {
                                     {/* Task detail for the to do */}
                                     <p className="card-text">
                                         <small className="text-muted">Task
-                                            ID: {sortedTasks.id}</small> {/* Displaying the task ID */}
+                                            ID: {sortedTasks._id}</small> {/* Displaying the task ID */}
                                     </p>
                                     <p className="card-text">
                                         {/*
@@ -382,7 +394,7 @@ const Todo = () => {
                                     {/* Delete button */}
                                     <button
                                         className="btn btn-outline-danger p-2 m-1"
-                                        onClick={() => handleDelete(sortedTasks.id)} // Delete the to do by its ID
+                                        onClick={() => handleDelete(sortedTasks._id)} // Delete the to do by its ID
                                     >
                                         Delete
                                     </button>
