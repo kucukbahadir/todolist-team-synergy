@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { taskService } from "../services/taskService";
+import { SessionService } from "../services/SessionService";
 import { taskListService } from "../services/TaskListService";
 
 //const {ObjectId} = require('mongodb');
@@ -16,6 +17,7 @@ const Todo = () => {
     const [lists, setLists] = useState([]);     // Contains the all task_list Objects
     const [list, setList] = useState();         // Contains the selected task_list Object
     const [tasks, setTasks] = useState([]);     // Contains the task Objects
+    const [newListTitle, setNewListTitle] = useState(""); 
     //const [listTodos, setListTodos] = useState([]);
     //const [todos, setTodos] = useState([]);
 
@@ -186,6 +188,31 @@ const Todo = () => {
         }
     });
 
+    const handleCreateList = async () => {
+        if (!newListsTitle) {
+            alert("Please enter a title for the task list." );
+            return;
+        }
+
+        try {
+            const newList = {
+                title: newListTitle,
+                tasks: [],
+                sharedWith: [],
+            };
+
+            const createdList = await taskListService.createTaskList(newList);
+
+            //Update the lists state
+            setLists((prevLists) => [...prevLists, createdList]);        
+            setNewListTitle("");
+
+            alert ("New task list created!")
+        } catch (error) {
+            console.error("Error creating task list: ", error)
+            alert("Failed to create a new task list.")
+        }
+    };
     return (
         <div className="container-fluid">
             <style>
@@ -341,6 +368,8 @@ const Todo = () => {
 
             <br />
             
+            
+
             {/* Display the list of task lists */}
             <div>
                 <form onSubmit={(e) => { e.preventDefault(); }}>
