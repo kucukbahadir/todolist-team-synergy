@@ -137,6 +137,36 @@ class Session {
         return await fetch(this.URL + "/auth/register", req);
     }
 
+    async getUserbyMail(email) {
+        let req = {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }
+        
+        const res = await fetch(`${this.URL}/auth/mail/${email}`, req);
+        
+        if (res.ok) {
+            return res.json()
+        }
+    }
+
+    async getUserbyID(id) {
+        let req = {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }
+        console.log(id)        
+        const res = await fetch(`${this.URL}/auth/id/${id}`, req);
+        
+        if (res.ok) {
+            return res.json()
+        }
+    }
+
     /**
      * Method signs out the user.
      *

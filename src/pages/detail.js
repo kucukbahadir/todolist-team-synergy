@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useNavigate, useParams} from "react-router-dom";
 import { taskService } from "../services/taskService";
+import { SessionService } from "../services/SessionService";
 
 const Detail = () => {
 
@@ -15,8 +16,10 @@ const Detail = () => {
         dueDate: "",
         priority: "",
         completed:  false,
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        assignedToUser: ""
     });
+    const [newUser, setNewUser] = useState();
     //const [oldLists, setOldLists] = useState([]);
     //const [oldList, setOldList] = useState([]);
 
@@ -28,15 +31,30 @@ const Detail = () => {
 
             setNewTask(task);
             setOldTask(task);
+
+            setNewUser(JSON.parse(localStorage.getItem("user")).email)
         }
 
         getTask(taskID)
     }, []);
 
-    const onSave = () => {
+    async function onSave(mail) {
         console.log("Updated task: ", newTask);
 
-        taskService.updateTask(newTask._id, newTask);
+        // Verify new user
+        let u = await SessionService.getUserbyMail(mail);
+        console.log("u", u)
+
+        if (u) {
+            //setNewTask({...newTask, assignedToUser: u._id})
+            let temp = newTask;
+            temp.assignedToUser = u._id;
+            console.log("Updated temp: ", temp);
+
+            taskService.updateTask(temp._id, temp);
+        }
+
+        //taskService.updateTask(newTask._id, newTask);
 
         // Attempt 3
         //let newTasks = oldList.tasks.map(tsk => (tsk.id == newTask.id ? newTask : tsk));
@@ -113,6 +131,21 @@ const Detail = () => {
                         </select>
                     </div>
 
+                    <div className={"flex flex-col p-3"}>
+                        <label className={"text-sm align-self-start"} htmlFor={"assigned"}>Assigned</label>
+                        <input
+                            type="text"
+                            className="card-text border-2 border-gray-200"
+                            placeholder="user"
+                            //value={JSON.parse(localStorage.getItem("user")).email}
+                            //value={setNewUser(JSON.parse(localStorage.getItem("user")).email)}
+                            value={newUser}
+                            onChange={(e) => setNewUser(e.target.value)}
+                            //value={newTask.assignedToUser}
+                            //onChange={(e) => setNewTask({...newTask, assignedToUser: e.target.value})}
+                        />
+                    </div>
+
                     <div className={"flex flex-row justify-around pt-3"}>
                         <button className="btn btn-outline-secondary" onClick={
                             () => onCancel()
@@ -125,7 +158,7 @@ const Detail = () => {
                             Reset Changes
                         </button>
                         <button className="btn btn-outline-success" onClick={
-                            () => onSave()
+                            () => onSave(newUser)
                         }>
                             Save
                         </button>
