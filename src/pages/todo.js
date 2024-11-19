@@ -56,11 +56,11 @@ const Todo = () => {
             // Fetch users associated with each task
             for (let i = 0; i < _tasks.length; i++) {
                 try {
-                    const temp = await SessionService.getUserbyID(_tasks[i].assignedToUser);
+                    const _user = await SessionService.getUserbyID(_tasks[i].assignedToUser);
         
-                    if (temp) {
-                        console.log(`User data for task ${i}:`, temp);
-                        _tasks[i].mail = temp.email;
+                    if (_user) {
+                        console.log(`User data for task ${i}:`, _user);
+                        _tasks[i].mail = _user.email;
                     } else {
                         console.warn(`No user found for task ${i} with user ID:`, _tasks[i].assignedToUser);
                     }
