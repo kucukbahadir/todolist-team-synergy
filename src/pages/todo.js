@@ -96,9 +96,11 @@ const Todo = () => {
             // Update db
             console.log("updating db")
             console.log("_list", _list)
-            taskListService.updateTaskList2(_list._id, _list);
-            //console.log("_user", _user);
-            //SessionService.updateUser(_user.id, _user);
+            const temp = await taskListService.updateTaskList2(_list._id, _user._id);
+            console.log("temp", temp)
+
+            console.log("_user", _user);
+            SessionService.updateUser(_user._id, _user);
 
             // Update useStates / localStorage
             localStorage.setItem("user", _user)

@@ -176,8 +176,9 @@ class Session {
             },
             body: JSON.stringify(user)
         }
-
-        const res = await fetch(`${this.URL}/admin/${id}`, req);
+        const url = `${this.URL}/admin/${id}`
+        console.log("User url", url);
+        const res = await fetch(url, req);
 
         if (res.ok) {
             return res.json();

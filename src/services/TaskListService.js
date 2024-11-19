@@ -55,16 +55,17 @@ class TaskListService {
         }
     }
 
-    async updateTaskList2(id, update) {
+    async updateTaskList2(id, userID) {
         try {
             const res = await fetch(`${this.URL}/lists/${id}/update`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ list: update }),
+                body: JSON.stringify({ userID }),
                 credentials: 'include',
             });
 
             if (res.ok) {
+                console.log("OK")
                 return await res.json();
             } else {
                 console.error('Failed to update list:', res);
