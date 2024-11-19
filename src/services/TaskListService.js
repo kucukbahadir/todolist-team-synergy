@@ -55,6 +55,27 @@ class TaskListService {
         }
     }
 
+    async updateTaskList2(id, update) {
+        try {
+            const res = await fetch(`${this.URL}/api/lists/${id}/update`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ list: update }),
+                credentials: 'include',
+            });
+
+            if (res.ok) {
+                return await res.json();
+            } else {
+                console.error('Failed to update list:', res);
+                return null;
+            }
+        } catch(error) {
+            console.log(error);
+            return null;
+        }
+    }
+
 }
 
 export const taskListService = new TaskListService("http://localhost:5000");

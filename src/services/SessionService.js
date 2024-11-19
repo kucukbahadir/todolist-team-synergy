@@ -144,8 +144,8 @@ class Session {
                 'Content-Type': 'application/json',
             }
         }
-        
-        const res = await fetch(`${this.URL}/auth/mail/${email}`, req);
+        console.log("Service", email)    
+        const res = await fetch(`${this.URL}/admin/mail/${email}`, req);
         
         if (res.ok) {
             return res.json()
@@ -159,11 +159,28 @@ class Session {
                 'Content-Type': 'application/json',
             }
         }
-        console.log(id)        
-        const res = await fetch(`${this.URL}/auth/id/${id}`, req);
+        console.log("Service", id)        
+        const res = await fetch(`${this.URL}/admin/id/${id}`, req);
         
         if (res.ok) {
             return res.json()
+        }
+    }
+
+    async updateUser(id, user) {
+        console.log("User,", user)
+        let req = {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user)
+        }
+
+        const res = await fetch(`${this.URL}/admin/${id}`, req);
+
+        if (res.ok) {
+            return res.json();
         }
     }
 
