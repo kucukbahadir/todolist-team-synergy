@@ -196,24 +196,23 @@ const Todo = () => {
         }   
 
         try {
-            const userId = SessionService.getUserId();
-
-            if (!userId) {
-                alert("You must be logged in to create a list.")
+            const currentUser = JSON.parse(localStorage.getItem("user"));
+            if (!currentUser || !currentUser.email) {
+                alert("Error: Unable to idenity the current user.")
                 return;
             }
 
             const newList = {
                 title: newListTitle,
+                owner: currentUser._id,
                 tasks: [],
                 sharedWith: [],
-                owner: userId,
             };
 
             const createdList = await taskListService.createTaskList(newList);
 
             if (createdList) {
-                await SessionService.addListToTuser(userId, createdList._id);
+                await SessionService.addListToUser(currentUser, createdList._id);
                 //Update the lists state
                 setLists((prevLists) => [...prevLists, createdList]);        
                 setNewListTitle("");
