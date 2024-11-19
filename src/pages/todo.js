@@ -193,22 +193,35 @@ const Todo = () => {
         if (!newListTitle) {
             alert("Please enter a title for the task list." );
             return;
-        }
+        }   
 
         try {
+            const userId = SessionService.getUserId();
+
+            if (!userId) {
+                alert("You must be logged in to create a list.")
+                return;
+            }
+
             const newList = {
                 title: newListTitle,
                 tasks: [],
                 sharedWith: [],
+                owner: userId,
             };
 
             const createdList = await taskListService.createTaskList(newList);
 
-            //Update the lists state
-            setLists((prevLists) => [...prevLists, createdList]);        
-            setNewListTitle("");
+            if (createdList) {
+                await SessionService.addListToTuser(userId, createdList._id);
+                //Update the lists state
+                setLists((prevLists) => [...prevLists, createdList]);        
+                setNewListTitle("");
 
-            alert ("New task list created!")
+                alert ("New task list created!")
+            } else {
+                alert("Failed to create the task list.")
+            }      
         } catch (error) {
             console.error("Error creating task list: ", error)
             alert("Failed to create a new task list.")
