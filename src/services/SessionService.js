@@ -251,7 +251,6 @@ class Session {
             throw new Error("Failed to fetch task ")
         }
     }
-
 }
 // Export a singleton instance in the same file
 export const SessionService = Object.freeze(new Session("http://localhost:5000", "token"));
