@@ -1,21 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { taskService } from "../services/taskService";
-import { taskListService } from "../services/TaskListService";
-
-//const {ObjectId} = require('mongodb');
+import React, {useEffect, useState} from 'react';
+//import {SessionService} from '../services/SessionService';
+import {taskService} from '../services/taskService';
+import { useNavigate } from 'react-router-dom';
+import {taskListService} from '../services/TaskListService'
+import { SessionService } from '../services/SessionService';
 
 const Todo = () => {
-    const navigate = useNavigate();
+    // State for storing tasks, loading status, error message, form data and more
+    const navigate = useNavigate()
     const [name, setName] = useState("");
     const [lists, setLists] = useState([]);     // Contains the all task_list Objects
     const [list, setList] = useState();         // Contains the selected task_list Object
     const [tasks, setTasks] = useState([]);     // Contains the task Objects
-    //const [listTodos, setListTodos] = useState([]);
-    //const [todos, setTodos] = useState([]);
+    
+    //const [error, setError] = useState(null);
+    const [form, setForm] = useState({title: '', description: '', dueDate: '', priority: 'Medium'});
+    //const [editingTask, setEditingTask] = useState(null);
+    const [assignUserId, setAssignUserId] = useState('');
 
-    // Load todos from localStorage
+    // Filtering and Sorting State
+    const [priorityFilter, setPriorityFilter] = useState('');
+    const [sortCriteria, setSortCriteria] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
+
+    // Function to fetch tasks from the backend using taskService
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
         setName(user.email);
@@ -41,39 +49,39 @@ const Todo = () => {
         const taskIDs = _list.tasks.join(",");
         //console.log("IDs", taskIDs);
 
-        let tasks = await taskService.getTasks(taskIDs);
-        setTasks(tasks);
+        let _tasks = await taskService.getTasks(taskIDs);
+        //setTasks(_tasks);
+
+        if (_tasks && _tasks.length > 0) {
+            // Fetch users associated with each task
+            for (let i = 0; i < _tasks.length; i++) {
+                try {
+                    const _user = await SessionService.getUserbyID(_tasks[i].assignedToUser);
+        
+                    if (_user) {
+                        console.log(`User data for task ${i}:`, _user);
+                        _tasks[i].mail = _user.email;
+                    } else {
+                        console.warn(`No user found for task ${i} with user ID:`, _tasks[i].assignedToUser);
+                    }
+                } catch (error) {
+                    console.error(`Error fetching user for task ${i}:`, error);
+                }
+            }
+            setTasks(_tasks);
+        } else {
+            // If no tasks were retrieved or tasks is null
+            console.warn("No tasks retrieved.");
+            setTasks([]);
+        }
+        console.log("tasks", tasks)
     }
 
-    const [newTodoTitle, setNewTodoTitle] = useState("");
-    const [newTodoDescription, setNewTodoDescription] = useState("");
-    const [newTodoDueDate, setNewTodoDueDate] = useState("");
-    const [newTodoPriority, setNewTodoPriority] = useState("");
-    const [showForm, setShowForm] = useState(false); // To toggle the form visibility
-    const [sortCriteria, setSortCriteria] = useState("");
-    const [sortOrder, setSortOrder] = useState("asc"); //Ascending sort order
-    const [priorityFilter, setPriorityFilter] = useState("");
-
-    // Function to add a new to do
-    async function buttonAddToDo(e) {
+    // Function to handle saving a new or edited task
+    const handleAddTask = async (e) => {
         e.preventDefault();
-
-        if (list == null) {
-            alert("Please select a list");
-            return;
-        }
-
-        if (newTodoTitle && newTodoDescription && newTodoDueDate && newTodoPriority) {
-            const newTask = {
-                //_id: new ObjectId(),
-                title: newTodoTitle,
-                description: newTodoDescription,
-                dueDate: new Date(newTodoDueDate),
-                priority: newTodoPriority,
-                completed: false
-            };
-
-            let insertedTask = await taskService.createTask(newTask);
+        try {
+            let insertedTask = await taskService.createTask(form);
             console.log("Inserted", insertedTask);
 
             let updatedTasks = [...tasks, insertedTask];
@@ -85,11 +93,11 @@ const Todo = () => {
             taskListService.updateTaskList(updatedListTasks._id, insertedTask._id)
             setList(updatedListTasks);
 
-            // Reset input fields
-            //setNewTodoTitle(""); 
-            //setNewTodoDescription("");
-            //setNewTodoDueDate("");
-            //setNewTodoPriority("");
+
+            setForm({title: '', description: '', dueDate: '', priority: 'Medium'});
+        } catch (err) {
+            //setError(`Failed to ${editingTask ? 'update' : 'create'} task`); // Set error if save fails
+            console.log(err);
         }
     };
 
@@ -101,41 +109,11 @@ const Todo = () => {
         taskService.deleteTask(id);
     };
 
-    //Function to sort Todos
-    const sortedAndFilteredTodos = () => {
-        let filteredTodos = tasks ? tasks : []; // Safer initialization
-
-    
-        if (priorityFilter) {
-            filteredTodos = filteredTodos.filter((todo) => todo.priority === priorityFilter);
-        }
-    
-        if (sortCriteria === "id") {
-            filteredTodos.sort((a, b) => (sortOrder === "asc" ? a.id - b.id : b.id - a.id));
-        } else if (sortCriteria === "dueDate") {
-            filteredTodos.sort((a, b) => {
-                const dateA = new Date(a.dueDate);
-                const dateB = new Date(b.dueDate);
-                return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-            });
-        } else if (sortCriteria === "priority") {
-            const priorityOrder = { High: 3, Medium: 2, Low: 1 };
-            filteredTodos.sort((a, b) => {
-                return sortOrder === "asc"
-                    ? priorityOrder[a.priority] - priorityOrder[b.priority]
-                    : priorityOrder[b.priority] - priorityOrder[a.priority];
-            });
-        }
-        
-        return filteredTodos;
-    };
-
     const viewDetails = (todo) => {
         // TODO: list._id is pointless
         //navigate(`/detail/${todo._id}`);
         navigate(`/detail/${list._id}/${todo._id}`)
     };
-
 
     async function completeTask(todo) {
         let updatedTask = todo;
@@ -155,175 +133,159 @@ const Todo = () => {
         
         console.log("Updated tasks", updatedTasks);
         setTasks(updatedTasks);
-
-        // Update list with the
-        /* const updatedList = { ...list, tasks: updatedTasks };
-        console.log("Updated List", updatedList);
-        setList(updatedList); */
-
-        /* let updatedLists = lists.map(lst => { return lst.id == updatedList.id ? updatedList : lst});
-        setLists(updatedLists); */
-
-        //localStorage.setItem("tasklistsUser", JSON.stringify(updatedLists));
     };
 
-    return (
-        <div className="container-fluid">
-            <style>
-                {`
-          .custom-card {
-            transition: transform 0.3s;
-          }
-          .custom-card:hover {
-            transform: scale(1.05);
-          }
-        `}
-            </style>
-            <div className="container-fluid bg-black rounded-pill">
-                <br></br>
-                <div className="row justify-content-center align-items-center text-center">
-                    <div className="col"></div>
-                    <div className="col">
-                        <div className="underline p-2">
-                            <h2 className="tx-pro">{name} To do List</h2>
-                        </div>
-                    </div>
-                    <div className="col"></div>
+    // Filter and sort tasks based on the user-selected filters and sorting criteria
+    const filteredAndSortedTasks = tasks
+        .filter((task) => {
+            if (!priorityFilter) return true;
+            return task.priority === priorityFilter;
+        })
+        .sort((a, b) => {
+            if (!sortCriteria) return 0;
+            const fieldA = a[sortCriteria];
+            const fieldB = b[sortCriteria];
+            if (sortOrder === 'asc') {
+                return fieldA > fieldB ? 1 : -1; // Sort in ascending order
+            } else {
+                return fieldA < fieldB ? 1 : -1; // Sort in descending order
+            }
+        });
+
+    /* const handleToggleStatus = async (id, currentStatus) => {
+        try {
+            // Toggle the task completion status
+            await taskService.updateTask(id, {completed: !currentStatus});
+            //fetchTasks(); // Fetch updated task list
+        } catch (err) {
+            //setError('Failed to update task status');
+            console.log(err);
+        }
+    }; */
+
+
+    // Display loading state or error message if applicable
+    //if (loading) return <div>Loading tasks...</div>;
+    //if (error) return <div>Error: {error}</div>;
+
+    return (<div className="container-fluid">
+        {/* Custom styling for cards */}
+        <style>
+            {`
+                    .custom-card { transition: transform 0.3s; }
+                    .custom-card:hover { transform: scale(1.05); }
+                    .todo-title { font-size: 2rem; font-weight: bold; }
+                `}
+        </style>
+        <br/>
+        {/* Title of the Todo List */}
+        <div className="container-fluid bg-black text-center rounded-pill p-3 mb-4">
+            <h2 className="todo-title text-white">To Do List</h2>
+        </div>
+
+        {/* Form for Adding or Editing Tasks */}
+        <form onSubmit={handleAddTask} className="mb-4">
+            <div className="row mb-3">
+                {/* Title input field */}
+                <div className="col-md-3">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Title"
+                        value={form.title}
+                        onChange={(e) => setForm({...form, title: e.target.value})}
+                        required
+                    />
                 </div>
-                <br></br>
+                {/* Description input field */}
+                <div className="col-md-3">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Description"
+                        value={form.description}
+                        onChange={(e) => setForm({...form, description: e.target.value})}
+                    />
+                </div>
+                {/* Due date input field */}
+                <div className="col-md-2">
+                    <input
+                        type="date"
+                        className="form-control"
+                        placeholder="Due Date"
+                        value={form.dueDate}
+                        onChange={(e) => setForm({...form, dueDate: e.target.value})}
+                        required
+                    />
+                </div>
+                {/* Priority selection field */}
+                <div className="col-md-2">
+                    <select
+                        className="form-control"
+                        value={form.priority}
+                        onChange={(e) => setForm({...form, priority: e.target.value})}
+                    >
+                        <option value="Medium">Medium</option>
+                        <option value="High" className="text-danger">High</option>
+                        <option value="Low" className="text-success">Low</option>
+                    </select>
+                </div>
+                {/* Submit button to either add or update a task */}
+                <div className="col-md-2">
+                    <button type="submit" className="btn btn-outline-success w-100">
+                        {/*editingTask ? 'Update Task' : 'Add Task'*/}
+                        Add task
+                    </button>
+                </div>
             </div>
-            <br></br>
+        </form>
 
-            <div className="row">
-                {/* Priority Filter */}
-                <div className="col-4 fluid">
-                    <label>Filter by Priority: </label>
-                    <select
-                        className="form-control"
-                        value={priorityFilter}
-                        onChange={(e) => setPriorityFilter(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        <option className="text-danger" value="High">High</option>
-                        <option className="text-primary" value="Medium">Medium</option>
-                        <option className="text-success" value="Low">Low</option>
-                    </select>
-                </div>
-
-                {/* Sort Criteria */}
-                <div className="col-4 fluid">
-                    <label>Sort by: </label>
-                    <select
-                        className="form-control"
-                        value={sortCriteria}
-                        onChange={(e) => setSortCriteria(e.target.value)}
-                    >
-                        <option value="">None</option>
-                        <option value="id">ID</option>
-                        <option value="dueDate">Due Date</option>
-                        <option value="priority">Priority</option>
-                    </select>
-                </div>
-
-                {/* Sort Order */}
-                <div className="col-4 fluid">
-                    <label>Order: </label>
-                    <select
-                        className="form-control"
-                        value={sortOrder}
-                        onChange={(e) => setSortOrder(e.target.value)}
-                    >
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
-                    </select>
-                </div>
-            </div>
-
-
-
-            {/* Button to toggle form */}
-            <div className="container text-center">
-                <button
-                    className="btn btn-outline-success"
-                    onClick={() => setShowForm(!showForm)} // Toggle the form visibility state
+        {/* Filter and Sort Controls */}
+        <div className="row mb-4">
+            {/* Priority filter */}
+            <div className="col-4">
+                <label>Filter by Priority:</label>
+                <select
+                    className="form-control"
+                    value={priorityFilter}
+                    onChange={(e) => setPriorityFilter(e.target.value)}
                 >
-                    {showForm ? "Hide Form" : "Add to do"} {/* Change button text based on form visibility */}
-                </button>
+                    <option value="">All</option>
+                    <option className="text-danger" value="High">High</option>
+                    <option className="text-primary" value="Medium">Medium</option>
+                    <option className="text-success" value="Low">Low</option>
+                </select>
             </div>
-            <br />
+            {/* Sort criteria selection */}
+            <div className="col-4">
+                <label>Sort by:</label>
+                <select
+                    className="form-control"
+                    value={sortCriteria}
+                    onChange={(e) => setSortCriteria(e.target.value)}
+                >
+                    <option value="">None</option>
+                    <option value="title">Title</option>
+                    <option value="dueDate">Due Date</option>
+                    <option value="priority">Priority</option>
+                </select>
+            </div>
+            {/* Sort order selection */}
+            <div className="col-4">
+                <label>Order:</label>
+                <select
+                    className="form-control"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                >
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </div>
+        </div>
 
-            {/* Form for to do input */}
-            {showForm && (
-                <div className="container-xl">
-                    <div className="row justify-content-center align-items-center text-center">
-                        <div className="col-4"></div>
-                        <div className="col-4">
-                            <form onSubmit={buttonAddToDo}>
-                                <div className="col-mb-3 p-2 m-1">
-                                    <p>Title:</p>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Todo Title"
-                                        value={newTodoTitle}
-                                        onChange={(e) => setNewTodoTitle(e.target.value)}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="col-mb-3 p-2 m-1">
-                                    <p>Description:</p>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Todo Description"
-                                        value={newTodoDescription}
-                                        onChange={(e) => setNewTodoDescription(e.target.value)}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="col-mb-3 p-2 m-1">
-                                    <p>Date:</p>
-                                    <input
-                                        type="date"
-                                        className="form-control"
-                                        placeholder="Due Date"
-                                        value={newTodoDueDate}
-                                        onChange={(e) => setNewTodoDueDate(e.target.value)}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="col-mb-3 p-2 m-1">
-                                    <p>Priority:</p>
-                                    <select
-                                        className="form-control"
-                                        value={newTodoPriority}
-                                        onChange={(e) => setNewTodoPriority(e.target.value)}
-                                        required
-                                    >
-                                        <option value="">Select Priority</option>
-                                        <option className="text-danger" value="High">High</option>
-                                        <option className="text-primary" value="Medium">Medium</option>
-                                        <option className="text-success" value="Low">Low</option>
-                                    </select>
-                                </div>
-                                <br></br>
-                                <button type="submit" className="btn btn-outline-success">
-                                    Add To do
-                                </button>
-                            </form>
-                        </div>
-                        <div className="col-4"></div>
-                    </div>
-                </div>
-            )}
-
-            <br />
-            
-            {/* Display the list of task lists */}
-            <div>
+        {/* Display the list of task lists */}
+        <div>
                 <form onSubmit={(e) => { e.preventDefault(); }}>
                     <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
                         <option value="" disabled>Select a list</option>
@@ -333,67 +295,58 @@ const Todo = () => {
                     </select>
                 </form>
             </div>
-            {/* Displaying the list of to do's */}
-            <div className="container-fluid">
-                <div className="row justify-content-center align-items-center g-2">
-                    {sortedAndFilteredTodos().map((sortedTasks) => {if (!sortedTasks.completed) { return (
-                        <div key={sortedTasks.id} className="col-3">
-                            <div className="card border-5">
-                                <br />
-                                <div className="card-body custom-card">
-                                    <h4 className="card-title">{sortedTasks.title}</h4>
-                                    {/* Maybe use string.slice() to only show a set amount of characters in case of giant descriptions
-                                    https://www.w3schools.com/jsref/jsref_slice_string.asp */}
-                                    <p className="card-text">{sortedTasks.description}</p>
-                                    {/* Task detail for the to do */}
-                                    <p className="card-text">
-                                        <small className="text-muted">Task
-                                            ID: {sortedTasks._id}</small> {/* Displaying the task ID */}
-                                    </p>
-                                    <p className="card-text">
-                                        {/*
-                                            Under here is a ternary operator. A ternary operator consist out of 2 parts: The condition in front of the ?, and options behind the ?, seperated by the :.
-                                            If the condition is true, the first option will be return.
-                                            If the condition is false, the second option gets returned.
-                                        */}
-                                        <small className={new Date(sortedTasks.dueDate) < new Date() ? ("text-danger") : ("text-muted")}>
-                                            Due Date: {new Date(sortedTasks.dueDate) <= new Date() ? ("Overdue") : new Date(sortedTasks.dueDate).toDateString()}
-                                        </small> {/* Display due date */}
-                                    </p>
-                                    <p className="card-text">
-                                        <small className={
-                                            (() => {
-                                                switch(sortedTasks.priority) {
-                                                    case "High":    return "text-danger";
-                                                    case "Medium":  return "text-primary";
-                                                    case "Low":     return "text-success";
-                                                    default:        return "text-warning";
-                                                }
-                                            })() // <- Immediately call the function
-                                            }>Priority: {sortedTasks.priority}</small> {/* Display priority */}
-                                    </p>
-                                    {/* Delete button */}
-                                    <button
-                                        className="btn btn-outline-danger p-2 m-1"
-                                        onClick={() => handleDelete(sortedTasks._id)} // Delete the to do by its ID
-                                    >
-                                        Delete
-                                    </button>
-                                    <button onClick={() => viewDetails(sortedTasks)} className="btn btn-outline-secondary p-2 m-1">
-                                        Edit
-                                    </button>
-                                    <button onClick={() => completeTask(sortedTasks)} className="btn btn-outline-success p-2 m-1">
+
+        {/* Displaying the tasks */}
+        <div className="row">
+            {filteredAndSortedTasks.map((task) => {
+                // Define classes for overdue tasks and task priorities
+                const dueDateClass = new Date(task.dueDate) < new Date() ? "text-danger" : "text-muted";
+                const priorityClass = task.priority === "High" ? "text-danger" : task.priority === "Medium" ? "text-primary" : "text-success";
+
+                if( task.completed) { return (null); }
+
+                return (<div key={task._id} className="col-md-4 mb-4">
+                        <div className="card custom-card">
+                            <div className="card-body">
+                                {/* Task details */}
+                                <h5 className="card-title">{task.title}</h5>
+                                <p className="card-text">{task.description}</p>
+                                <p><strong>Due Date: </strong>
+                                    <span className={dueDateClass}>
+                    {new Date(task.dueDate).toLocaleDateString()}
+                </span>
+                                </p>
+                                <p><strong>Priority: </strong>
+                                    <span className={priorityClass}>{task.priority}</span>
+                                </p>
+                                <p><strong>Assigned to: </strong>{task.mail}</p>
+                                {/*<p><strong>Status: </strong>{task.completed ? 'Completed' : 'Pending'}</p>
+                                {/* User assignment */}
+                                {/* Status Toggle Button */}
+                                {/* <button
+                                    className={`btn ${task.completed ? 'btn-outline-warning' : 'btn-outline-info'} m-2`}
+                                    onClick={() => handleToggleStatus(task._id, task.completed)}
+                                >
+                                    {task.completed ? 'Mark as Pending' : 'Mark as Completed'}
+                                </button> */}
+                                {/* Buttons for editing, deleting, and assigning users */}
+                                
+                                <button className="btn btn-outline-success me-2"
+                                        onClick={() => viewDetails(task)}>Edit
+                                </button>
+                                <button className="btn btn-outline-danger me-2"
+                                        onClick={() => handleDelete(task._id)}>Delete
+                                </button>
+                                <button onClick={() => completeTask(task)} className="btn btn-outline-success p-2 m-1">
                                         Complete
                                     </button>
-                                </div>
-                                <br/>
                             </div>
                         </div>
-                    )}})}
-                </div>
-            </div>
+                    </div>
+                );
+            })}
         </div>
-    );
+    </div>);
 };
 
 export default Todo;
