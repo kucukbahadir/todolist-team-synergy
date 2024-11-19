@@ -77,6 +77,16 @@ const Todo = () => {
         console.log("tasks", tasks)
     }
 
+    async function handleShareList(mail) {
+        const _user = await SessionService.getUserbyMail(mail)
+
+        if (_user) {
+            // Add _user to list "sharedWith"
+
+            // Add list to _user "sharedLists"
+        }
+    }
+
     // Function to handle saving a new or edited task
     const handleAddTask = async (e) => {
         e.preventDefault();
@@ -285,16 +295,35 @@ const Todo = () => {
         </div>
 
         {/* Display the list of task lists */}
-        <div>
-                <form onSubmit={(e) => { e.preventDefault(); }}>
-                    <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
-                        <option value="" disabled>Select a list</option>
-                        {lists.map((task) => (
+        <div className='row'>
+            <div className='col-6'>
+            <form onSubmit={(e) => { e.preventDefault(); }}>
+                <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
+                    <option value="" disabled>Select a list</option>
+                    {lists.map((task) => (
                         <option key={task._id} value={task._id}>{task.title}</option>
-                        ))}
-                    </select>
-                </form>
+                    ))}
+                </select>
+            </form>
             </div>
+
+            <div className='col-3'>
+            <input
+                type="text"
+                className="form-control"
+                placeholder="Share current Task List with:"
+                //value={"newListTitle"}
+                //onChange={(e) => setNewListTitle(e.target.value)}
+            /> </div>
+            <div className='col-3'>
+            <button
+                className="btn btn-outline-success"
+                onClick={handleShareList()}
+            >
+                Share Task List
+            </button>            
+            </div>
+        </div>
 
         {/* Displaying the tasks */}
         <div className="row">
