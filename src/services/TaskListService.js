@@ -13,7 +13,7 @@ class TaskListService {
         // Get the shared Lists from the db here\
         if (user.sharedLists && user.sharedLists.length > 0) {
             const listIDs = user.sharedLists.join(',');
-            let url = `${this.URL}/api/lists?ids=${listIDs}`;
+            let url = `${this.URL}/lists?ids=${listIDs}`;
             //console.log(url);
             let listResponse = await fetch(url, {
                 method: "GET",
@@ -36,7 +36,7 @@ class TaskListService {
 
     async updateTaskList(id, update) {
         try {
-            const res = await fetch(`${this.URL}/api/lists/${id}/add`, {
+            const res = await fetch(`${this.URL}/lists/${id}/add`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ taskID: update }),
@@ -57,7 +57,7 @@ class TaskListService {
 
     async updateTaskList2(id, update) {
         try {
-            const res = await fetch(`${this.URL}/api/lists/${id}/update`, {
+            const res = await fetch(`${this.URL}/lists/${id}/update`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ list: update }),
