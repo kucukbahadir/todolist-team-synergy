@@ -186,12 +186,17 @@ const Todo = () => {
     
             // Call backend service to create a new list
             const createdList = await taskListService.createTaskList(newList);
+            console.log(createdList);
             
             // Assuming the backend returns the created list with its ID
             if (createdList && createdList.listId) {
                 // Add the new list to the state
-                setLists([...lists, { _id: createdList.listId, title: newListTitle, owner: userId, sharedWith: [userId], tasks: [] }]);
+                let _lists = lists
+                _lists.push({ _id: createdList.listId, title: newListTitle, owner: userId, sharedWith: [userId], tasks: [] })
+                setLists(_lists);
                 setNewListTitle(''); // Reset the input field
+                // Add the new list to localStorage
+                localStorage.setItem("lists", JSON.stringify(_lists))
             } else {
                 alert('Failed to create new task list. Please try again.');
             }
