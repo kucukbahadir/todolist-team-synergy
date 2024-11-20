@@ -9,6 +9,27 @@ class TaskListService {
         this.URL = url;
     }
 
+    async createTaskList(taskList) {
+        try {
+            const res = await fetch(`${this.URL}/api/lists`, {
+                method: 'POST',
+                headers: {'Content-Type' : 'application/json' },
+                body: JSON.stringify(taskList),
+                credentials: 'include',
+            });
+
+            if (res.ok) {
+                return await res.json();
+            } else {
+                console.error('Failed to create task list:', res);
+                return null;
+            }
+        } catch (error) {
+            console.error("Error in createTaskList:", error)
+            return null;
+        }
+    }
+
     async getTaskLists(user) {
         // Get the shared Lists from the db here\
         if (user.sharedLists && user.sharedLists.length > 0) {

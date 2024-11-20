@@ -9,6 +9,7 @@ const Todo = () => {
     // State for storing tasks, loading status, error message, form data and more
     const navigate = useNavigate()
     const [name, setName] = useState("");
+    const [newListTitle, setNewListTitle] = useState(""); 
     const [lists, setLists] = useState([]);     // Contains the all task_list Objects
     const [list, setList] = useState();         // Contains the selected task_list Object
     const [tasks, setTasks] = useState([]);     // Contains the task Objects
@@ -168,6 +169,46 @@ const Todo = () => {
     //if (loading) return <div>Loading tasks...</div>;
     //if (error) return <div>Error: {error}</div>;
 
+    async function handleCreateNewList() {
+        if (!newListTitle) {
+            alert('Please enter a title for the new list.');
+            return;
+        }
+    
+        try {
+            const userId = SessionService.getUserId(); // Get the current user's ID
+            const newList = {
+                title: newListTitle,
+                owner: userId,
+                sharedWith: [userId], // Share with the owner initially
+                tasks: []
+            };
+    
+            // Call backend service to create a new list
+            const createdList = await taskListService.createTaskList(newList);
+            console.log(createdList);
+            
+            // Assuming the backend returns the created list with its ID
+            if (createdList && createdList.listId) {
+                // Add the new list to the state
+                let _lists = lists
+                _lists.push({ _id: createdList.listId, title: newListTitle, owner: userId, sharedWith: [userId], tasks: [] })
+                setLists(_lists);
+                setNewListTitle(''); // Reset the input field
+                // Add the new list to localStorage
+                localStorage.setItem("lists", JSON.stringify(_lists))
+            } else {
+                alert('Failed to create new task list. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error creating new task list:', error);
+            alert('Error creating new task list. Please try again.');
+        }
+    }
+    
+
+
+
     return (<div className="container-fluid">
         {/* Custom styling for cards */}
         <style>
@@ -284,10 +325,30 @@ const Todo = () => {
             </div>
         </div>
 
+        {/*Create new task list */}
+        <div className="mb-4">
+            <form onSubmit={(e) => { e.preventDefault(); handleCreateNewList(); }} className="items-center space-x-4">
+                <input
+                type="text"
+                placeholder="Enter new list title"
+                value={newListTitle}
+                onChange={(e) => setNewListTitle(e.target.value)}
+                className="p-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                />
+            <button 
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+            >
+                Create New List
+            </button>
+        </form>
+    </div>
+
         {/* Display the list of task lists */}
         <div>
                 <form onSubmit={(e) => { e.preventDefault(); }}>
-                    <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
+                    <select onChange={(e) => handleSetList(e.target.value)} defaultValue=""
+                        className="p-2 border border-gray-300 rounded-md text-gray-900 bg-white m-2 ">
                         <option value="" disabled>Select a list</option>
                         {lists.map((task) => (
                         <option key={task._id} value={task._id}>{task.title}</option>
