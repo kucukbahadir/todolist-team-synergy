@@ -17,7 +17,7 @@ const Todo = () => {
     //const [error, setError] = useState(null);
     const [form, setForm] = useState({title: '', description: '', dueDate: '', priority: 'Medium'});
     //const [editingTask, setEditingTask] = useState(null);
-    const [assignUserId, setAssignUserId] = useState('');
+    const [assignUserMail, setAssignUserMail] = useState('');
 
     // Filtering and Sorting State
     const [priorityFilter, setPriorityFilter] = useState('');
@@ -48,15 +48,17 @@ const Todo = () => {
         // TODO: Get lists task from db
         console.log("List", _list);
         const taskIDs = _list.tasks.join(",");
-        //console.log("IDs", taskIDs);
+        console.log("IDs", taskIDs);
 
         let _tasks = await taskService.getTasks(taskIDs);
+        //console.log(_tasks)
         //setTasks(_tasks);
 
         if (_tasks && _tasks.length > 0) {
             // Fetch users associated with each task
             for (let i = 0; i < _tasks.length; i++) {
                 try {
+                    console.log("task user:", _tasks[i].assignedToUser)
                     const _user = await SessionService.getUserbyID(_tasks[i].assignedToUser);
         
                     if (_user) {
@@ -76,6 +78,38 @@ const Todo = () => {
             setTasks([]);
         }
         console.log("tasks", tasks)
+    }
+
+    async function handleShareList(assignUserMail) {
+        const _user = await SessionService.getUserbyMail(assignUserMail)
+        console.log("user", _user);
+
+        if (_user) {
+            // Add list to _user "sharedLists"
+            console.log("Updating user sharedLists");
+            _user.sharedLists.push(list._id);
+
+            // Add _user to list "sharedWith"
+            console.log("updating list sharedWith");
+            let _list = list;
+            _list.sharedWith.push(_user._id);
+
+            // Update db
+            console.log("updating db")
+            console.log("_list", _list)
+            const temp = await taskListService.updateTaskList2(_list._id, _user._id);
+            console.log("temp", temp)
+
+            console.log("_user", _user);
+            SessionService.updateUser(_user._id, _user);
+
+            // Update useStates / localStorage
+            localStorage.setItem("user", _user)
+            setList(_list);
+        } else {
+            alert("Failed")
+            console.log(`Error fetching user: ${assignUserMail}`)
+        }
     }
 
     // Function to handle saving a new or edited task
@@ -221,7 +255,7 @@ const Todo = () => {
         <br/>
         {/* Title of the Todo List */}
         <div className="container-fluid bg-black text-center rounded-pill p-3 mb-4">
-            <h2 className="todo-title text-white">To Do List</h2>
+            <h2 className="todo-title text-white">{name} To Do List</h2>
         </div>
 
         {/* Form for Adding or Editing Tasks */}
@@ -345,17 +379,35 @@ const Todo = () => {
     </div>
 
         {/* Display the list of task lists */}
-        <div>
-                <form onSubmit={(e) => { e.preventDefault(); }}>
-                    <select onChange={(e) => handleSetList(e.target.value)} defaultValue=""
-                        className="p-2 border border-gray-300 rounded-md text-gray-900 bg-white m-2 ">
-                        <option value="" disabled>Select a list</option>
-                        {lists.map((task) => (
+        <div className='row'>
+            <div className='col-6'>
+            <form onSubmit={(e) => { e.preventDefault(); }}>
+                <select onChange={(e) => handleSetList(e.target.value)} defaultValue="">
+                    <option value="" disabled>Select a list</option>
+                    {lists.map((task) => (
                         <option key={task._id} value={task._id}>{task.title}</option>
-                        ))}
-                    </select>
-                </form>
+                    ))}
+                </select>
+            </form>
             </div>
+
+            <div className='col-3'>
+            <input
+                type="text"
+                className="form-control"
+                placeholder="Share current Task List with:"
+                value={assignUserMail}
+                onChange={(e) => setAssignUserMail(e.target.value)}
+            /> </div>
+            <div className='col-3'>
+            <button
+                className="btn btn-outline-success"
+                onClick={() => handleShareList(assignUserMail)}
+            >
+                Share Task List
+            </button>            
+            </div>
+        </div>
 
         {/* Displaying the tasks */}
         <div className="row">

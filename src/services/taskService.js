@@ -15,7 +15,7 @@ class TaskService {
      */
     async getTasks(taskIDs) {
         let url = `${this.URL}/api/tasks?ids=${taskIDs}`;
-        //console.log(url);
+        console.log("url", url);
         let response = await fetch(url, {
             method: "GET",
             headers: {
