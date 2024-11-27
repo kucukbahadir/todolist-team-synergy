@@ -6,7 +6,7 @@ const Todo = () => {
     const navigate = useNavigate();
     let [todos, setTodos] = useState([]);
 
-    // Load todos from localStorage
+    // Load todos from localStorage ----------------------------------------------------------------------------------------------this is needed
     useEffect(() => {
         // This will run when the component is first mounted (or the page is reloaded)
         let jsonString = localStorage.getItem("tasksUser");
@@ -55,7 +55,7 @@ const Todo = () => {
         }
     };
 
-    // Function to delete a to do by its id
+    // Function to delete a to do by its id--------------------------------------------------------------------------------this is needed
     const handleDelete = (id) => {
         // Filter out the to do with the matching ID and update the to do's list
         const updatedTodos = todos.filter((todo) => todo.id !== id);
@@ -107,7 +107,7 @@ const Todo = () => {
             allTodos = JSON.parse(jsonString);
         }
 
-        // Set the completed status of the task to the opposite of what it was
+        // Set the completed status of the task to the opposite of what it was ---------------------------------------this too
         const updatedTodos = allTodos.map((t) => {
             if (t.id === todo.id) {
                 t.completed = !t.completed; // Toggle de voltooide status
@@ -115,7 +115,7 @@ const Todo = () => {
             return t;
         });
 
-        // Update the localStorage with the updated tasks
+        // Update the localStorage with the updated tasks ----------------------------------------------needed aswell
         localStorage.setItem("tasksUser", JSON.stringify(updatedTodos));
 
         // Filter out the completed tasks
