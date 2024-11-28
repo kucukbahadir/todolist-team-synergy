@@ -26,18 +26,31 @@ describe('Completed page', () => {
             completed: true,
             priority: 'Medium',
         },
+        {
+            _id: '673f20c6978f5452f334fba6',
+            title: 'Test Task 3',
+            description: 'Description 3',
+            dueDate: '2024-12-02T00:00:00.000Z',
+            completed: false,
+            priority: 'Medium',
+        }
     ];
 
     beforeEach(() => {
-        // Clear previous mocks before each test
-        taskService.getTasks.mockClear();
-
         // Mock the localstorage
         localStorage.setItem("lists", JSON.stringify([{ tasks: [{_id: 'id1', tasks: ["673f20c6978f5452f334fba4", "673f20c6978f5452f334fba5"]}] }]));
         
         // Set up the getTasks mock to return mockTasks
         taskService.getTasks.mockResolvedValue(mockTasks);
     });
+
+    afterEach(() => {
+        // Clear localStorage
+        localStorage.clear();
+        
+        // Clear previous mocks before each test
+        taskService.getTasks.mockClear();
+    })
 
     it('renders completed tasks on load', async () => {
         render(
@@ -53,13 +66,34 @@ describe('Completed page', () => {
         await waitFor(() => expect(taskService.getTasks).toHaveBeenCalled());
 
         // Verify that each task title is rendered on the screen
-        /* mockTasks.forEach((task) => {
-          expect(screen.getByText(task.title)).toBeInTheDocument();
-        }); */
+        // Ensure all completed tasks are rendered
         await waitFor(() => {
-            expect(screen.getByText(/Test Task 1/i)).toBeInTheDocument();
+            // Ensure all tasks are rendered
+            mockTasks.forEach((task) => {
+                if (task.completed) {
+                    // eslint-disable-next-line jest/no-conditional-expect
+                    expect(screen.getByText(task.title)).toBeInTheDocument(); 
+                }
+            });
           });
     });
+
+    it('shows a message when no completed tasks exist', async () => {
+        // Set the getTasks mock to return an empty array
+        taskService.getTasks.mockResolvedValue([]);
+
+        render(
+            <BrowserRouter>
+                <Completed />
+            </BrowserRouter>
+        );
+
+        // Wait for tasks to load
+        await waitFor(() => expect(taskService.getTasks).toHaveBeenCalled());
+
+        // Check if the "No tasks completed yet" message appears
+        expect(screen.getByText(/No tasks completed yet/i)).toBeInTheDocument();
+    }); 
 
     /* it('handles incomplete button click', async () => {
         render(
@@ -80,22 +114,5 @@ describe('Completed page', () => {
 
         // Optionally, check if the task was removed from the UI
         await waitFor(() => expect(screen.queryByText(mockTasks[0].title)).not.toBeInTheDocument());
-    });
-
-    it('shows a message when no completed tasks exist', async () => {
-        // Set the getTasks mock to return an empty array
-        taskService.getTasks.mockResolvedValue([]);
-
-        render(
-            <BrowserRouter>
-                <Completed />
-            </BrowserRouter>
-        );
-
-        // Wait for tasks to load
-        await waitFor(() => expect(taskService.getTasks).toHaveBeenCalled());
-
-        // Check if the "No tasks completed yet" message appears
-        expect(screen.getByText(/No tasks completed yet/i)).toBeInTheDocument();
-    }); */
+    }); */    
 });
