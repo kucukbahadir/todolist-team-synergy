@@ -28,6 +28,7 @@ const Completed = () => {
                 console.log("Tasks", tasks);
     
                 const filterArray = tasks.filter(task => task.completed); // Filter completed tasks directly
+                console.log("Completed", filterArray);
                 setCompleted(filterArray); // Update state with completed tasks
             } catch (error) {
                 console.error("Error fetching tasks:", error);

@@ -28,7 +28,7 @@ class TaskService {
             console.log("Tasks", tasks)
             return tasks;
         } else {
-            console.error("fuck")
+            console.error("No tasks found");
         }
     }
 
