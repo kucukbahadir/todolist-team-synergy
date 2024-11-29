@@ -95,7 +95,7 @@ describe('Completed page', () => {
         expect(screen.getByText(/No tasks completed yet/i)).toBeInTheDocument();
     }); 
 
-    /* it('handles incomplete button click', async () => {
+    it('handles incomplete button click', async () => {
         render(
             <BrowserRouter>
                 <Completed />
@@ -114,5 +114,5 @@ describe('Completed page', () => {
 
         // Optionally, check if the task was removed from the UI
         await waitFor(() => expect(screen.queryByText(mockTasks[0].title)).not.toBeInTheDocument());
-    }); */    
+    });    
 });
