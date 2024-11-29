@@ -51,15 +51,13 @@
     "@babel/preset-env": "^7.0.0"
   },
   "jest": {
-    "moduleNameMapper": {
-      "^react-router-dom$": "<rootDir>/node_modules/react-router-dom"
-    },
     "transform": {
-      "^.+\\.[t|j]sx?$": "babel-jest"
+      "^.+\\.(js|jsx)$": "babel-jest"
     },
-    "testEnvironment": "jsdom",
-    "transformIgnorePatterns": [
-      "/node_modules/(?!@fortawesome)/"
-    ]
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "testEnvironment": "jsdom"
   }
 }
