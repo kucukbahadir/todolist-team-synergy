@@ -7,7 +7,6 @@ jest.mock('react-router-dom', () => ({
     useParams: jest.fn(() => ({ listID: 'mockListID', taskID: 'mockTaskID' })),
 }));
 
-
 jest.mock('../services/taskService', () => ({
     taskService: {
         getTaskById: jest.fn(() => Promise.resolve({
@@ -33,17 +32,21 @@ describe('Detail Page', () => {
     it('renders the detail form and allows updates', async () => {
         render(<Detail />);
 
-
+        // Check that input fields are rendered
         expect(screen.getByPlaceholderText(/Title/i)).toBeInTheDocument();
         expect(screen.getByPlaceholderText(/Description/i)).toBeInTheDocument();
 
+        // Update fields
         fireEvent.change(screen.getByPlaceholderText(/Title/i), { target: { value: 'Updated Task Title' } });
         fireEvent.change(screen.getByPlaceholderText(/Description/i), { target: { value: 'Updated Description' } });
 
-
+        // Click Save button
         fireEvent.click(screen.getByText(/Save/i));
 
+        // Wait for async actions
         await new Promise(setImmediate);
+
+        // Verify updateTask service is called with correct arguments
         expect(require('../services/taskService').taskService.updateTask).toHaveBeenCalledWith(
             expect.any(String),
             expect.objectContaining({
