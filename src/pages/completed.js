@@ -48,16 +48,16 @@ const Completed = () => {
     
 
     // Broken
-    const onDelete = (id) => {
-        let jsonString = localStorage.getItem("tasksUser");
-        let jsonArray = []
+    // const onDelete = (id) => {
+    //     let jsonString = localStorage.getItem("tasksUser");
+    //     let jsonArray = []
 
-        if (jsonString){
-            jsonArray = JSON.parse(jsonString).filter((todo) => todo.id !== id);
-            localStorage.setItem("tasksUser", JSON.stringify(jsonArray));
-            //setTodos(jsonArray);
-        }
-    }
+    //     if (jsonString){
+    //         jsonArray = JSON.parse(jsonString).filter((todo) => todo.id !== id);
+    //         localStorage.setItem("tasksUser", JSON.stringify(jsonArray));
+    //         //setTodos(jsonArray);
+    //     }
+    // }
 
     return (
         <div className={"h-lvh"}>
