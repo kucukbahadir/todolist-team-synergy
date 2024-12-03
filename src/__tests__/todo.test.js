@@ -37,20 +37,21 @@ describe('Todo Component', () => {
     expect(screen.getByPlaceholderText('Description')).toBeInTheDocument();
   });
 
-  test('allows adding a new task', async () => {
+  test("allows adding a new task", async () => {
     renderWithRouter(<Todo />);
-    const titleInput = screen.getByPlaceholderText('Title');
+
+    const titleInput = screen.getByPlaceholderText("Title");
     const addButton = screen.getByText(/add task/i);
-  
+
     // Simulate user input
-    fireEvent.change(titleInput, { target: { value: 'New Task' } });
+    fireEvent.change(titleInput, { target: { value: "New Task" } });
     fireEvent.click(addButton);
-  
+
+    // Debug the DOM if needed
+    console.log(screen.debug());
+
     // Wait for the task to render
-    const newTask = await screen.findByText((content) => content.includes('New Task'));
-  
-    // Assert the new task is displayed
+    const newTask = await screen.findByText((content) => content.includes("New Task"));
     expect(newTask).toBeInTheDocument();
-  });
-  
+}); 
 });
