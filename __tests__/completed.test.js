@@ -5,9 +5,7 @@ import Completed from '../src/pages/completed'; // Adjust the path as needed
 import { taskService } from '../src/services/taskService';
 import { BrowserRouter } from 'react-router-dom'; // For handling <Navigate>
 import '@testing-library/jest-dom';
-
 jest.mock('../src/services/taskService.js'); // Mock the task service
-
 describe('Completed page', () => {
     const mockTasks = [
         {
